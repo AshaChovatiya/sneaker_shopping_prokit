@@ -6,13 +6,14 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/models/ModelProvider.dart';
+import 'package:sneaker_shopping_prokit/providers/initial_provider.dart';
 import 'package:sneaker_shopping_prokit/providers/product_provider.dart';
+import 'package:sneaker_shopping_prokit/screen/SSDashBoardScreen.dart';
 import 'package:sneaker_shopping_prokit/screen/SSSplashScreen.dart';
 import 'package:sneaker_shopping_prokit/store/AppStore.dart';
 import 'package:sneaker_shopping_prokit/utils/AppTheme.dart';
 import 'package:sneaker_shopping_prokit/utils/SSConstants.dart';
 import 'package:sneaker_shopping_prokit/utils/SSDataGenerator.dart';
-
 import 'amplifyconfiguration.dart';
 
 AppStore appStore = AppStore();
@@ -40,21 +41,7 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   void initState() {
-    _configureAmplify();
     super.initState();
-  }
-
-  void _configureAmplify() async {
-    final auth = AmplifyAuthCognito();
-    await Amplify.addPlugin(auth);
-    await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
-
-    try {
-      await Amplify.configure(amplifyconfig);
-    } on AmplifyAlreadyConfiguredException {
-      print(
-          "Tried to reconfigure Amplify; this can occur when your app restarts on Android.");
-    }
   }
 
   @override
@@ -64,20 +51,34 @@ class _MyAppState extends State<MyApp> {
         providers: [
           ChangeNotifierProvider(
             create: (_) => ProductProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => InitialProvider()..checkSignInStatus(),
           )
         ],
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Sneaker Shopping${!isMobile ? ' ${platformName()}' : ''}',
-          home: SSSplashScreen(),
-          theme: !appStore.isDarkModeOn
-              ? AppThemeData.lightTheme
-              : AppThemeData.darkTheme,
-          navigatorKey: navigatorKey,
-          scrollBehavior: SBehavior(),
-          supportedLocales: LanguageDataModel.languageLocales(),
-          localeResolutionCallback: (locale, supportedLocales) => locale,
-        ),
+        child: Consumer<InitialProvider>(
+            builder: (context, initialProvider, child) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Sneaker Shopping${!isMobile ? ' ${platformName()}' : ''}',
+            home: initialProvider.isLoading
+                ? Scaffold(
+                    body: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  )
+                : initialProvider.isUserLoggedIn
+                    ? SSDashBoardScreen()
+                    : SSSplashScreen(),
+            theme: !appStore.isDarkModeOn
+                ? AppThemeData.lightTheme
+                : AppThemeData.darkTheme,
+            navigatorKey: navigatorKey,
+            scrollBehavior: SBehavior(),
+            supportedLocales: LanguageDataModel.languageLocales(),
+            localeResolutionCallback: (locale, supportedLocales) => locale,
+          );
+        }),
       ),
     );
   }
