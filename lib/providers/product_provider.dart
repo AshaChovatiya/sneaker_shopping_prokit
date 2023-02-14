@@ -114,6 +114,7 @@ class ProductProvider extends ChangeNotifier {
       categoryList.addAll(response.data!.items);
       // }
       print("categoryList length:------- ${categoryList.length}");
+      print("categoryList length:------- ${categoryList.length}");
 
       for (var i = 0; i < productList.length; i++) {
         for (var j = 0; j < response.data!.items.length; j++) {
