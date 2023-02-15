@@ -79,26 +79,30 @@ class _SSHomeFragmentState extends State<SSHomeFragment> {
                 ),
               ),
               SizedBox(height: 16),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Text("Best of OD",
-                        textAlign: TextAlign.start,
-                        overflow: TextOverflow.clip,
-                        style: boldTextStyle()),
-                    TextButton(
-                      onPressed: () {
-                        SSViewAllScreen().launch(context);
-                      },
-                      child: Text("Show all", style: secondaryTextStyle()),
+              productProvider.productList.isEmpty
+                  ? SizedBox()
+                  : Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Text("Best of OD",
+                              textAlign: TextAlign.start,
+                              overflow: TextOverflow.clip,
+                              style: boldTextStyle()),
+                          TextButton(
+                            onPressed: () {
+                              SSViewAllScreen().launch(context);
+                            },
+                            child:
+                                Text("Show all", style: secondaryTextStyle()),
+                          ),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
-              ),
               HorizontalList(
                 padding: EdgeInsets.only(left: 16, right: 16),
                 itemCount: productProvider.productList.length < 4
@@ -118,6 +122,7 @@ class _SSHomeFragmentState extends State<SSHomeFragment> {
                             ).launch(context);
                           },
                           child: SSBestODWidget(
+                            product: productProvider.productList[index]!,
                             title: productProvider.productList[index]!.title,
                             img: productProvider
                                         .productList[index]!.thumbImages !=

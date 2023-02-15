@@ -30,6 +30,8 @@ import 'package:flutter/foundation.dart';
 class ProductSubCategory extends Model {
   static const classType = const _ProductSubCategoryModelType();
   final String id;
+  final String? _storeId;
+  final Store? _store;
   final String? _name;
   final String? _description;
   final String? _categoryID;
@@ -54,6 +56,14 @@ class ProductSubCategory extends Model {
       return ProductSubCategoryModelIdentifier(
         id: id
       );
+  }
+  
+  String? get storeId {
+    return _storeId;
+  }
+  
+  Store? get store {
+    return _store;
   }
   
   String get name {
@@ -122,11 +132,13 @@ class ProductSubCategory extends Model {
     return _updatedAt;
   }
   
-  const ProductSubCategory._internal({required this.id, required name, description, categoryID, category, slug, isFeatured, totalProducts, priority, required imageUrl, products, createdAt, updatedAt}): _name = name, _description = description, _categoryID = categoryID, _category = category, _slug = slug, _isFeatured = isFeatured, _totalProducts = totalProducts, _priority = priority, _imageUrl = imageUrl, _products = products, _createdAt = createdAt, _updatedAt = updatedAt;
+  const ProductSubCategory._internal({required this.id, storeId, store, required name, description, categoryID, category, slug, isFeatured, totalProducts, priority, required imageUrl, products, createdAt, updatedAt}): _storeId = storeId, _store = store, _name = name, _description = description, _categoryID = categoryID, _category = category, _slug = slug, _isFeatured = isFeatured, _totalProducts = totalProducts, _priority = priority, _imageUrl = imageUrl, _products = products, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory ProductSubCategory({String? id, required String name, String? description, String? categoryID, ProductCategory? category, String? slug, bool? isFeatured, int? totalProducts, int? priority, required String imageUrl, List<Product>? products, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
+  factory ProductSubCategory({String? id, String? storeId, Store? store, required String name, String? description, String? categoryID, ProductCategory? category, String? slug, bool? isFeatured, int? totalProducts, int? priority, required String imageUrl, List<Product>? products, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
     return ProductSubCategory._internal(
       id: id == null ? UUID.getUUID() : id,
+      storeId: storeId,
+      store: store,
       name: name,
       description: description,
       categoryID: categoryID,
@@ -150,6 +162,8 @@ class ProductSubCategory extends Model {
     if (identical(other, this)) return true;
     return other is ProductSubCategory &&
       id == other.id &&
+      _storeId == other._storeId &&
+      _store == other._store &&
       _name == other._name &&
       _description == other._description &&
       _categoryID == other._categoryID &&
@@ -173,6 +187,7 @@ class ProductSubCategory extends Model {
     
     buffer.write("ProductSubCategory {");
     buffer.write("id=" + "$id" + ", ");
+    buffer.write("storeId=" + "$_storeId" + ", ");
     buffer.write("name=" + "$_name" + ", ");
     buffer.write("description=" + "$_description" + ", ");
     buffer.write("categoryID=" + "$_categoryID" + ", ");
@@ -188,9 +203,11 @@ class ProductSubCategory extends Model {
     return buffer.toString();
   }
   
-  ProductSubCategory copyWith({String? name, String? description, String? categoryID, ProductCategory? category, String? slug, bool? isFeatured, int? totalProducts, int? priority, String? imageUrl, List<Product>? products, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
+  ProductSubCategory copyWith({String? storeId, Store? store, String? name, String? description, String? categoryID, ProductCategory? category, String? slug, bool? isFeatured, int? totalProducts, int? priority, String? imageUrl, List<Product>? products, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
     return ProductSubCategory._internal(
       id: id,
+      storeId: storeId ?? this.storeId,
+      store: store ?? this.store,
       name: name ?? this.name,
       description: description ?? this.description,
       categoryID: categoryID ?? this.categoryID,
@@ -207,6 +224,10 @@ class ProductSubCategory extends Model {
   
   ProductSubCategory.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
+      _storeId = json['storeId'],
+      _store = json['store']?['serializedData'] != null
+        ? Store.fromJson(new Map<String, dynamic>.from(json['store']['serializedData']))
+        : null,
       _name = json['name'],
       _description = json['description'],
       _categoryID = json['categoryID'],
@@ -228,15 +249,19 @@ class ProductSubCategory extends Model {
       _updatedAt = json['updatedAt'] != null ? TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'name': _name, 'description': _description, 'categoryID': _categoryID, 'category': _category?.toJson(), 'slug': _slug, 'isFeatured': _isFeatured, 'totalProducts': _totalProducts, 'priority': _priority, 'imageUrl': _imageUrl, 'products': _products?.map((Product? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'storeId': _storeId, 'store': _store?.toJson(), 'name': _name, 'description': _description, 'categoryID': _categoryID, 'category': _category?.toJson(), 'slug': _slug, 'isFeatured': _isFeatured, 'totalProducts': _totalProducts, 'priority': _priority, 'imageUrl': _imageUrl, 'products': _products?.map((Product? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
-    'id': id, 'name': _name, 'description': _description, 'categoryID': _categoryID, 'category': _category, 'slug': _slug, 'isFeatured': _isFeatured, 'totalProducts': _totalProducts, 'priority': _priority, 'imageUrl': _imageUrl, 'products': _products, 'createdAt': _createdAt, 'updatedAt': _updatedAt
+    'id': id, 'storeId': _storeId, 'store': _store, 'name': _name, 'description': _description, 'categoryID': _categoryID, 'category': _category, 'slug': _slug, 'isFeatured': _isFeatured, 'totalProducts': _totalProducts, 'priority': _priority, 'imageUrl': _imageUrl, 'products': _products, 'createdAt': _createdAt, 'updatedAt': _updatedAt
   };
 
   static final QueryModelIdentifier<ProductSubCategoryModelIdentifier> MODEL_IDENTIFIER = QueryModelIdentifier<ProductSubCategoryModelIdentifier>();
   static final QueryField ID = QueryField(fieldName: "id");
+  static final QueryField STOREID = QueryField(fieldName: "storeId");
+  static final QueryField STORE = QueryField(
+    fieldName: "store",
+    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: 'Store'));
   static final QueryField NAME = QueryField(fieldName: "name");
   static final QueryField DESCRIPTION = QueryField(fieldName: "description");
   static final QueryField CATEGORYID = QueryField(fieldName: "categoryID");
@@ -274,12 +299,26 @@ class ProductSubCategory extends Model {
     ];
     
     modelSchemaDefinition.indexes = [
+      ModelIndex(fields: const ["storeId", "createdAt"], name: "bystoreIdProductSubCategory"),
       ModelIndex(fields: const ["name", "createdAt"], name: "bynameProductSubCategory"),
       ModelIndex(fields: const ["categoryID", "createdAt"], name: "bycategoryIDProductSubCategory"),
       ModelIndex(fields: const ["slug", "createdAt"], name: "byslugProductSubCategory")
     ];
     
     modelSchemaDefinition.addField(ModelFieldDefinition.id());
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: ProductSubCategory.STOREID,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.hasOne(
+      key: ProductSubCategory.STORE,
+      isRequired: false,
+      ofModelName: 'Store',
+      associatedKey: Store.ID
+    ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: ProductSubCategory.NAME,

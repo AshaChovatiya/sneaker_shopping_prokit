@@ -29,6 +29,8 @@ import 'package:flutter/foundation.dart';
 class Payment extends Model {
   static const classType = const _PaymentModelType();
   final String id;
+  final String? _storeId;
+  final Store? _store;
   final String? _userId;
   final User? _user;
   final String? _orderId;
@@ -48,6 +50,14 @@ class Payment extends Model {
       return PaymentModelIdentifier(
         id: id
       );
+  }
+  
+  String? get storeId {
+    return _storeId;
+  }
+  
+  Store? get store {
+    return _store;
   }
   
   String? get userId {
@@ -105,11 +115,13 @@ class Payment extends Model {
     return _updatedAt;
   }
   
-  const Payment._internal({required this.id, userId, user, required orderId, required method, required amount, createdAt, updatedAt}): _userId = userId, _user = user, _orderId = orderId, _method = method, _amount = amount, _createdAt = createdAt, _updatedAt = updatedAt;
+  const Payment._internal({required this.id, storeId, store, userId, user, required orderId, required method, required amount, createdAt, updatedAt}): _storeId = storeId, _store = store, _userId = userId, _user = user, _orderId = orderId, _method = method, _amount = amount, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Payment({String? id, String? userId, User? user, required String orderId, required PaymentMethod method, required double amount, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
+  factory Payment({String? id, String? storeId, Store? store, String? userId, User? user, required String orderId, required PaymentMethod method, required double amount, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
     return Payment._internal(
       id: id == null ? UUID.getUUID() : id,
+      storeId: storeId,
+      store: store,
       userId: userId,
       user: user,
       orderId: orderId,
@@ -128,6 +140,8 @@ class Payment extends Model {
     if (identical(other, this)) return true;
     return other is Payment &&
       id == other.id &&
+      _storeId == other._storeId &&
+      _store == other._store &&
       _userId == other._userId &&
       _user == other._user &&
       _orderId == other._orderId &&
@@ -146,6 +160,7 @@ class Payment extends Model {
     
     buffer.write("Payment {");
     buffer.write("id=" + "$id" + ", ");
+    buffer.write("storeId=" + "$_storeId" + ", ");
     buffer.write("userId=" + "$_userId" + ", ");
     buffer.write("orderId=" + "$_orderId" + ", ");
     buffer.write("method=" + (_method != null ? enumToString(_method)! : "null") + ", ");
@@ -157,9 +172,11 @@ class Payment extends Model {
     return buffer.toString();
   }
   
-  Payment copyWith({String? userId, User? user, String? orderId, PaymentMethod? method, double? amount, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
+  Payment copyWith({String? storeId, Store? store, String? userId, User? user, String? orderId, PaymentMethod? method, double? amount, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
     return Payment._internal(
       id: id,
+      storeId: storeId ?? this.storeId,
+      store: store ?? this.store,
       userId: userId ?? this.userId,
       user: user ?? this.user,
       orderId: orderId ?? this.orderId,
@@ -171,6 +188,10 @@ class Payment extends Model {
   
   Payment.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
+      _storeId = json['storeId'],
+      _store = json['store']?['serializedData'] != null
+        ? Store.fromJson(new Map<String, dynamic>.from(json['store']['serializedData']))
+        : null,
       _userId = json['userId'],
       _user = json['user']?['serializedData'] != null
         ? User.fromJson(new Map<String, dynamic>.from(json['user']['serializedData']))
@@ -182,15 +203,19 @@ class Payment extends Model {
       _updatedAt = json['updatedAt'] != null ? TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'userId': _userId, 'user': _user?.toJson(), 'orderId': _orderId, 'method': enumToString(_method), 'amount': _amount, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'storeId': _storeId, 'store': _store?.toJson(), 'userId': _userId, 'user': _user?.toJson(), 'orderId': _orderId, 'method': enumToString(_method), 'amount': _amount, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
-    'id': id, 'userId': _userId, 'user': _user, 'orderId': _orderId, 'method': _method, 'amount': _amount, 'createdAt': _createdAt, 'updatedAt': _updatedAt
+    'id': id, 'storeId': _storeId, 'store': _store, 'userId': _userId, 'user': _user, 'orderId': _orderId, 'method': _method, 'amount': _amount, 'createdAt': _createdAt, 'updatedAt': _updatedAt
   };
 
   static final QueryModelIdentifier<PaymentModelIdentifier> MODEL_IDENTIFIER = QueryModelIdentifier<PaymentModelIdentifier>();
   static final QueryField ID = QueryField(fieldName: "id");
+  static final QueryField STOREID = QueryField(fieldName: "storeId");
+  static final QueryField STORE = QueryField(
+    fieldName: "store",
+    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: 'Store'));
   static final QueryField USERID = QueryField(fieldName: "userId");
   static final QueryField USER = QueryField(
     fieldName: "user",
@@ -209,7 +234,9 @@ class Payment extends Model {
         authStrategy: AuthStrategy.PUBLIC,
         operations: [
           ModelOperation.READ,
-          ModelOperation.CREATE
+          ModelOperation.CREATE,
+          ModelOperation.UPDATE,
+          ModelOperation.DELETE
         ]),
       AuthRule(
         authStrategy: AuthStrategy.PRIVATE,
@@ -222,11 +249,25 @@ class Payment extends Model {
     ];
     
     modelSchemaDefinition.indexes = [
+      ModelIndex(fields: const ["storeId", "createdAt"], name: "bystoreIdPayment"),
       ModelIndex(fields: const ["userId", "createdAt"], name: "byuserIdcreatedAtPayment"),
       ModelIndex(fields: const ["orderId", "createdAt"], name: "byorderIdcreatedAtPayment")
     ];
     
     modelSchemaDefinition.addField(ModelFieldDefinition.id());
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: Payment.STOREID,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.hasOne(
+      key: Payment.STORE,
+      isRequired: false,
+      ofModelName: 'Store',
+      associatedKey: Store.ID
+    ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: Payment.USERID,

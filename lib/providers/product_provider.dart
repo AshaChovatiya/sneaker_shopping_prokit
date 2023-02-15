@@ -12,44 +12,6 @@ class ProductProvider extends ChangeNotifier {
   bool productDetailLoading = false;
 
   Future<void> getData() async {
-    // String getProductImage = '''
-    //     query GetProductImage(1: ID!) {
-    //       getProductImage(id: 1) {
-    //         id
-    //         productId
-    //         position
-    //         createdAt
-    //         updatedAt
-    //         alt
-    //         width
-    //         height
-    //         imageKey
-    //         isThumb
-    //       }
-    //     }
-    //   ''';
-    // final response = await Amplify.API
-    //     .query<String>(
-    //         request: GraphQLRequest(document: '''
-    //     query GetProductImage(\$id: ID!) {
-    //       getProductImage(id: \$id) {
-    //         id
-    //         productId
-    //         position
-    //         createdAt
-    //         updatedAt
-    //         alt
-    //         width
-    //         height
-    //         imageKey
-    //         isThumb
-    //       }
-    //     }
-    //   ''', variables: {
-    //       'id': '',
-    //     }))
-    //     .response;
-    // print("DData:- ${response.data}");
     final request = ModelQueries.list(
       Product.classType,
     );

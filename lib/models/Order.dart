@@ -31,6 +31,8 @@ class Order extends Model {
   static const classType = const _OrderModelType();
   final String id;
   final String? _code;
+  final String? _storeId;
+  final Store? _store;
   final String? _userId;
   final User? _user;
   final String? _channelName;
@@ -46,6 +48,7 @@ class Order extends Model {
   final bool? _taxExempted;
   final bool? _cFormProvided;
   final bool? _thirdPartyShipping;
+  final String? _currency;
   final TemporalDateTime? _sla;
   final int? _priority;
   final TemporalDateTime? _orderDate;
@@ -70,6 +73,14 @@ class Order extends Model {
   
   String? get code {
     return _code;
+  }
+  
+  String? get storeId {
+    return _storeId;
+  }
+  
+  Store? get store {
+    return _store;
   }
   
   String? get userId {
@@ -132,6 +143,10 @@ class Order extends Model {
     return _thirdPartyShipping;
   }
   
+  String? get currency {
+    return _currency;
+  }
+  
   TemporalDateTime? get sla {
     return _sla;
   }
@@ -173,12 +188,14 @@ class Order extends Model {
     return _updatedAt;
   }
   
-  const Order._internal({required this.id, code, userId, user, channelName, shippingAddress, BillingAddress, totalStoreCredit, CouponCodeId, totalCashOnDeliveryCharges, totalDiscount, totalGiftCharges, totalPrepaidAmount, totalShippingCharges, taxExempted, cFormProvided, thirdPartyShipping, sla, priority, orderDate, required status, products, payments, createdAt, updatedAt}): _code = code, _userId = userId, _user = user, _channelName = channelName, _shippingAddress = shippingAddress, _BillingAddress = BillingAddress, _totalStoreCredit = totalStoreCredit, _CouponCodeId = CouponCodeId, _totalCashOnDeliveryCharges = totalCashOnDeliveryCharges, _totalDiscount = totalDiscount, _totalGiftCharges = totalGiftCharges, _totalPrepaidAmount = totalPrepaidAmount, _totalShippingCharges = totalShippingCharges, _taxExempted = taxExempted, _cFormProvided = cFormProvided, _thirdPartyShipping = thirdPartyShipping, _sla = sla, _priority = priority, _orderDate = orderDate, _status = status, _products = products, _payments = payments, _createdAt = createdAt, _updatedAt = updatedAt;
+  const Order._internal({required this.id, code, storeId, store, userId, user, channelName, shippingAddress, BillingAddress, totalStoreCredit, CouponCodeId, totalCashOnDeliveryCharges, totalDiscount, totalGiftCharges, totalPrepaidAmount, totalShippingCharges, taxExempted, cFormProvided, thirdPartyShipping, currency, sla, priority, orderDate, required status, products, payments, createdAt, updatedAt}): _code = code, _storeId = storeId, _store = store, _userId = userId, _user = user, _channelName = channelName, _shippingAddress = shippingAddress, _BillingAddress = BillingAddress, _totalStoreCredit = totalStoreCredit, _CouponCodeId = CouponCodeId, _totalCashOnDeliveryCharges = totalCashOnDeliveryCharges, _totalDiscount = totalDiscount, _totalGiftCharges = totalGiftCharges, _totalPrepaidAmount = totalPrepaidAmount, _totalShippingCharges = totalShippingCharges, _taxExempted = taxExempted, _cFormProvided = cFormProvided, _thirdPartyShipping = thirdPartyShipping, _currency = currency, _sla = sla, _priority = priority, _orderDate = orderDate, _status = status, _products = products, _payments = payments, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Order({String? id, String? code, String? userId, User? user, String? channelName, Address? shippingAddress, Address? BillingAddress, double? totalStoreCredit, String? CouponCodeId, double? totalCashOnDeliveryCharges, double? totalDiscount, double? totalGiftCharges, double? totalPrepaidAmount, double? totalShippingCharges, bool? taxExempted, bool? cFormProvided, bool? thirdPartyShipping, TemporalDateTime? sla, int? priority, TemporalDateTime? orderDate, required OrderStatus status, List<OrderProduct>? products, List<Payment>? payments, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
+  factory Order({String? id, String? code, String? storeId, Store? store, String? userId, User? user, String? channelName, Address? shippingAddress, Address? BillingAddress, double? totalStoreCredit, String? CouponCodeId, double? totalCashOnDeliveryCharges, double? totalDiscount, double? totalGiftCharges, double? totalPrepaidAmount, double? totalShippingCharges, bool? taxExempted, bool? cFormProvided, bool? thirdPartyShipping, String? currency, TemporalDateTime? sla, int? priority, TemporalDateTime? orderDate, required OrderStatus status, List<OrderProduct>? products, List<Payment>? payments, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
     return Order._internal(
       id: id == null ? UUID.getUUID() : id,
       code: code,
+      storeId: storeId,
+      store: store,
       userId: userId,
       user: user,
       channelName: channelName,
@@ -194,6 +211,7 @@ class Order extends Model {
       taxExempted: taxExempted,
       cFormProvided: cFormProvided,
       thirdPartyShipping: thirdPartyShipping,
+      currency: currency,
       sla: sla,
       priority: priority,
       orderDate: orderDate,
@@ -214,6 +232,8 @@ class Order extends Model {
     return other is Order &&
       id == other.id &&
       _code == other._code &&
+      _storeId == other._storeId &&
+      _store == other._store &&
       _userId == other._userId &&
       _user == other._user &&
       _channelName == other._channelName &&
@@ -229,6 +249,7 @@ class Order extends Model {
       _taxExempted == other._taxExempted &&
       _cFormProvided == other._cFormProvided &&
       _thirdPartyShipping == other._thirdPartyShipping &&
+      _currency == other._currency &&
       _sla == other._sla &&
       _priority == other._priority &&
       _orderDate == other._orderDate &&
@@ -249,6 +270,7 @@ class Order extends Model {
     buffer.write("Order {");
     buffer.write("id=" + "$id" + ", ");
     buffer.write("code=" + "$_code" + ", ");
+    buffer.write("storeId=" + "$_storeId" + ", ");
     buffer.write("userId=" + "$_userId" + ", ");
     buffer.write("channelName=" + "$_channelName" + ", ");
     buffer.write("shippingAddress=" + (_shippingAddress != null ? _shippingAddress!.toString() : "null") + ", ");
@@ -263,6 +285,7 @@ class Order extends Model {
     buffer.write("taxExempted=" + (_taxExempted != null ? _taxExempted!.toString() : "null") + ", ");
     buffer.write("cFormProvided=" + (_cFormProvided != null ? _cFormProvided!.toString() : "null") + ", ");
     buffer.write("thirdPartyShipping=" + (_thirdPartyShipping != null ? _thirdPartyShipping!.toString() : "null") + ", ");
+    buffer.write("currency=" + "$_currency" + ", ");
     buffer.write("sla=" + (_sla != null ? _sla!.format() : "null") + ", ");
     buffer.write("priority=" + (_priority != null ? _priority!.toString() : "null") + ", ");
     buffer.write("orderDate=" + (_orderDate != null ? _orderDate!.format() : "null") + ", ");
@@ -274,10 +297,12 @@ class Order extends Model {
     return buffer.toString();
   }
   
-  Order copyWith({String? code, String? userId, User? user, String? channelName, Address? shippingAddress, Address? BillingAddress, double? totalStoreCredit, String? CouponCodeId, double? totalCashOnDeliveryCharges, double? totalDiscount, double? totalGiftCharges, double? totalPrepaidAmount, double? totalShippingCharges, bool? taxExempted, bool? cFormProvided, bool? thirdPartyShipping, TemporalDateTime? sla, int? priority, TemporalDateTime? orderDate, OrderStatus? status, List<OrderProduct>? products, List<Payment>? payments, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
+  Order copyWith({String? code, String? storeId, Store? store, String? userId, User? user, String? channelName, Address? shippingAddress, Address? BillingAddress, double? totalStoreCredit, String? CouponCodeId, double? totalCashOnDeliveryCharges, double? totalDiscount, double? totalGiftCharges, double? totalPrepaidAmount, double? totalShippingCharges, bool? taxExempted, bool? cFormProvided, bool? thirdPartyShipping, String? currency, TemporalDateTime? sla, int? priority, TemporalDateTime? orderDate, OrderStatus? status, List<OrderProduct>? products, List<Payment>? payments, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
     return Order._internal(
       id: id,
       code: code ?? this.code,
+      storeId: storeId ?? this.storeId,
+      store: store ?? this.store,
       userId: userId ?? this.userId,
       user: user ?? this.user,
       channelName: channelName ?? this.channelName,
@@ -293,6 +318,7 @@ class Order extends Model {
       taxExempted: taxExempted ?? this.taxExempted,
       cFormProvided: cFormProvided ?? this.cFormProvided,
       thirdPartyShipping: thirdPartyShipping ?? this.thirdPartyShipping,
+      currency: currency ?? this.currency,
       sla: sla ?? this.sla,
       priority: priority ?? this.priority,
       orderDate: orderDate ?? this.orderDate,
@@ -306,6 +332,10 @@ class Order extends Model {
   Order.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
       _code = json['code'],
+      _storeId = json['storeId'],
+      _store = json['store']?['serializedData'] != null
+        ? Store.fromJson(new Map<String, dynamic>.from(json['store']['serializedData']))
+        : null,
       _userId = json['userId'],
       _user = json['user']?['serializedData'] != null
         ? User.fromJson(new Map<String, dynamic>.from(json['user']['serializedData']))
@@ -327,6 +357,7 @@ class Order extends Model {
       _taxExempted = json['taxExempted'],
       _cFormProvided = json['cFormProvided'],
       _thirdPartyShipping = json['thirdPartyShipping'],
+      _currency = json['currency'],
       _sla = json['sla'] != null ? TemporalDateTime.fromString(json['sla']) : null,
       _priority = (json['priority'] as num?)?.toInt(),
       _orderDate = json['orderDate'] != null ? TemporalDateTime.fromString(json['orderDate']) : null,
@@ -347,16 +378,20 @@ class Order extends Model {
       _updatedAt = json['updatedAt'] != null ? TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'code': _code, 'userId': _userId, 'user': _user?.toJson(), 'channelName': _channelName, 'shippingAddress': _shippingAddress?.toJson(), 'BillingAddress': _BillingAddress?.toJson(), 'totalStoreCredit': _totalStoreCredit, 'CouponCodeId': _CouponCodeId, 'totalCashOnDeliveryCharges': _totalCashOnDeliveryCharges, 'totalDiscount': _totalDiscount, 'totalGiftCharges': _totalGiftCharges, 'totalPrepaidAmount': _totalPrepaidAmount, 'totalShippingCharges': _totalShippingCharges, 'taxExempted': _taxExempted, 'cFormProvided': _cFormProvided, 'thirdPartyShipping': _thirdPartyShipping, 'sla': _sla?.format(), 'priority': _priority, 'orderDate': _orderDate?.format(), 'status': enumToString(_status), 'products': _products?.map((OrderProduct? e) => e?.toJson()).toList(), 'payments': _payments?.map((Payment? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'code': _code, 'storeId': _storeId, 'store': _store?.toJson(), 'userId': _userId, 'user': _user?.toJson(), 'channelName': _channelName, 'shippingAddress': _shippingAddress?.toJson(), 'BillingAddress': _BillingAddress?.toJson(), 'totalStoreCredit': _totalStoreCredit, 'CouponCodeId': _CouponCodeId, 'totalCashOnDeliveryCharges': _totalCashOnDeliveryCharges, 'totalDiscount': _totalDiscount, 'totalGiftCharges': _totalGiftCharges, 'totalPrepaidAmount': _totalPrepaidAmount, 'totalShippingCharges': _totalShippingCharges, 'taxExempted': _taxExempted, 'cFormProvided': _cFormProvided, 'thirdPartyShipping': _thirdPartyShipping, 'currency': _currency, 'sla': _sla?.format(), 'priority': _priority, 'orderDate': _orderDate?.format(), 'status': enumToString(_status), 'products': _products?.map((OrderProduct? e) => e?.toJson()).toList(), 'payments': _payments?.map((Payment? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
-    'id': id, 'code': _code, 'userId': _userId, 'user': _user, 'channelName': _channelName, 'shippingAddress': _shippingAddress, 'BillingAddress': _BillingAddress, 'totalStoreCredit': _totalStoreCredit, 'CouponCodeId': _CouponCodeId, 'totalCashOnDeliveryCharges': _totalCashOnDeliveryCharges, 'totalDiscount': _totalDiscount, 'totalGiftCharges': _totalGiftCharges, 'totalPrepaidAmount': _totalPrepaidAmount, 'totalShippingCharges': _totalShippingCharges, 'taxExempted': _taxExempted, 'cFormProvided': _cFormProvided, 'thirdPartyShipping': _thirdPartyShipping, 'sla': _sla, 'priority': _priority, 'orderDate': _orderDate, 'status': _status, 'products': _products, 'payments': _payments, 'createdAt': _createdAt, 'updatedAt': _updatedAt
+    'id': id, 'code': _code, 'storeId': _storeId, 'store': _store, 'userId': _userId, 'user': _user, 'channelName': _channelName, 'shippingAddress': _shippingAddress, 'BillingAddress': _BillingAddress, 'totalStoreCredit': _totalStoreCredit, 'CouponCodeId': _CouponCodeId, 'totalCashOnDeliveryCharges': _totalCashOnDeliveryCharges, 'totalDiscount': _totalDiscount, 'totalGiftCharges': _totalGiftCharges, 'totalPrepaidAmount': _totalPrepaidAmount, 'totalShippingCharges': _totalShippingCharges, 'taxExempted': _taxExempted, 'cFormProvided': _cFormProvided, 'thirdPartyShipping': _thirdPartyShipping, 'currency': _currency, 'sla': _sla, 'priority': _priority, 'orderDate': _orderDate, 'status': _status, 'products': _products, 'payments': _payments, 'createdAt': _createdAt, 'updatedAt': _updatedAt
   };
 
   static final QueryModelIdentifier<OrderModelIdentifier> MODEL_IDENTIFIER = QueryModelIdentifier<OrderModelIdentifier>();
   static final QueryField ID = QueryField(fieldName: "id");
   static final QueryField CODE = QueryField(fieldName: "code");
+  static final QueryField STOREID = QueryField(fieldName: "storeId");
+  static final QueryField STORE = QueryField(
+    fieldName: "store",
+    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: 'Store'));
   static final QueryField USERID = QueryField(fieldName: "userId");
   static final QueryField USER = QueryField(
     fieldName: "user",
@@ -374,6 +409,7 @@ class Order extends Model {
   static final QueryField TAXEXEMPTED = QueryField(fieldName: "taxExempted");
   static final QueryField CFORMPROVIDED = QueryField(fieldName: "cFormProvided");
   static final QueryField THIRDPARTYSHIPPING = QueryField(fieldName: "thirdPartyShipping");
+  static final QueryField CURRENCY = QueryField(fieldName: "currency");
   static final QueryField SLA = QueryField(fieldName: "sla");
   static final QueryField PRIORITY = QueryField(fieldName: "priority");
   static final QueryField ORDERDATE = QueryField(fieldName: "orderDate");
@@ -395,7 +431,8 @@ class Order extends Model {
         authStrategy: AuthStrategy.PUBLIC,
         operations: [
           ModelOperation.READ,
-          ModelOperation.CREATE
+          ModelOperation.CREATE,
+          ModelOperation.UPDATE
         ]),
       AuthRule(
         authStrategy: AuthStrategy.PRIVATE,
@@ -408,6 +445,7 @@ class Order extends Model {
     ];
     
     modelSchemaDefinition.indexes = [
+      ModelIndex(fields: const ["storeId", "createdAt"], name: "bystoreIdOrder"),
       ModelIndex(fields: const ["userId", "createdAt"], name: "byuserIdcreatedAtOrder")
     ];
     
@@ -417,6 +455,19 @@ class Order extends Model {
       key: Order.CODE,
       isRequired: false,
       ofType: ModelFieldType(ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: Order.STOREID,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.hasOne(
+      key: Order.STORE,
+      isRequired: false,
+      ofModelName: 'Store',
+      associatedKey: Store.ID
     ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
@@ -508,6 +559,12 @@ class Order extends Model {
       key: Order.THIRDPARTYSHIPPING,
       isRequired: false,
       ofType: ModelFieldType(ModelFieldTypeEnum.bool)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: Order.CURRENCY,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(

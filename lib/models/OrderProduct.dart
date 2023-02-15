@@ -573,7 +573,9 @@ class OrderProduct extends Model {
         authStrategy: AuthStrategy.PUBLIC,
         operations: [
           ModelOperation.READ,
-          ModelOperation.CREATE
+          ModelOperation.CREATE,
+          ModelOperation.UPDATE,
+          ModelOperation.DELETE
         ]),
       AuthRule(
         authStrategy: AuthStrategy.PRIVATE,

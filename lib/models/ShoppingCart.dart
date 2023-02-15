@@ -30,6 +30,8 @@ import 'package:flutter/foundation.dart';
 class ShoppingCart extends Model {
   static const classType = const _ShoppingCartModelType();
   final String id;
+  final String? _storeId;
+  final Store? _store;
   final String? _userId;
   final List<ShoppingCartProduct>? _shoppingcartProducts;
   final TemporalDateTime? _createdAt;
@@ -46,6 +48,14 @@ class ShoppingCart extends Model {
       return ShoppingCartModelIdentifier(
         id: id
       );
+  }
+  
+  String? get storeId {
+    return _storeId;
+  }
+  
+  Store? get store {
+    return _store;
   }
   
   String get userId {
@@ -73,11 +83,13 @@ class ShoppingCart extends Model {
     return _updatedAt;
   }
   
-  const ShoppingCart._internal({required this.id, required userId, shoppingcartProducts, createdAt, updatedAt}): _userId = userId, _shoppingcartProducts = shoppingcartProducts, _createdAt = createdAt, _updatedAt = updatedAt;
+  const ShoppingCart._internal({required this.id, storeId, store, required userId, shoppingcartProducts, createdAt, updatedAt}): _storeId = storeId, _store = store, _userId = userId, _shoppingcartProducts = shoppingcartProducts, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory ShoppingCart({String? id, required String userId, List<ShoppingCartProduct>? shoppingcartProducts, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
+  factory ShoppingCart({String? id, String? storeId, Store? store, required String userId, List<ShoppingCartProduct>? shoppingcartProducts, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
     return ShoppingCart._internal(
       id: id == null ? UUID.getUUID() : id,
+      storeId: storeId,
+      store: store,
       userId: userId,
       shoppingcartProducts: shoppingcartProducts != null ? List<ShoppingCartProduct>.unmodifiable(shoppingcartProducts) : shoppingcartProducts,
       createdAt: createdAt,
@@ -93,6 +105,8 @@ class ShoppingCart extends Model {
     if (identical(other, this)) return true;
     return other is ShoppingCart &&
       id == other.id &&
+      _storeId == other._storeId &&
+      _store == other._store &&
       _userId == other._userId &&
       DeepCollectionEquality().equals(_shoppingcartProducts, other._shoppingcartProducts) &&
       _createdAt == other._createdAt &&
@@ -108,6 +122,7 @@ class ShoppingCart extends Model {
     
     buffer.write("ShoppingCart {");
     buffer.write("id=" + "$id" + ", ");
+    buffer.write("storeId=" + "$_storeId" + ", ");
     buffer.write("userId=" + "$_userId" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
@@ -116,9 +131,11 @@ class ShoppingCart extends Model {
     return buffer.toString();
   }
   
-  ShoppingCart copyWith({String? userId, List<ShoppingCartProduct>? shoppingcartProducts, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
+  ShoppingCart copyWith({String? storeId, Store? store, String? userId, List<ShoppingCartProduct>? shoppingcartProducts, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
     return ShoppingCart._internal(
       id: id,
+      storeId: storeId ?? this.storeId,
+      store: store ?? this.store,
       userId: userId ?? this.userId,
       shoppingcartProducts: shoppingcartProducts ?? this.shoppingcartProducts,
       createdAt: createdAt ?? this.createdAt,
@@ -127,6 +144,10 @@ class ShoppingCart extends Model {
   
   ShoppingCart.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
+      _storeId = json['storeId'],
+      _store = json['store']?['serializedData'] != null
+        ? Store.fromJson(new Map<String, dynamic>.from(json['store']['serializedData']))
+        : null,
       _userId = json['userId'],
       _shoppingcartProducts = json['shoppingcartProducts'] is List
         ? (json['shoppingcartProducts'] as List)
@@ -138,15 +159,19 @@ class ShoppingCart extends Model {
       _updatedAt = json['updatedAt'] != null ? TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'userId': _userId, 'shoppingcartProducts': _shoppingcartProducts?.map((ShoppingCartProduct? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'storeId': _storeId, 'store': _store?.toJson(), 'userId': _userId, 'shoppingcartProducts': _shoppingcartProducts?.map((ShoppingCartProduct? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
-    'id': id, 'userId': _userId, 'shoppingcartProducts': _shoppingcartProducts, 'createdAt': _createdAt, 'updatedAt': _updatedAt
+    'id': id, 'storeId': _storeId, 'store': _store, 'userId': _userId, 'shoppingcartProducts': _shoppingcartProducts, 'createdAt': _createdAt, 'updatedAt': _updatedAt
   };
 
   static final QueryModelIdentifier<ShoppingCartModelIdentifier> MODEL_IDENTIFIER = QueryModelIdentifier<ShoppingCartModelIdentifier>();
   static final QueryField ID = QueryField(fieldName: "id");
+  static final QueryField STOREID = QueryField(fieldName: "storeId");
+  static final QueryField STORE = QueryField(
+    fieldName: "store",
+    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: 'Store'));
   static final QueryField USERID = QueryField(fieldName: "userId");
   static final QueryField SHOPPINGCARTPRODUCTS = QueryField(
     fieldName: "shoppingcartProducts",
@@ -174,10 +199,24 @@ class ShoppingCart extends Model {
     ];
     
     modelSchemaDefinition.indexes = [
+      ModelIndex(fields: const ["storeId", "createdAt"], name: "bystoreIdShoppingCart"),
       ModelIndex(fields: const ["userId", "createdAt"], name: "byuserIdcreatedAtShoppingCart")
     ];
     
     modelSchemaDefinition.addField(ModelFieldDefinition.id());
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: ShoppingCart.STOREID,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.hasOne(
+      key: ShoppingCart.STORE,
+      isRequired: false,
+      ofModelName: 'Store',
+      associatedKey: Store.ID
+    ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: ShoppingCart.USERID,

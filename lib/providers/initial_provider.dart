@@ -27,6 +27,7 @@ class InitialProvider extends ChangeNotifier {
     isUserLoggedIn = result.isSignedIn;
     if (isUserLoggedIn) {
       currentUser = await Amplify.Auth.getCurrentUser();
+      print("user_id: ${currentUser!.userId}");
     }
     isLoading = false;
   }

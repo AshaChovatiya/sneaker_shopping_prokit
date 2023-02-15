@@ -30,6 +30,8 @@ import 'package:flutter/foundation.dart';
 class warehouse extends Model {
   static const classType = const _warehouseModelType();
   final String id;
+  final String? _storeId;
+  final Store? _store;
   final String? _facilityCode;
   final String? _name;
   final String? _description;
@@ -53,6 +55,14 @@ class warehouse extends Model {
       return warehouseModelIdentifier(
         id: id
       );
+  }
+  
+  String? get storeId {
+    return _storeId;
+  }
+  
+  Store? get store {
+    return _store;
   }
   
   String? get facilityCode {
@@ -108,11 +118,13 @@ class warehouse extends Model {
     return _updatedAt;
   }
   
-  const warehouse._internal({required this.id, facilityCode, required name, description, address, totalProducts, totalQuantity, priority, imageUrl, productInventory, createdAt, updatedAt}): _facilityCode = facilityCode, _name = name, _description = description, _address = address, _totalProducts = totalProducts, _totalQuantity = totalQuantity, _priority = priority, _imageUrl = imageUrl, _productInventory = productInventory, _createdAt = createdAt, _updatedAt = updatedAt;
+  const warehouse._internal({required this.id, storeId, store, facilityCode, required name, description, address, totalProducts, totalQuantity, priority, imageUrl, productInventory, createdAt, updatedAt}): _storeId = storeId, _store = store, _facilityCode = facilityCode, _name = name, _description = description, _address = address, _totalProducts = totalProducts, _totalQuantity = totalQuantity, _priority = priority, _imageUrl = imageUrl, _productInventory = productInventory, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory warehouse({String? id, String? facilityCode, required String name, String? description, bool? address, int? totalProducts, int? totalQuantity, int? priority, String? imageUrl, List<ProductInventory>? productInventory, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
+  factory warehouse({String? id, String? storeId, Store? store, String? facilityCode, required String name, String? description, bool? address, int? totalProducts, int? totalQuantity, int? priority, String? imageUrl, List<ProductInventory>? productInventory, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
     return warehouse._internal(
       id: id == null ? UUID.getUUID() : id,
+      storeId: storeId,
+      store: store,
       facilityCode: facilityCode,
       name: name,
       description: description,
@@ -135,6 +147,8 @@ class warehouse extends Model {
     if (identical(other, this)) return true;
     return other is warehouse &&
       id == other.id &&
+      _storeId == other._storeId &&
+      _store == other._store &&
       _facilityCode == other._facilityCode &&
       _name == other._name &&
       _description == other._description &&
@@ -157,6 +171,7 @@ class warehouse extends Model {
     
     buffer.write("warehouse {");
     buffer.write("id=" + "$id" + ", ");
+    buffer.write("storeId=" + "$_storeId" + ", ");
     buffer.write("facilityCode=" + "$_facilityCode" + ", ");
     buffer.write("name=" + "$_name" + ", ");
     buffer.write("description=" + "$_description" + ", ");
@@ -172,9 +187,11 @@ class warehouse extends Model {
     return buffer.toString();
   }
   
-  warehouse copyWith({String? facilityCode, String? name, String? description, bool? address, int? totalProducts, int? totalQuantity, int? priority, String? imageUrl, List<ProductInventory>? productInventory, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
+  warehouse copyWith({String? storeId, Store? store, String? facilityCode, String? name, String? description, bool? address, int? totalProducts, int? totalQuantity, int? priority, String? imageUrl, List<ProductInventory>? productInventory, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
     return warehouse._internal(
       id: id,
+      storeId: storeId ?? this.storeId,
+      store: store ?? this.store,
       facilityCode: facilityCode ?? this.facilityCode,
       name: name ?? this.name,
       description: description ?? this.description,
@@ -190,6 +207,10 @@ class warehouse extends Model {
   
   warehouse.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
+      _storeId = json['storeId'],
+      _store = json['store']?['serializedData'] != null
+        ? Store.fromJson(new Map<String, dynamic>.from(json['store']['serializedData']))
+        : null,
       _facilityCode = json['facilityCode'],
       _name = json['name'],
       _description = json['description'],
@@ -208,15 +229,19 @@ class warehouse extends Model {
       _updatedAt = json['updatedAt'] != null ? TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'facilityCode': _facilityCode, 'name': _name, 'description': _description, 'address': _address, 'totalProducts': _totalProducts, 'totalQuantity': _totalQuantity, 'priority': _priority, 'imageUrl': _imageUrl, 'productInventory': _productInventory?.map((ProductInventory? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'storeId': _storeId, 'store': _store?.toJson(), 'facilityCode': _facilityCode, 'name': _name, 'description': _description, 'address': _address, 'totalProducts': _totalProducts, 'totalQuantity': _totalQuantity, 'priority': _priority, 'imageUrl': _imageUrl, 'productInventory': _productInventory?.map((ProductInventory? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
-    'id': id, 'facilityCode': _facilityCode, 'name': _name, 'description': _description, 'address': _address, 'totalProducts': _totalProducts, 'totalQuantity': _totalQuantity, 'priority': _priority, 'imageUrl': _imageUrl, 'productInventory': _productInventory, 'createdAt': _createdAt, 'updatedAt': _updatedAt
+    'id': id, 'storeId': _storeId, 'store': _store, 'facilityCode': _facilityCode, 'name': _name, 'description': _description, 'address': _address, 'totalProducts': _totalProducts, 'totalQuantity': _totalQuantity, 'priority': _priority, 'imageUrl': _imageUrl, 'productInventory': _productInventory, 'createdAt': _createdAt, 'updatedAt': _updatedAt
   };
 
   static final QueryModelIdentifier<warehouseModelIdentifier> MODEL_IDENTIFIER = QueryModelIdentifier<warehouseModelIdentifier>();
   static final QueryField ID = QueryField(fieldName: "id");
+  static final QueryField STOREID = QueryField(fieldName: "storeId");
+  static final QueryField STORE = QueryField(
+    fieldName: "store",
+    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: 'Store'));
   static final QueryField FACILITYCODE = QueryField(fieldName: "facilityCode");
   static final QueryField NAME = QueryField(fieldName: "name");
   static final QueryField DESCRIPTION = QueryField(fieldName: "description");
@@ -250,7 +275,24 @@ class warehouse extends Model {
         ])
     ];
     
+    modelSchemaDefinition.indexes = [
+      ModelIndex(fields: const ["storeId", "createdAt"], name: "bystoreIdwarehouse")
+    ];
+    
     modelSchemaDefinition.addField(ModelFieldDefinition.id());
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: warehouse.STOREID,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.hasOne(
+      key: warehouse.STORE,
+      isRequired: false,
+      ofModelName: 'Store',
+      associatedKey: Store.ID
+    ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: warehouse.FACILITYCODE,
