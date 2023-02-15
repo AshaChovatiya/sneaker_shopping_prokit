@@ -4,14 +4,16 @@ import 'package:amplify_api/model_queries.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:sneaker_shopping_prokit/model/Items.dart';
 import 'package:sneaker_shopping_prokit/models/ModelProvider.dart';
 
+import '../model/ProductCategoryDemo.dart';
 import '../schema/graph_mutation_query.dart';
 
 class ProductProvider extends ChangeNotifier {
   List<Product?> productList = [];
   List<Product?> newArrivals = [];
-  List<ProductCategory?> categoryList = [];
+  List<Items> categoryList = [];
   Product? productDataModel;
   bool productDetailLoading = false;
 
@@ -121,7 +123,7 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getAllCategory() async {
+  /*Future<void> getAllCategory() async {
     var getProduct = OrderSchema.getListProductCategories();
     // final request = ModelQueries.list(
     //   ProductCategory.classType,
@@ -132,6 +134,8 @@ class ProductProvider extends ChangeNotifier {
       document: getProduct,
     ));
     var response = await operation.response;
+    ProductCategoryDemo productCategoryDemo = ProductCategoryDemo.fromJson(jsonDecode(response.data!));
+    print("categoryList lengthsssss:------- ${productCategoryDemo.listProductCategories?.items?.length}");
     if (jsonDecode(response.data!)['listProductCategories']['items'].length >
         0) {
       categoryList.clear();
@@ -156,6 +160,34 @@ class ProductProvider extends ChangeNotifier {
           }
         }
       }
+      print("categoryList length:------- ${categoryList.length}");
+      notifyListeners();
+    }
+  }*/
+
+  Future<void> getAllCategory() async {
+    var getProduct = OrderSchema.getListProductCategories();
+
+    var operation = Amplify.API.query(
+        request: GraphQLRequest<String>(
+      document: getProduct,
+    ));
+    var response = await operation.response;
+    ProductCategoryDemo productCategoryDemo =
+        ProductCategoryDemo.fromJson(jsonDecode(response.data!));
+    print(
+        "categoryList lengthsssss:------- ${productCategoryDemo.listProductCategories?.items?.length}");
+    if (productCategoryDemo.listProductCategories!.items!.length > 0) {
+      categoryList.clear();
+        categoryList.addAll(productCategoryDemo.listProductCategories!.items!.toList());
+
+        for (var i = 0; i < productList.length; i++) {
+          for (var j = 0; j < productCategoryDemo.listProductCategories!.items!.length; j++) {
+            if (productList[i]?.slug == productCategoryDemo.listProductCategories!.items![j].slug) {
+              print('---------------- true');
+            }
+          }
+        }
       print("categoryList length:------- ${categoryList.length}");
       notifyListeners();
     }
