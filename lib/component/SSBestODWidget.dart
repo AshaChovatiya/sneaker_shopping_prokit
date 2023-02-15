@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:provider/provider.dart';
+import 'package:sneaker_shopping_prokit/models/Product.dart';
+import 'package:sneaker_shopping_prokit/providers/initial_provider.dart';
+import 'package:sneaker_shopping_prokit/service/mutations.dart';
+
+import '../models/WishlistProduct.dart';
 
 class SSBestODWidget extends StatelessWidget {
   final String? img;
@@ -7,9 +13,15 @@ class SSBestODWidget extends StatelessWidget {
   final String? subtitle;
   final String? amount;
   final String? amountType;
+  final Product? product;
 
   SSBestODWidget(
-      {this.img, this.title, this.subtitle, this.amount, this.amountType});
+      {this.img,
+      this.title,
+      this.subtitle,
+      this.amount,
+      this.amountType,
+      this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -33,16 +45,34 @@ class SSBestODWidget extends StatelessWidget {
                 ),
                 Align(
                   alignment: Alignment.topRight,
-                  child: Container(
-                    margin: EdgeInsets.only(right: 8, top: 8),
-                    height: 30,
-                    width: 30,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: context.cardColor,
+                  child: InkWell(
+                    onTap: () async {
+                      final userId =
+                          context.read<InitialProvider>().currentUser?.userId;
+                      if (userId == null || product == null) return;
+
+                      final WishlistProduct wishlistProduct = WishlistProduct(
+                        productId: product!.id,
+                        wishlistId: '1',
+                        quantity: 0,
+                        product: product,
+                        variant: null,
+                      );
+
+                      await AWSMutations.addWishList(
+                          userId: userId, wishlistProduct: wishlistProduct);
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(right: 8, top: 8),
+                      height: 30,
+                      width: 30,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: context.cardColor,
+                      ),
+                      child: Icon(Icons.favorite, color: Colors.red, size: 18),
                     ),
-                    child: Icon(Icons.favorite, color: Colors.red, size: 18),
                   ),
                 ),
               ],

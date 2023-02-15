@@ -30,6 +30,8 @@ import 'package:flutter/foundation.dart';
 class User extends Model {
   static const classType = const _UserModelType();
   final String id;
+  final String? _storeId;
+  final Store? _store;
   final String? _owner;
   final String? _firstName;
   final String? _lastName;
@@ -75,6 +77,14 @@ class User extends Model {
       return UserModelIdentifier(
         id: id
       );
+  }
+  
+  String? get storeId {
+    return _storeId;
+  }
+  
+  Store? get store {
+    return _store;
   }
   
   String? get owner {
@@ -209,11 +219,13 @@ class User extends Model {
     return _updatedAt;
   }
   
-  const User._internal({required this.id, owner, firstName, lastName, email, phone, gender, dob, country, state, city, pinCode, landmark, address, location, area, isActive, authProvider, totalOrders, totalSpent, walletBalance, walletSpent, totalStoreCredit, isAdmin, profilePhotoUrl, wishlists, shopingcarts, reviews, orders, payments, userAddress, couponCodes, createdAt, updatedAt}): _owner = owner, _firstName = firstName, _lastName = lastName, _email = email, _phone = phone, _gender = gender, _dob = dob, _country = country, _state = state, _city = city, _pinCode = pinCode, _landmark = landmark, _address = address, _location = location, _area = area, _isActive = isActive, _authProvider = authProvider, _totalOrders = totalOrders, _totalSpent = totalSpent, _walletBalance = walletBalance, _walletSpent = walletSpent, _totalStoreCredit = totalStoreCredit, _isAdmin = isAdmin, _profilePhotoUrl = profilePhotoUrl, _wishlists = wishlists, _shopingcarts = shopingcarts, _reviews = reviews, _orders = orders, _payments = payments, _userAddress = userAddress, _couponCodes = couponCodes, _createdAt = createdAt, _updatedAt = updatedAt;
+  const User._internal({required this.id, storeId, store, owner, firstName, lastName, email, phone, gender, dob, country, state, city, pinCode, landmark, address, location, area, isActive, authProvider, totalOrders, totalSpent, walletBalance, walletSpent, totalStoreCredit, isAdmin, profilePhotoUrl, wishlists, shopingcarts, reviews, orders, payments, userAddress, couponCodes, createdAt, updatedAt}): _storeId = storeId, _store = store, _owner = owner, _firstName = firstName, _lastName = lastName, _email = email, _phone = phone, _gender = gender, _dob = dob, _country = country, _state = state, _city = city, _pinCode = pinCode, _landmark = landmark, _address = address, _location = location, _area = area, _isActive = isActive, _authProvider = authProvider, _totalOrders = totalOrders, _totalSpent = totalSpent, _walletBalance = walletBalance, _walletSpent = walletSpent, _totalStoreCredit = totalStoreCredit, _isAdmin = isAdmin, _profilePhotoUrl = profilePhotoUrl, _wishlists = wishlists, _shopingcarts = shopingcarts, _reviews = reviews, _orders = orders, _payments = payments, _userAddress = userAddress, _couponCodes = couponCodes, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory User({String? id, String? owner, String? firstName, String? lastName, String? email, String? phone, String? gender, TemporalDate? dob, String? country, String? state, String? city, String? pinCode, String? landmark, String? address, String? location, String? area, bool? isActive, String? authProvider, int? totalOrders, double? totalSpent, double? walletBalance, double? walletSpent, double? totalStoreCredit, bool? isAdmin, String? profilePhotoUrl, List<Wishlist>? wishlists, List<ShoppingCart>? shopingcarts, List<Review>? reviews, List<Order>? orders, List<Payment>? payments, List<UserAddress>? userAddress, List<CouponCode>? couponCodes, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
+  factory User({String? id, String? storeId, Store? store, String? owner, String? firstName, String? lastName, String? email, String? phone, String? gender, TemporalDate? dob, String? country, String? state, String? city, String? pinCode, String? landmark, String? address, String? location, String? area, bool? isActive, String? authProvider, int? totalOrders, double? totalSpent, double? walletBalance, double? walletSpent, double? totalStoreCredit, bool? isAdmin, String? profilePhotoUrl, List<Wishlist>? wishlists, List<ShoppingCart>? shopingcarts, List<Review>? reviews, List<Order>? orders, List<Payment>? payments, List<UserAddress>? userAddress, List<CouponCode>? couponCodes, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
     return User._internal(
       id: id == null ? UUID.getUUID() : id,
+      storeId: storeId,
+      store: store,
       owner: owner,
       firstName: firstName,
       lastName: lastName,
@@ -258,6 +270,8 @@ class User extends Model {
     if (identical(other, this)) return true;
     return other is User &&
       id == other.id &&
+      _storeId == other._storeId &&
+      _store == other._store &&
       _owner == other._owner &&
       _firstName == other._firstName &&
       _lastName == other._lastName &&
@@ -302,6 +316,7 @@ class User extends Model {
     
     buffer.write("User {");
     buffer.write("id=" + "$id" + ", ");
+    buffer.write("storeId=" + "$_storeId" + ", ");
     buffer.write("owner=" + "$_owner" + ", ");
     buffer.write("firstName=" + "$_firstName" + ", ");
     buffer.write("lastName=" + "$_lastName" + ", ");
@@ -333,9 +348,11 @@ class User extends Model {
     return buffer.toString();
   }
   
-  User copyWith({String? owner, String? firstName, String? lastName, String? email, String? phone, String? gender, TemporalDate? dob, String? country, String? state, String? city, String? pinCode, String? landmark, String? address, String? location, String? area, bool? isActive, String? authProvider, int? totalOrders, double? totalSpent, double? walletBalance, double? walletSpent, double? totalStoreCredit, bool? isAdmin, String? profilePhotoUrl, List<Wishlist>? wishlists, List<ShoppingCart>? shopingcarts, List<Review>? reviews, List<Order>? orders, List<Payment>? payments, List<UserAddress>? userAddress, List<CouponCode>? couponCodes, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
+  User copyWith({String? storeId, Store? store, String? owner, String? firstName, String? lastName, String? email, String? phone, String? gender, TemporalDate? dob, String? country, String? state, String? city, String? pinCode, String? landmark, String? address, String? location, String? area, bool? isActive, String? authProvider, int? totalOrders, double? totalSpent, double? walletBalance, double? walletSpent, double? totalStoreCredit, bool? isAdmin, String? profilePhotoUrl, List<Wishlist>? wishlists, List<ShoppingCart>? shopingcarts, List<Review>? reviews, List<Order>? orders, List<Payment>? payments, List<UserAddress>? userAddress, List<CouponCode>? couponCodes, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
     return User._internal(
       id: id,
+      storeId: storeId ?? this.storeId,
+      store: store ?? this.store,
       owner: owner ?? this.owner,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
@@ -373,6 +390,10 @@ class User extends Model {
   
   User.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
+      _storeId = json['storeId'],
+      _store = json['store']?['serializedData'] != null
+        ? Store.fromJson(new Map<String, dynamic>.from(json['store']['serializedData']))
+        : null,
       _owner = json['owner'],
       _firstName = json['firstName'],
       _lastName = json['lastName'],
@@ -443,15 +464,19 @@ class User extends Model {
       _updatedAt = json['updatedAt'] != null ? TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'owner': _owner, 'firstName': _firstName, 'lastName': _lastName, 'email': _email, 'phone': _phone, 'gender': _gender, 'dob': _dob?.format(), 'country': _country, 'state': _state, 'city': _city, 'pinCode': _pinCode, 'landmark': _landmark, 'address': _address, 'location': _location, 'area': _area, 'isActive': _isActive, 'authProvider': _authProvider, 'totalOrders': _totalOrders, 'totalSpent': _totalSpent, 'walletBalance': _walletBalance, 'walletSpent': _walletSpent, 'totalStoreCredit': _totalStoreCredit, 'isAdmin': _isAdmin, 'profilePhotoUrl': _profilePhotoUrl, 'wishlists': _wishlists?.map((Wishlist? e) => e?.toJson()).toList(), 'shopingcarts': _shopingcarts?.map((ShoppingCart? e) => e?.toJson()).toList(), 'reviews': _reviews?.map((Review? e) => e?.toJson()).toList(), 'orders': _orders?.map((Order? e) => e?.toJson()).toList(), 'payments': _payments?.map((Payment? e) => e?.toJson()).toList(), 'userAddress': _userAddress?.map((UserAddress? e) => e?.toJson()).toList(), 'couponCodes': _couponCodes?.map((CouponCode? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'storeId': _storeId, 'store': _store?.toJson(), 'owner': _owner, 'firstName': _firstName, 'lastName': _lastName, 'email': _email, 'phone': _phone, 'gender': _gender, 'dob': _dob?.format(), 'country': _country, 'state': _state, 'city': _city, 'pinCode': _pinCode, 'landmark': _landmark, 'address': _address, 'location': _location, 'area': _area, 'isActive': _isActive, 'authProvider': _authProvider, 'totalOrders': _totalOrders, 'totalSpent': _totalSpent, 'walletBalance': _walletBalance, 'walletSpent': _walletSpent, 'totalStoreCredit': _totalStoreCredit, 'isAdmin': _isAdmin, 'profilePhotoUrl': _profilePhotoUrl, 'wishlists': _wishlists?.map((Wishlist? e) => e?.toJson()).toList(), 'shopingcarts': _shopingcarts?.map((ShoppingCart? e) => e?.toJson()).toList(), 'reviews': _reviews?.map((Review? e) => e?.toJson()).toList(), 'orders': _orders?.map((Order? e) => e?.toJson()).toList(), 'payments': _payments?.map((Payment? e) => e?.toJson()).toList(), 'userAddress': _userAddress?.map((UserAddress? e) => e?.toJson()).toList(), 'couponCodes': _couponCodes?.map((CouponCode? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
-    'id': id, 'owner': _owner, 'firstName': _firstName, 'lastName': _lastName, 'email': _email, 'phone': _phone, 'gender': _gender, 'dob': _dob, 'country': _country, 'state': _state, 'city': _city, 'pinCode': _pinCode, 'landmark': _landmark, 'address': _address, 'location': _location, 'area': _area, 'isActive': _isActive, 'authProvider': _authProvider, 'totalOrders': _totalOrders, 'totalSpent': _totalSpent, 'walletBalance': _walletBalance, 'walletSpent': _walletSpent, 'totalStoreCredit': _totalStoreCredit, 'isAdmin': _isAdmin, 'profilePhotoUrl': _profilePhotoUrl, 'wishlists': _wishlists, 'shopingcarts': _shopingcarts, 'reviews': _reviews, 'orders': _orders, 'payments': _payments, 'userAddress': _userAddress, 'couponCodes': _couponCodes, 'createdAt': _createdAt, 'updatedAt': _updatedAt
+    'id': id, 'storeId': _storeId, 'store': _store, 'owner': _owner, 'firstName': _firstName, 'lastName': _lastName, 'email': _email, 'phone': _phone, 'gender': _gender, 'dob': _dob, 'country': _country, 'state': _state, 'city': _city, 'pinCode': _pinCode, 'landmark': _landmark, 'address': _address, 'location': _location, 'area': _area, 'isActive': _isActive, 'authProvider': _authProvider, 'totalOrders': _totalOrders, 'totalSpent': _totalSpent, 'walletBalance': _walletBalance, 'walletSpent': _walletSpent, 'totalStoreCredit': _totalStoreCredit, 'isAdmin': _isAdmin, 'profilePhotoUrl': _profilePhotoUrl, 'wishlists': _wishlists, 'shopingcarts': _shopingcarts, 'reviews': _reviews, 'orders': _orders, 'payments': _payments, 'userAddress': _userAddress, 'couponCodes': _couponCodes, 'createdAt': _createdAt, 'updatedAt': _updatedAt
   };
 
   static final QueryModelIdentifier<UserModelIdentifier> MODEL_IDENTIFIER = QueryModelIdentifier<UserModelIdentifier>();
   static final QueryField ID = QueryField(fieldName: "id");
+  static final QueryField STOREID = QueryField(fieldName: "storeId");
+  static final QueryField STORE = QueryField(
+    fieldName: "store",
+    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: 'Store'));
   static final QueryField OWNER = QueryField(fieldName: "owner");
   static final QueryField FIRSTNAME = QueryField(fieldName: "firstName");
   static final QueryField LASTNAME = QueryField(fieldName: "lastName");
@@ -527,7 +552,24 @@ class User extends Model {
         ])
     ];
     
+    modelSchemaDefinition.indexes = [
+      ModelIndex(fields: const ["storeId", "createdAt"], name: "bystoreIdUser")
+    ];
+    
     modelSchemaDefinition.addField(ModelFieldDefinition.id());
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: User.STOREID,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.hasOne(
+      key: User.STORE,
+      isRequired: false,
+      ofModelName: 'Store',
+      associatedKey: Store.ID
+    ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: User.OWNER,

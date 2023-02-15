@@ -307,8 +307,10 @@ class SSDetailScreenState extends State<SSDetailScreen> {
               decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey.withOpacity(0.5)),
                   borderRadius: BorderRadius.circular(8)),
-              padding: EdgeInsets.all(8),
-              child: Icon(Icons.shopping_cart_outlined),
+              child: IconButton(
+                icon: Icon(Icons.shopping_cart_outlined),
+                onPressed: () {},
+              ),
             ),
             SizedBox(width: 8),
             Expanded(

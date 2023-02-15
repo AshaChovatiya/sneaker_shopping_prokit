@@ -21,8 +21,6 @@ class _SSProfileFragmentState extends State<SSProfileFragment> {
   Widget build(BuildContext context) {
     final AuthUser? currentUser =
         Provider.of<InitialProvider>(context).currentUser;
-    print(currentUser?.username);
-    print(currentUser?.userId);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,

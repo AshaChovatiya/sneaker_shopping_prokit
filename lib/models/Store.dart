@@ -32,8 +32,10 @@ class Store extends Model {
   final String id;
   final String? _name;
   final String? _description;
-  final bool? _address;
-  final int? _totalProducts;
+  final bool? _isActive;
+  final String? _webUrl;
+  final String? _appId;
+  final String? _host;
   final int? _priority;
   final String? _imageUrl;
   final List<Product>? _products;
@@ -70,12 +72,20 @@ class Store extends Model {
     return _description;
   }
   
-  bool? get address {
-    return _address;
+  bool? get isActive {
+    return _isActive;
   }
   
-  int? get totalProducts {
-    return _totalProducts;
+  String? get webUrl {
+    return _webUrl;
+  }
+  
+  String? get appId {
+    return _appId;
+  }
+  
+  String? get host {
+    return _host;
   }
   
   int? get priority {
@@ -98,15 +108,17 @@ class Store extends Model {
     return _updatedAt;
   }
   
-  const Store._internal({required this.id, required name, description, address, totalProducts, priority, imageUrl, products, createdAt, updatedAt}): _name = name, _description = description, _address = address, _totalProducts = totalProducts, _priority = priority, _imageUrl = imageUrl, _products = products, _createdAt = createdAt, _updatedAt = updatedAt;
+  const Store._internal({required this.id, required name, description, isActive, webUrl, appId, host, priority, imageUrl, products, createdAt, updatedAt}): _name = name, _description = description, _isActive = isActive, _webUrl = webUrl, _appId = appId, _host = host, _priority = priority, _imageUrl = imageUrl, _products = products, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Store({String? id, required String name, String? description, bool? address, int? totalProducts, int? priority, String? imageUrl, List<Product>? products, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
+  factory Store({String? id, required String name, String? description, bool? isActive, String? webUrl, String? appId, String? host, int? priority, String? imageUrl, List<Product>? products, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
     return Store._internal(
       id: id == null ? UUID.getUUID() : id,
       name: name,
       description: description,
-      address: address,
-      totalProducts: totalProducts,
+      isActive: isActive,
+      webUrl: webUrl,
+      appId: appId,
+      host: host,
       priority: priority,
       imageUrl: imageUrl,
       products: products != null ? List<Product>.unmodifiable(products) : products,
@@ -125,8 +137,10 @@ class Store extends Model {
       id == other.id &&
       _name == other._name &&
       _description == other._description &&
-      _address == other._address &&
-      _totalProducts == other._totalProducts &&
+      _isActive == other._isActive &&
+      _webUrl == other._webUrl &&
+      _appId == other._appId &&
+      _host == other._host &&
       _priority == other._priority &&
       _imageUrl == other._imageUrl &&
       DeepCollectionEquality().equals(_products, other._products) &&
@@ -145,8 +159,10 @@ class Store extends Model {
     buffer.write("id=" + "$id" + ", ");
     buffer.write("name=" + "$_name" + ", ");
     buffer.write("description=" + "$_description" + ", ");
-    buffer.write("address=" + (_address != null ? _address!.toString() : "null") + ", ");
-    buffer.write("totalProducts=" + (_totalProducts != null ? _totalProducts!.toString() : "null") + ", ");
+    buffer.write("isActive=" + (_isActive != null ? _isActive!.toString() : "null") + ", ");
+    buffer.write("webUrl=" + "$_webUrl" + ", ");
+    buffer.write("appId=" + "$_appId" + ", ");
+    buffer.write("host=" + "$_host" + ", ");
     buffer.write("priority=" + (_priority != null ? _priority!.toString() : "null") + ", ");
     buffer.write("imageUrl=" + "$_imageUrl" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
@@ -156,13 +172,15 @@ class Store extends Model {
     return buffer.toString();
   }
   
-  Store copyWith({String? name, String? description, bool? address, int? totalProducts, int? priority, String? imageUrl, List<Product>? products, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
+  Store copyWith({String? name, String? description, bool? isActive, String? webUrl, String? appId, String? host, int? priority, String? imageUrl, List<Product>? products, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
     return Store._internal(
       id: id,
       name: name ?? this.name,
       description: description ?? this.description,
-      address: address ?? this.address,
-      totalProducts: totalProducts ?? this.totalProducts,
+      isActive: isActive ?? this.isActive,
+      webUrl: webUrl ?? this.webUrl,
+      appId: appId ?? this.appId,
+      host: host ?? this.host,
       priority: priority ?? this.priority,
       imageUrl: imageUrl ?? this.imageUrl,
       products: products ?? this.products,
@@ -174,8 +192,10 @@ class Store extends Model {
     : id = json['id'],
       _name = json['name'],
       _description = json['description'],
-      _address = json['address'],
-      _totalProducts = (json['totalProducts'] as num?)?.toInt(),
+      _isActive = json['isActive'],
+      _webUrl = json['webUrl'],
+      _appId = json['appId'],
+      _host = json['host'],
       _priority = (json['priority'] as num?)?.toInt(),
       _imageUrl = json['imageUrl'],
       _products = json['products'] is List
@@ -188,19 +208,21 @@ class Store extends Model {
       _updatedAt = json['updatedAt'] != null ? TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'name': _name, 'description': _description, 'address': _address, 'totalProducts': _totalProducts, 'priority': _priority, 'imageUrl': _imageUrl, 'products': _products?.map((Product? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'name': _name, 'description': _description, 'isActive': _isActive, 'webUrl': _webUrl, 'appId': _appId, 'host': _host, 'priority': _priority, 'imageUrl': _imageUrl, 'products': _products?.map((Product? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
-    'id': id, 'name': _name, 'description': _description, 'address': _address, 'totalProducts': _totalProducts, 'priority': _priority, 'imageUrl': _imageUrl, 'products': _products, 'createdAt': _createdAt, 'updatedAt': _updatedAt
+    'id': id, 'name': _name, 'description': _description, 'isActive': _isActive, 'webUrl': _webUrl, 'appId': _appId, 'host': _host, 'priority': _priority, 'imageUrl': _imageUrl, 'products': _products, 'createdAt': _createdAt, 'updatedAt': _updatedAt
   };
 
   static final QueryModelIdentifier<StoreModelIdentifier> MODEL_IDENTIFIER = QueryModelIdentifier<StoreModelIdentifier>();
   static final QueryField ID = QueryField(fieldName: "id");
   static final QueryField NAME = QueryField(fieldName: "name");
   static final QueryField DESCRIPTION = QueryField(fieldName: "description");
-  static final QueryField ADDRESS = QueryField(fieldName: "address");
-  static final QueryField TOTALPRODUCTS = QueryField(fieldName: "totalProducts");
+  static final QueryField ISACTIVE = QueryField(fieldName: "isActive");
+  static final QueryField WEBURL = QueryField(fieldName: "webUrl");
+  static final QueryField APPID = QueryField(fieldName: "appId");
+  static final QueryField HOST = QueryField(fieldName: "host");
   static final QueryField PRIORITY = QueryField(fieldName: "priority");
   static final QueryField IMAGEURL = QueryField(fieldName: "imageUrl");
   static final QueryField PRODUCTS = QueryField(
@@ -243,15 +265,27 @@ class Store extends Model {
     ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
-      key: Store.ADDRESS,
+      key: Store.ISACTIVE,
       isRequired: false,
       ofType: ModelFieldType(ModelFieldTypeEnum.bool)
     ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
-      key: Store.TOTALPRODUCTS,
+      key: Store.WEBURL,
       isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.int)
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: Store.APPID,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: Store.HOST,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(

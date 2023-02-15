@@ -30,6 +30,8 @@ import 'package:flutter/foundation.dart';
 class Wishlist extends Model {
   static const classType = const _WishlistModelType();
   final String id;
+  final String? _storeId;
+  final Store? _store;
   final String? _userId;
   final List<WishlistProduct>? _wishlistProducts;
   final TemporalDateTime? _createdAt;
@@ -46,6 +48,14 @@ class Wishlist extends Model {
       return WishlistModelIdentifier(
         id: id
       );
+  }
+  
+  String? get storeId {
+    return _storeId;
+  }
+  
+  Store? get store {
+    return _store;
   }
   
   String get userId {
@@ -73,11 +83,13 @@ class Wishlist extends Model {
     return _updatedAt;
   }
   
-  const Wishlist._internal({required this.id, required userId, wishlistProducts, createdAt, updatedAt}): _userId = userId, _wishlistProducts = wishlistProducts, _createdAt = createdAt, _updatedAt = updatedAt;
+  const Wishlist._internal({required this.id, storeId, store, required userId, wishlistProducts, createdAt, updatedAt}): _storeId = storeId, _store = store, _userId = userId, _wishlistProducts = wishlistProducts, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Wishlist({String? id, required String userId, List<WishlistProduct>? wishlistProducts, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
+  factory Wishlist({String? id, String? storeId, Store? store, required String userId, List<WishlistProduct>? wishlistProducts, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
     return Wishlist._internal(
       id: id == null ? UUID.getUUID() : id,
+      storeId: storeId,
+      store: store,
       userId: userId,
       wishlistProducts: wishlistProducts != null ? List<WishlistProduct>.unmodifiable(wishlistProducts) : wishlistProducts,
       createdAt: createdAt,
@@ -93,6 +105,8 @@ class Wishlist extends Model {
     if (identical(other, this)) return true;
     return other is Wishlist &&
       id == other.id &&
+      _storeId == other._storeId &&
+      _store == other._store &&
       _userId == other._userId &&
       DeepCollectionEquality().equals(_wishlistProducts, other._wishlistProducts) &&
       _createdAt == other._createdAt &&
@@ -108,6 +122,7 @@ class Wishlist extends Model {
     
     buffer.write("Wishlist {");
     buffer.write("id=" + "$id" + ", ");
+    buffer.write("storeId=" + "$_storeId" + ", ");
     buffer.write("userId=" + "$_userId" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
@@ -116,9 +131,11 @@ class Wishlist extends Model {
     return buffer.toString();
   }
   
-  Wishlist copyWith({String? userId, List<WishlistProduct>? wishlistProducts, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
+  Wishlist copyWith({String? storeId, Store? store, String? userId, List<WishlistProduct>? wishlistProducts, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
     return Wishlist._internal(
       id: id,
+      storeId: storeId ?? this.storeId,
+      store: store ?? this.store,
       userId: userId ?? this.userId,
       wishlistProducts: wishlistProducts ?? this.wishlistProducts,
       createdAt: createdAt ?? this.createdAt,
@@ -127,6 +144,10 @@ class Wishlist extends Model {
   
   Wishlist.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
+      _storeId = json['storeId'],
+      _store = json['store']?['serializedData'] != null
+        ? Store.fromJson(new Map<String, dynamic>.from(json['store']['serializedData']))
+        : null,
       _userId = json['userId'],
       _wishlistProducts = json['wishlistProducts'] is List
         ? (json['wishlistProducts'] as List)
@@ -138,15 +159,19 @@ class Wishlist extends Model {
       _updatedAt = json['updatedAt'] != null ? TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'userId': _userId, 'wishlistProducts': _wishlistProducts?.map((WishlistProduct? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'storeId': _storeId, 'store': _store?.toJson(), 'userId': _userId, 'wishlistProducts': _wishlistProducts?.map((WishlistProduct? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
-    'id': id, 'userId': _userId, 'wishlistProducts': _wishlistProducts, 'createdAt': _createdAt, 'updatedAt': _updatedAt
+    'id': id, 'storeId': _storeId, 'store': _store, 'userId': _userId, 'wishlistProducts': _wishlistProducts, 'createdAt': _createdAt, 'updatedAt': _updatedAt
   };
 
   static final QueryModelIdentifier<WishlistModelIdentifier> MODEL_IDENTIFIER = QueryModelIdentifier<WishlistModelIdentifier>();
   static final QueryField ID = QueryField(fieldName: "id");
+  static final QueryField STOREID = QueryField(fieldName: "storeId");
+  static final QueryField STORE = QueryField(
+    fieldName: "store",
+    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: 'Store'));
   static final QueryField USERID = QueryField(fieldName: "userId");
   static final QueryField WISHLISTPRODUCTS = QueryField(
     fieldName: "wishlistProducts",
@@ -174,10 +199,24 @@ class Wishlist extends Model {
     ];
     
     modelSchemaDefinition.indexes = [
+      ModelIndex(fields: const ["storeId", "createdAt"], name: "bystoreIdWishlist"),
       ModelIndex(fields: const ["userId", "createdAt"], name: "byuserIdcreatedAtWishlist")
     ];
     
     modelSchemaDefinition.addField(ModelFieldDefinition.id());
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: Wishlist.STOREID,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.hasOne(
+      key: Wishlist.STORE,
+      isRequired: false,
+      ofModelName: 'Store',
+      associatedKey: Store.ID
+    ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: Wishlist.USERID,

@@ -68,7 +68,7 @@ export 'warehouse.dart';
 
 class ModelProvider implements ModelProviderInterface {
   @override
-  String version = "cd2e7e35b703377cb1119ba0d68a8b29";
+  String version = "5f86a9295ac8fe2a484b03549e5f9482";
   @override
   List<ModelSchema> modelSchemas = [CouponCode.schema, Order.schema, OrderProduct.schema, Payment.schema, Product.schema, ProductCategory.schema, ProductImage.schema, ProductInventory.schema, ProductSubCategory.schema, Review.schema, ShoppingCart.schema, ShoppingCartProduct.schema, Store.schema, User.schema, UserAddress.schema, Variant.schema, Wishlist.schema, WishlistProduct.schema, warehouse.schema];
   static final ModelProvider _instance = ModelProvider();

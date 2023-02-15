@@ -9,6 +9,11 @@ export type AmplifyDependentResourcesAttributes = {
       "ApiId": "string",
       "ApiName": "string",
       "RootUrl": "string"
+    },
+    "healthwss": {
+      "ApiId": "string",
+      "ApiName": "string",
+      "RootUrl": "string"
     }
   },
   "auth": {
@@ -21,86 +26,72 @@ export type AmplifyDependentResourcesAttributes = {
       "UserPoolArn": "string",
       "UserPoolId": "string",
       "UserPoolName": "string"
-    },
-    "userPoolGroups": {
-      "UsersGroupRole": "string"
     }
   },
   "function": {
     "healtAuthToken": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
-      "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
     "healthCreateUserFromOrder": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
-      "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
     "healthOrderStatusNotification": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
-      "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
     "healthOredrCancel": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
-      "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
     "healthProducts": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
-      "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
     "healthProductsCount": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
-      "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
     "healthUpdateInventory": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
-      "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
     "healthapplyCoupn": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
-      "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
     "healthbackend316f331a316f331aPostConfirmation": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
-      "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
     "helathOrderDispatch": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
-      "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
     "helathOrdes": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
-      "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     }

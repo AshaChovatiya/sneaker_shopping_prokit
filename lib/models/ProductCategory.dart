@@ -31,6 +31,8 @@ class ProductCategory extends Model {
   static const classType = const _ProductCategoryModelType();
   final String id;
   final String? _name;
+  final String? _storeId;
+  final Store? _store;
   final String? _description;
   final String? _slug;
   final bool? _isFeatured;
@@ -66,6 +68,14 @@ class ProductCategory extends Model {
           underlyingException: e.toString()
           );
     }
+  }
+  
+  String? get storeId {
+    return _storeId;
+  }
+  
+  Store? get store {
+    return _store;
   }
   
   String? get description {
@@ -117,12 +127,14 @@ class ProductCategory extends Model {
     return _updatedAt;
   }
   
-  const ProductCategory._internal({required this.id, required name, description, slug, isFeatured, totalProducts, priority, required imageUrl, products, subCategory, createdAt, updatedAt}): _name = name, _description = description, _slug = slug, _isFeatured = isFeatured, _totalProducts = totalProducts, _priority = priority, _imageUrl = imageUrl, _products = products, _subCategory = subCategory, _createdAt = createdAt, _updatedAt = updatedAt;
+  const ProductCategory._internal({required this.id, required name, storeId, store, description, slug, isFeatured, totalProducts, priority, required imageUrl, products, subCategory, createdAt, updatedAt}): _name = name, _storeId = storeId, _store = store, _description = description, _slug = slug, _isFeatured = isFeatured, _totalProducts = totalProducts, _priority = priority, _imageUrl = imageUrl, _products = products, _subCategory = subCategory, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory ProductCategory({String? id, required String name, String? description, String? slug, bool? isFeatured, int? totalProducts, int? priority, required String imageUrl, List<Product>? products, List<ProductSubCategory>? subCategory, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
+  factory ProductCategory({String? id, required String name, String? storeId, Store? store, String? description, String? slug, bool? isFeatured, int? totalProducts, int? priority, required String imageUrl, List<Product>? products, List<ProductSubCategory>? subCategory, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
     return ProductCategory._internal(
       id: id == null ? UUID.getUUID() : id,
       name: name,
+      storeId: storeId,
+      store: store,
       description: description,
       slug: slug,
       isFeatured: isFeatured,
@@ -145,6 +157,8 @@ class ProductCategory extends Model {
     return other is ProductCategory &&
       id == other.id &&
       _name == other._name &&
+      _storeId == other._storeId &&
+      _store == other._store &&
       _description == other._description &&
       _slug == other._slug &&
       _isFeatured == other._isFeatured &&
@@ -167,6 +181,7 @@ class ProductCategory extends Model {
     buffer.write("ProductCategory {");
     buffer.write("id=" + "$id" + ", ");
     buffer.write("name=" + "$_name" + ", ");
+    buffer.write("storeId=" + "$_storeId" + ", ");
     buffer.write("description=" + "$_description" + ", ");
     buffer.write("slug=" + "$_slug" + ", ");
     buffer.write("isFeatured=" + (_isFeatured != null ? _isFeatured!.toString() : "null") + ", ");
@@ -180,10 +195,12 @@ class ProductCategory extends Model {
     return buffer.toString();
   }
   
-  ProductCategory copyWith({String? name, String? description, String? slug, bool? isFeatured, int? totalProducts, int? priority, String? imageUrl, List<Product>? products, List<ProductSubCategory>? subCategory, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
+  ProductCategory copyWith({String? name, String? storeId, Store? store, String? description, String? slug, bool? isFeatured, int? totalProducts, int? priority, String? imageUrl, List<Product>? products, List<ProductSubCategory>? subCategory, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
     return ProductCategory._internal(
       id: id,
       name: name ?? this.name,
+      storeId: storeId ?? this.storeId,
+      store: store ?? this.store,
       description: description ?? this.description,
       slug: slug ?? this.slug,
       isFeatured: isFeatured ?? this.isFeatured,
@@ -199,6 +216,10 @@ class ProductCategory extends Model {
   ProductCategory.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
       _name = json['name'],
+      _storeId = json['storeId'],
+      _store = json['store']?['serializedData'] != null
+        ? Store.fromJson(new Map<String, dynamic>.from(json['store']['serializedData']))
+        : null,
       _description = json['description'],
       _slug = json['slug'],
       _isFeatured = json['isFeatured'],
@@ -221,16 +242,20 @@ class ProductCategory extends Model {
       _updatedAt = json['updatedAt'] != null ? TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'name': _name, 'description': _description, 'slug': _slug, 'isFeatured': _isFeatured, 'totalProducts': _totalProducts, 'priority': _priority, 'imageUrl': _imageUrl, 'products': _products?.map((Product? e) => e?.toJson()).toList(), 'subCategory': _subCategory?.map((ProductSubCategory? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'name': _name, 'storeId': _storeId, 'store': _store?.toJson(), 'description': _description, 'slug': _slug, 'isFeatured': _isFeatured, 'totalProducts': _totalProducts, 'priority': _priority, 'imageUrl': _imageUrl, 'products': _products?.map((Product? e) => e?.toJson()).toList(), 'subCategory': _subCategory?.map((ProductSubCategory? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
-    'id': id, 'name': _name, 'description': _description, 'slug': _slug, 'isFeatured': _isFeatured, 'totalProducts': _totalProducts, 'priority': _priority, 'imageUrl': _imageUrl, 'products': _products, 'subCategory': _subCategory, 'createdAt': _createdAt, 'updatedAt': _updatedAt
+    'id': id, 'name': _name, 'storeId': _storeId, 'store': _store, 'description': _description, 'slug': _slug, 'isFeatured': _isFeatured, 'totalProducts': _totalProducts, 'priority': _priority, 'imageUrl': _imageUrl, 'products': _products, 'subCategory': _subCategory, 'createdAt': _createdAt, 'updatedAt': _updatedAt
   };
 
   static final QueryModelIdentifier<ProductCategoryModelIdentifier> MODEL_IDENTIFIER = QueryModelIdentifier<ProductCategoryModelIdentifier>();
   static final QueryField ID = QueryField(fieldName: "id");
   static final QueryField NAME = QueryField(fieldName: "name");
+  static final QueryField STOREID = QueryField(fieldName: "storeId");
+  static final QueryField STORE = QueryField(
+    fieldName: "store",
+    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: 'Store'));
   static final QueryField DESCRIPTION = QueryField(fieldName: "description");
   static final QueryField SLUG = QueryField(fieldName: "slug");
   static final QueryField ISFEATURED = QueryField(fieldName: "isFeatured");
@@ -267,6 +292,7 @@ class ProductCategory extends Model {
     
     modelSchemaDefinition.indexes = [
       ModelIndex(fields: const ["name", "createdAt"], name: "bynameProductCategory"),
+      ModelIndex(fields: const ["storeId", "createdAt"], name: "bystoreIdProductCategory"),
       ModelIndex(fields: const ["slug", "createdAt"], name: "byslugProductCategory")
     ];
     
@@ -276,6 +302,19 @@ class ProductCategory extends Model {
       key: ProductCategory.NAME,
       isRequired: true,
       ofType: ModelFieldType(ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: ProductCategory.STOREID,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.hasOne(
+      key: ProductCategory.STORE,
+      isRequired: false,
+      ofModelName: 'Store',
+      associatedKey: Store.ID
     ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(

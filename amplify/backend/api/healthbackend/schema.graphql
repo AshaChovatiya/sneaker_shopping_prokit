@@ -48,6 +48,13 @@ type User
     ]
   ) {
   id: ID!
+  storeId: ID
+    @index(
+      name: "bystoreIdUser"
+      queryField: "bystoreIdUser"
+      sortKeyFields: ["createdAt"]
+    )
+  store: Store @hasOne(fields: ["storeId"])
   owner: String
   firstName: String
   lastName: String
@@ -89,7 +96,6 @@ type User
   updatedAt: AWSDateTime
 }
 
-
 type UserAddress
   @model(subscriptions: null)
   @searchable
@@ -101,7 +107,7 @@ type UserAddress
   ) {
   id: ID!
   userID: ID
-  @index(
+    @index(
       name: "byuserIDUserAddress"
       queryField: "byuserIDUserAddress"
       sortKeyFields: ["createdAt"]
@@ -119,7 +125,7 @@ type UserAddress
   area: String
   createdAt: AWSDateTime
   updatedAt: AWSDateTime
-  }
+}
 
 type Address {
   name: String
@@ -151,19 +157,27 @@ type ProductCategory
       queryField: "bynameProductCategory"
       sortKeyFields: ["createdAt"]
     )
+  storeId: ID
+    @index(
+      name: "bystoreIdProductCategory"
+      queryField: "bystoreIdProductCategory"
+      sortKeyFields: ["createdAt"]
+    )
+  store: Store @hasOne(fields: ["storeId"])
   description: String
   slug: String
     @index(
-        name: "byslugProductCategory"
-        queryField: "byslugProductCategory"
-        sortKeyFields: ["createdAt"]
-      )
+      name: "byslugProductCategory"
+      queryField: "byslugProductCategory"
+      sortKeyFields: ["createdAt"]
+    )
   isFeatured: Boolean
   totalProducts: Int
   priority: Int
   imageUrl: String!
   products: [Product] @hasMany(indexName: "bycategoryIdProduct", fields: ["id"])
-  subCategory: [ProductSubCategory] @hasMany(indexName: "bycategoryIDProductSubCategory", fields: ["id"])
+  subCategory: [ProductSubCategory]
+    @hasMany(indexName: "bycategoryIDProductSubCategory", fields: ["id"])
   createdAt: AWSDateTime
   updatedAt: AWSDateTime
 }
@@ -178,6 +192,13 @@ type ProductSubCategory
     ]
   ) {
   id: ID!
+  storeId: ID
+    @index(
+      name: "bystoreIdProductSubCategory"
+      queryField: "bystoreIdProductSubCategory"
+      sortKeyFields: ["createdAt"]
+    )
+  store: Store @hasOne(fields: ["storeId"])
   name: String!
     @index(
       name: "bynameProductSubCategory"
@@ -186,7 +207,7 @@ type ProductSubCategory
     )
   description: String
   categoryID: ID
-  @index(
+    @index(
       name: "bycategoryIDProductSubCategory"
       queryField: "bycategoryIDProductSubCategory"
       sortKeyFields: ["createdAt"]
@@ -194,10 +215,10 @@ type ProductSubCategory
   category: ProductCategory @hasOne(fields: ["categoryID"])
   slug: String
     @index(
-        name: "byslugProductSubCategory"
-        queryField: "byslugProductSubCategory"
-        sortKeyFields: ["createdAt"]
-      )
+      name: "byslugProductSubCategory"
+      queryField: "byslugProductSubCategory"
+      sortKeyFields: ["createdAt"]
+    )
   isFeatured: Boolean
   totalProducts: Int
   priority: Int
@@ -218,8 +239,10 @@ type Store
   id: ID!
   name: String!
   description: String
-  address: Boolean
-  totalProducts: Int
+  isActive: Boolean
+  webUrl: String
+  appId: String
+  host: String
   priority: Int
   imageUrl: String
   products: [Product] @hasMany(indexName: "bystoreIdProduct", fields: ["id"])
@@ -236,6 +259,13 @@ type warehouse
     ]
   ) {
   id: ID!
+  storeId: ID
+    @index(
+      name: "bystoreIdwarehouse"
+      queryField: "bystoreIdwarehouse"
+      sortKeyFields: ["createdAt"]
+    )
+  store: Store @hasOne(fields: ["storeId"])
   facilityCode: String
   name: String!
   description: String
@@ -287,7 +317,7 @@ type Product
   @searchable
   @auth(
     rules: [
-      { allow: public, operations: [read] }
+      { allow: public, operations: [read, create, update, delete] }
       { allow: private, operations: [read, create, update, delete] }
     ]
   ) {
@@ -307,30 +337,30 @@ type Product
       sortKeyFields: ["createdAt"]
     )
   subCategoryId: ID
-  @index(
+    @index(
       name: "bysubCategoryIdProduct"
       queryField: "bysubCategoryIdProduct"
       sortKeyFields: ["createdAt"]
     )
   subCategory: ProductSubCategory @hasOne(fields: ["subCategoryId"])
-    
+
   storeId: ID
     @index(
       name: "bystoreIdProduct"
       queryField: "bystoreIdProduct"
       sortKeyFields: ["createdAt"]
     )
-  store: ProductCategory @hasOne(fields: ["storeId"])
+  store: Store @hasOne(fields: ["storeId"])
   isFeatured: Boolean
   category: ProductCategory @hasOne(fields: ["categoryId"])
   productType: String
   createdAt: AWSDateTime
   slug: String
     @index(
-        name: "byslugProduct"
-        queryField: "byslugProduct"
-        sortKeyFields: ["createdAt"]
-      )
+      name: "byslugProduct"
+      queryField: "byslugProduct"
+      sortKeyFields: ["createdAt"]
+    )
   productDescription: String
   longDescription: String
   updatedAt: AWSDateTime
@@ -435,12 +465,19 @@ type Order
   @searchable
   @auth(
     rules: [
-      { allow: public, operations: [read, create] }
+      { allow: public, operations: [read, create, update] }
       { allow: private, operations: [read, create, update, delete] }
     ]
   ) {
   id: ID!
   code: String
+  storeId: ID
+    @index(
+      name: "bystoreIdOrder"
+      queryField: "bystoreIdOrder"
+      sortKeyFields: ["createdAt"]
+    )
+  store: Store @hasOne(fields: ["storeId"])
   userId: ID
     @index(
       name: "byuserIdcreatedAtOrder"
@@ -461,6 +498,7 @@ type Order
   taxExempted: Boolean
   cFormProvided: Boolean
   thirdPartyShipping: Boolean
+  currency: String
   sla: AWSDateTime
   priority: Int
   orderDate: AWSDateTime
@@ -477,7 +515,7 @@ type OrderProduct
   @model(subscriptions: null)
   @auth(
     rules: [
-      { allow: public, operations: [read, create] }
+      { allow: public, operations: [read, create, update, delete] }
       { allow: private, operations: [read, create, update, delete] }
     ]
   ) {
@@ -532,11 +570,18 @@ type Payment
   @model(subscriptions: null)
   @auth(
     rules: [
-      { allow: public, operations: [read, create] }
+      { allow: public, operations: [read, create, update, delete] }
       { allow: private, operations: [read, create, update, delete] }
     ]
   ) {
   id: ID!
+  storeId: ID
+    @index(
+      name: "bystoreIdPayment"
+      queryField: "bystoreIdPayment"
+      sortKeyFields: ["createdAt"]
+    )
+  store: Store @hasOne(fields: ["storeId"])
   userId: ID
     @index(
       name: "byuserIdcreatedAtPayment"
@@ -594,6 +639,13 @@ type Wishlist
     ]
   ) {
   id: ID!
+  storeId: ID
+    @index(
+      name: "bystoreIdWishlist"
+      queryField: "bystoreIdWishlist"
+      sortKeyFields: ["createdAt"]
+    )
+  store: Store @hasOne(fields: ["storeId"])
   userId: ID!
     @index(
       name: "byuserIdcreatedAtWishlist"
@@ -639,6 +691,13 @@ type ShoppingCart
     ]
   ) {
   id: ID!
+  storeId: ID
+    @index(
+      name: "bystoreIdShoppingCart"
+      queryField: "bystoreIdShoppingCart"
+      sortKeyFields: ["createdAt"]
+    )
+  store: Store @hasOne(fields: ["storeId"])
   userId: ID!
     @index(
       name: "byuserIdcreatedAtShoppingCart"
@@ -678,7 +737,9 @@ type ShoppingCartProduct
   updatedAt: AWSDateTime
 }
 
-type CouponCode @model (subscriptions: null) @searchable
+type CouponCode
+  @model(subscriptions: null)
+  @searchable
   @auth(
     rules: [
       { allow: public, operations: [read] }
@@ -686,8 +747,8 @@ type CouponCode @model (subscriptions: null) @searchable
     ]
   ) {
   id: ID!
-  code: String! 
-  @index(
+  code: String!
+    @index(
       name: "bycodeCouponCode"
       queryField: "bycodeCouponCode"
       sortKeyFields: ["createdAt"]
@@ -703,8 +764,10 @@ type CouponCode @model (subscriptions: null) @searchable
       sortKeyFields: ["isForAll"]
     )
   isForAll: Int
+  storeId: ID
+  store: Store @hasOne(fields: ["storeId"])
   userId: ID
-  @index(
+    @index(
       name: "byuserIdCouponCode"
       queryField: "byuserIdCouponCode"
       sortKeyFields: ["createdAt"]
@@ -719,28 +782,13 @@ type CouponCode @model (subscriptions: null) @searchable
   updatedAt: AWSDateTime
 }
 
-
-type Query{
-
-applyCoupon
-  (code: String): AWSJSON
+type Query {
+  applyCoupon(code: String): AWSJSON
     @function(name: "healthapplyCoupn-${env}")
-  @auth(rules:[{allow: public, provider: apiKey}, {allow: private, provider: userPools}])
+    @auth(
+      rules: [
+        { allow: public, provider: apiKey }
+        { allow: private, provider: userPools }
+      ]
+    )
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
