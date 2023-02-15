@@ -19,6 +19,7 @@ class SSDetailScreen extends StatefulWidget {
 
 class SSDetailScreenState extends State<SSDetailScreen> {
   int index = 0;
+  String sizes = '1,2,3,4,5,6';
   List<String> img = [
     "images/sneakerShopping/ic_shoes_7.png",
     "images/sneakerShopping/ic_shoes_9.png",
@@ -34,7 +35,7 @@ class SSDetailScreenState extends State<SSDetailScreen> {
 
   void init() async {
     ProductProvider productProvider =
-        Provider.of<ProductProvider>(context, listen: false);
+    Provider.of<ProductProvider>(context, listen: false);
     productProvider.getProductItemData(widget.productId);
     img.insert(0, widget.img.validate());
   }
@@ -74,193 +75,229 @@ class SSDetailScreenState extends State<SSDetailScreen> {
       body: Consumer<ProductProvider>(builder: (context, productProvider, _) {
         return productProvider.productDetailLoading
             ? Center(
-                child: CircularProgressIndicator(),
-              )
+          child: CircularProgressIndicator(),
+        )
             : SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Container(
+                padding: EdgeInsets.all(8),
+                decoration:
+                BoxDecoration(color: Colors.grey.withOpacity(0.3)),
+                child: Column(
+                  children: [
+                    Image(
+                      image: AssetImage(img[index]),
+                      height: 250,
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width,
+                      fit: BoxFit.cover,
+                    ),
+                    SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: img.map((e) {
+                        return InkWell(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          radius: 8,
+                          onTap: () {
+                            setState(() {
+                              index = img.indexOf(e);
+                            });
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(right: 8),
+                            padding: EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: context.cardColor,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: index == img.indexOf(e)
+                                    ? Colors.red
+                                    : Colors.transparent,
+                              ),
+                            ),
+                            child: Image(
+                                image: AssetImage(e.validate()),
+                                height: 40,
+                                width: 40,
+                                fit: BoxFit.cover),
+                          ),
+                        ).paddingRight(8);
+                      }).toList(),
+                    ),
+                    SizedBox(height: 16),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                    left: 16, right: 16, bottom: 16, top: 16),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
                   children: [
-                    Container(
-                      padding: EdgeInsets.all(8),
-                      decoration:
-                          BoxDecoration(color: Colors.grey.withOpacity(0.3)),
-                      child: Column(
-                        children: [
-                          Image(
-                            image: AssetImage(img[index]),
-                            height: 250,
-                            width: MediaQuery.of(context).size.width,
-                            fit: BoxFit.cover,
-                          ),
-                          SizedBox(height: 16),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.max,
-                            children: img.map((e) {
-                              return InkWell(
-                                splashColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                                radius: 8,
-                                onTap: () {
-                                  setState(() {
-                                    index = img.indexOf(e);
-                                  });
-                                },
-                                child: Container(
-                                  margin: EdgeInsets.only(right: 8),
-                                  padding: EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    color: context.cardColor,
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(
-                                      color: index == img.indexOf(e)
-                                          ? Colors.red
-                                          : Colors.transparent,
-                                    ),
-                                  ),
-                                  child: Image(
-                                      image: AssetImage(e.validate()),
-                                      height: 40,
-                                      width: 40,
-                                      fit: BoxFit.cover),
-                                ),
-                              ).paddingRight(8);
-                            }).toList(),
-                          ),
-                          SizedBox(height: 16),
-                        ],
-                      ),
+                    Text(
+                        productProvider.productDataModel!.productType ??
+                            '',
+                        textAlign: TextAlign.start,
+                        overflow: TextOverflow.clip,
+                        style: secondaryTextStyle()),
+                    SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Text(
+                            productProvider.productDataModel!.title ?? '',
+                            textAlign: TextAlign.start,
+                            overflow: TextOverflow.clip,
+                            style: boldTextStyle()),
+                        Text(
+                            "${productProvider.productDataModel!.currency
+                                .toString() +
+                                productProvider.productDataModel!.price
+                                    .toString()}",
+                            textAlign: TextAlign.start,
+                            overflow: TextOverflow.clip,
+                            style: boldTextStyle()),
+                      ],
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                          left: 16, right: 16, bottom: 16, top: 16),
-                      child: Column(
+                    SizedBox(height: 16),
+                    Text("Available Sizes",
+                        textAlign: TextAlign.start,
+                        overflow: TextOverflow.clip,
+                        style: boldTextStyle(size: 14)),
+                    SizedBox(height: 8),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
                         children: [
-                          Text(
-                              productProvider.productDataModel!.productType ??
-                                  '',
-                              textAlign: TextAlign.start,
-                              overflow: TextOverflow.clip,
-                              style: secondaryTextStyle()),
-                          SizedBox(height: 8),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Text(
-                                  productProvider.productDataModel!.title ?? '',
-                                  textAlign: TextAlign.start,
-                                  overflow: TextOverflow.clip,
-                                  style: boldTextStyle()),
-                              Text(
-                                  "${productProvider.productDataModel!.currency.toString() + productProvider.productDataModel!.price.toString()}",
-                                  textAlign: TextAlign.start,
-                                  overflow: TextOverflow.clip,
-                                  style: boldTextStyle()),
-                            ],
+                          ...List.generate(productProvider.productDataModel!.size!
+                              .split(',')
+                              .length, (index) =>Container(
+                            alignment: Alignment.center,
+                            margin: EdgeInsets.only(
+                                right: 8, top: 4, bottom: 4),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 4),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                  color: Color(0x4d9e9e9e), width: 1),
+                            ),
+                            child: Text(productProvider.productDataModel!.size!.split(',')[index],
+                                textAlign: TextAlign.left,
+                                overflow: TextOverflow.clip,
+                                style: boldTextStyle(size: 12)),
+                          ),),
+                        /*  Container(
+                            alignment: Alignment.center,
+                            margin: EdgeInsets.only(
+                                right: 8, top: 4, bottom: 4),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 4),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                  color: Color(0x4d9e9e9e), width: 1),
+                            ),
+                            child: Text("US 7",
+                                textAlign: TextAlign.left,
+                                overflow: TextOverflow.clip,
+                                style: boldTextStyle(size: 12)),
                           ),
-                          SizedBox(height: 16),
-                          Text("Available Sizes",
-                              textAlign: TextAlign.start,
-                              overflow: TextOverflow.clip,
-                              style: boldTextStyle(size: 14)),
-                          SizedBox(height: 8),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Container(
-                                alignment: Alignment.center,
-                                margin: EdgeInsets.only(
-                                    right: 8, top: 4, bottom: 4),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 4),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.rectangle,
-                                  borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(
-                                      color: Color(0x4d9e9e9e), width: 1),
-                                ),
-                                child: Text("US 7",
-                                    textAlign: TextAlign.left,
-                                    overflow: TextOverflow.clip,
-                                    style: boldTextStyle(size: 12)),
-                              ),
-                              Container(
-                                alignment: Alignment.center,
-                                margin: EdgeInsets.all(4),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 4),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.rectangle,
-                                  borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(
-                                      color: Color(0x4d9e9e9e), width: 1),
-                                ),
-                                child: Text("US 8",
-                                    textAlign: TextAlign.left,
-                                    overflow: TextOverflow.clip,
-                                    style: boldTextStyle(size: 12)),
-                              ),
-                              Container(
-                                alignment: Alignment.center,
-                                margin: EdgeInsets.all(4),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 4),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(16.0),
-                                  border: Border.all(
-                                      color: Color(0x4d9e9e9e), width: 1),
-                                ),
-                                child: Text("US 9",
-                                    textAlign: TextAlign.left,
-                                    overflow: TextOverflow.clip,
-                                    style: boldTextStyle(size: 12)),
-                              ),
-                              Container(
-                                alignment: Alignment.center,
-                                margin: EdgeInsets.all(4),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 4),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.rectangle,
-                                  borderRadius: BorderRadius.circular(16.0),
-                                  border: Border.all(
-                                      color: Color(0x4d9e9e9e), width: 1),
-                                ),
-                                child: Text("US 10",
-                                    textAlign: TextAlign.left,
-                                    overflow: TextOverflow.clip,
-                                    style: boldTextStyle(size: 12)),
-                              ),
-                            ],
+                          Container(
+                            alignment: Alignment.center,
+                            margin: EdgeInsets.all(4),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 4),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                  color: Color(0x4d9e9e9e), width: 1),
+                            ),
+                            child: Text("US 8",
+                                textAlign: TextAlign.left,
+                                overflow: TextOverflow.clip,
+                                style: boldTextStyle(size: 12)),
                           ),
-                          SizedBox(height: 16, width: 16),
-                          Text("Description",
-                              textAlign: TextAlign.start,
-                              overflow: TextOverflow.clip,
-                              style: boldTextStyle()),
-                          SizedBox(height: 8),
-                          Text(
-                              productProvider
-                                      .productDataModel!.additionalInfo ??
-                                  '',
-                              textAlign: TextAlign.start,
-                              overflow: TextOverflow.clip,
-                              style: secondaryTextStyle()),
+                          Container(
+                            alignment: Alignment.center,
+                            margin: EdgeInsets.all(4),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 4),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16.0),
+                              border: Border.all(
+                                  color: Color(0x4d9e9e9e), width: 1),
+                            ),
+                            child: Text("US 9",
+                                textAlign: TextAlign.left,
+                                overflow: TextOverflow.clip,
+                                style: boldTextStyle(size: 12)),
+                          ),
+                          Container(
+                            alignment: Alignment.center,
+                            margin: EdgeInsets.all(4),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 4),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.circular(16.0),
+                              border: Border.all(
+                                  color: Color(0x4d9e9e9e), width: 1),
+                            ),
+                            child: Text("US 10",
+                                textAlign: TextAlign.left,
+                                overflow: TextOverflow.clip,
+                                style: boldTextStyle(size: 12)),
+                          ),*/
                         ],
                       ),
                     ),
+                    SizedBox(height: 16, width: 16),
+                    Text("Description",
+                        textAlign: TextAlign.start,
+                        overflow: TextOverflow.clip,
+                        style: boldTextStyle()),
+                    SizedBox(height: 8),
+                    Text(
+                        productProvider
+                            .productDataModel!.additionalInfo ??
+                            '',
+                        textAlign: TextAlign.start,
+                        overflow: TextOverflow.clip,
+                        style: secondaryTextStyle()),
+                    SizedBox(height: 8),
+                    Text(
+                        productProvider
+                            .productDataModel!.longDescription ??
+                            '',
+                        textAlign: TextAlign.start,
+                        overflow: TextOverflow.clip,
+                        style: secondaryTextStyle()),
                   ],
                 ),
-              );
+              ),
+            ],
+          ),
+        );
       }),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.all(16),
