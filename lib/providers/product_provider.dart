@@ -12,12 +12,11 @@ class ProductProvider extends ChangeNotifier {
   bool productDetailLoading = false;
 
   Future<void> getData() async {
-    final request = ModelQueries.list(
-      Product.classType,
-    );
+    final request = ModelQueries.get(
+        Product.classType, 'd533b2a5-7d06-4bd7-a49d-b21e13dd504d');
     final response = await Amplify.API.query(request: request).response;
-    print("DData:- ${response.data?.items.length}");
-    if (response.data!.items.length > 0) {
+    print("DData:- ${response.data?.subCategory}");
+    /*   if (response.data!.items.length > 0) {
       productList.clear();
       for (var i = 0; i < response.data!.items.length; i++) {
         if (response.data!.items[i] != null) {
@@ -30,7 +29,7 @@ class ProductProvider extends ChangeNotifier {
           newArrivals.add(productList[j]);
         }
       }
-    }
+    }*/
     getAllCategory();
     notifyListeners();
   }
@@ -73,7 +72,7 @@ class ProductProvider extends ChangeNotifier {
     if (response.data!.items.length > 0) {
       print("getAllCategory:------- ${response.data!.items.length}");
       // for (var j = 0; j < response.data!.items.length; j++) {
-      categoryList.addAll(response.data!.items);
+      //categoryList.addAll(response.data!.items);
       // }
       print("categoryList length:------- ${categoryList.length}");
       print("categoryList length:------- ${categoryList.length}");

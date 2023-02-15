@@ -31,6 +31,7 @@ dependencies:
   amplify_api: ^0.6.12
   amplify_auth_cognito: ^0.6.12
   amplify_core: ^0.6.12
+  amplify_datastore: ^0.6.12
 
   cached_network_image: ^3.2.3
 
