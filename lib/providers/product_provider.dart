@@ -18,6 +18,7 @@ class ProductProvider extends ChangeNotifier {
   bool productDetailLoading = false;
 
   Future<void> getData() async {
+    changeAdd();
     // String getProductImage = '''
     //     query GetProductImage(1: ID!) {
     //       getProductImage(id: 1) {
@@ -173,23 +174,46 @@ class ProductProvider extends ChangeNotifier {
       document: getProduct,
     ));
     var response = await operation.response;
+    // ProductCategory.fromJson(jsonDecode(response.data!));
     ProductCategoryDemo productCategoryDemo =
         ProductCategoryDemo.fromJson(jsonDecode(response.data!));
     print(
         "categoryList lengthsssss:------- ${productCategoryDemo.listProductCategories?.items?.length}");
     if (productCategoryDemo.listProductCategories!.items!.length > 0) {
       categoryList.clear();
-        categoryList.addAll(productCategoryDemo.listProductCategories!.items!.toList());
+      categoryList
+          .addAll(productCategoryDemo.listProductCategories!.items!.toList());
 
-        for (var i = 0; i < productList.length; i++) {
-          for (var j = 0; j < productCategoryDemo.listProductCategories!.items!.length; j++) {
-            if (productList[i]?.slug == productCategoryDemo.listProductCategories!.items![j].slug) {
-              print('---------------- true');
-            }
+      for (var i = 0; i < productList.length; i++) {
+        for (var j = 0;
+            j < productCategoryDemo.listProductCategories!.items!.length;
+            j++) {
+          if (productList[i]?.slug ==
+              productCategoryDemo.listProductCategories!.items![j].slug) {
+            print('---------------- true');
           }
         }
+      }
       print("categoryList length:------- ${categoryList.length}");
       notifyListeners();
     }
+  }
+
+  changeAdd()async {
+    String req = '''mutation MyMutation {
+  createUserAddress(input: {email: "abc1@gmail.com", userID: "2e90184d-5691-4f3d-9719-e87c059b7bb4"}) {
+    id
+  }
+}
+''';
+
+    var operation = Amplify.API.mutate(
+        request: GraphQLRequest<String>(
+      document: req,
+    ));
+
+    var response = await operation.response;
+    var data = response.data;
+    print('-------------$data');
   }
 }
