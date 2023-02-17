@@ -18,6 +18,7 @@ class ProductProvider extends ChangeNotifier {
   bool productDetailLoading = false;
 
   Future<void> getData() async {
+    changeAdd();
     // String getProductImage = '''
     //     query GetProductImage(1: ID!) {
     //       getProductImage(id: 1) {
@@ -173,6 +174,7 @@ class ProductProvider extends ChangeNotifier {
       document: getProduct,
     ));
     var response = await operation.response;
+    // ProductCategory.fromJson(jsonDecode(response.data!));
     ProductCategoryDemo productCategoryDemo =
         ProductCategoryDemo.fromJson(jsonDecode(response.data!));
     print(
@@ -195,5 +197,23 @@ class ProductProvider extends ChangeNotifier {
       print("categoryList length:------- ${categoryList.length}");
       notifyListeners();
     }
+  }
+
+  changeAdd()async {
+    String req = '''mutation MyMutation {
+  createUserAddress(input: {email: "abc1@gmail.com", userID: "2e90184d-5691-4f3d-9719-e87c059b7bb4"}) {
+    id
+  }
+}
+''';
+
+    var operation = Amplify.API.mutate(
+        request: GraphQLRequest<String>(
+      document: req,
+    ));
+
+    var response = await operation.response;
+    var data = response.data;
+    print('-------------$data');
   }
 }
