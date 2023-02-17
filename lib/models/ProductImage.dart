@@ -51,8 +51,17 @@ class ProductImage extends Model {
       );
   }
   
-  String? get productId {
-    return _productId;
+  String get productId {
+    try {
+      return _productId!;
+    } catch(e) {
+      throw new AmplifyCodeGenModelException(
+          AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
+    }
   }
   
   int? get position {
@@ -79,17 +88,26 @@ class ProductImage extends Model {
     return _height;
   }
   
-  String? get imageKey {
-    return _imageKey;
+  String get imageKey {
+    try {
+      return _imageKey!;
+    } catch(e) {
+      throw new AmplifyCodeGenModelException(
+          AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
+    }
   }
   
   bool? get isThumb {
     return _isThumb;
   }
   
-  const ProductImage._internal({required this.id, productId, position, createdAt, updatedAt, alt, width, height, imageKey, isThumb}): _productId = productId, _position = position, _createdAt = createdAt, _updatedAt = updatedAt, _alt = alt, _width = width, _height = height, _imageKey = imageKey, _isThumb = isThumb;
+  const ProductImage._internal({required this.id, required productId, position, createdAt, updatedAt, alt, width, height, required imageKey, isThumb}): _productId = productId, _position = position, _createdAt = createdAt, _updatedAt = updatedAt, _alt = alt, _width = width, _height = height, _imageKey = imageKey, _isThumb = isThumb;
   
-  factory ProductImage({String? id, String? productId, int? position, TemporalDateTime? createdAt, TemporalDateTime? updatedAt, String? alt, int? width, int? height, String? imageKey, bool? isThumb}) {
+  factory ProductImage({String? id, required String productId, int? position, TemporalDateTime? createdAt, TemporalDateTime? updatedAt, String? alt, int? width, int? height, required String imageKey, bool? isThumb}) {
     return ProductImage._internal(
       id: id == null ? UUID.getUUID() : id,
       productId: productId,
@@ -219,7 +237,7 @@ class ProductImage extends Model {
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: ProductImage.PRODUCTID,
-      isRequired: false,
+      isRequired: true,
       ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));
     
@@ -261,7 +279,7 @@ class ProductImage extends Model {
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: ProductImage.IMAGEKEY,
-      isRequired: false,
+      isRequired: true,
       ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));
     

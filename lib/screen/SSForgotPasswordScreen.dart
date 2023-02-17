@@ -3,7 +3,6 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:sneaker_shopping_prokit/screen/SSVerifyNumberScreen.dart';
 import 'package:sneaker_shopping_prokit/utils/SSWidgets.dart';
 
-
 import '../../../main.dart';
 
 class SSForgotPasswordScreen extends StatelessWidget {
@@ -41,11 +40,16 @@ class SSForgotPasswordScreen extends StatelessWidget {
               obscureText: false,
               textAlign: TextAlign.start,
               maxLines: 1,
-              style: TextStyle(fontWeight: FontWeight.w400, fontStyle: FontStyle.normal, fontSize: 14, color: Color(0xff000000)),
+              style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontStyle: FontStyle.normal,
+                  fontSize: 14,
+                  color: Color(0xff000000)),
               decoration: sSInputDecoration(
                 context: context,
                 name: 'Mobile',
-                icon: Icon(Icons.call, color: Colors.grey.withOpacity(0.4), size: 24),
+                icon: Icon(Icons.call,
+                    color: Colors.grey.withOpacity(0.4), size: 24),
               ),
             ),
             SizedBox(height: 16),
@@ -54,7 +58,9 @@ class SSForgotPasswordScreen extends StatelessWidget {
               child: InkWell(
                 borderRadius: BorderRadius.circular(50),
                 onTap: () {
-                  SSVerifyNumberScreen().launch(context);
+                  SSVerifyNumberScreen(
+                    isSignIn: false,
+                  ).launch(context);
                 },
                 child: Container(
                   margin: EdgeInsets.zero,
@@ -62,11 +68,14 @@ class SSForgotPasswordScreen extends StatelessWidget {
                   width: 50,
                   height: 50,
                   decoration: BoxDecoration(
-                    color: appStore.isDarkModeOn ? context.cardColor : Color(0xff010101),
+                    color: appStore.isDarkModeOn
+                        ? context.cardColor
+                        : Color(0xff010101),
                     shape: BoxShape.circle,
                     border: Border.all(color: Color(0x4d9e9e9e), width: 1),
                   ),
-                  child: Icon(Icons.arrow_forward, color: Colors.white, size: 24),
+                  child:
+                      Icon(Icons.arrow_forward, color: Colors.white, size: 24),
                 ),
               ),
             ),

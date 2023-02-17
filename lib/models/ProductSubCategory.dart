@@ -91,8 +91,17 @@ class ProductSubCategory extends Model {
     return _category;
   }
   
-  String? get slug {
-    return _slug;
+  String get slug {
+    try {
+      return _slug!;
+    } catch(e) {
+      throw new AmplifyCodeGenModelException(
+          AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
+    }
   }
   
   bool? get isFeatured {
@@ -107,17 +116,8 @@ class ProductSubCategory extends Model {
     return _priority;
   }
   
-  String get imageUrl {
-    try {
-      return _imageUrl!;
-    } catch(e) {
-      throw new AmplifyCodeGenModelException(
-          AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
-          recoverySuggestion:
-            AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
-          underlyingException: e.toString()
-          );
-    }
+  String? get imageUrl {
+    return _imageUrl;
   }
   
   List<Product>? get products {
@@ -132,9 +132,9 @@ class ProductSubCategory extends Model {
     return _updatedAt;
   }
   
-  const ProductSubCategory._internal({required this.id, storeId, store, required name, description, categoryID, category, slug, isFeatured, totalProducts, priority, required imageUrl, products, createdAt, updatedAt}): _storeId = storeId, _store = store, _name = name, _description = description, _categoryID = categoryID, _category = category, _slug = slug, _isFeatured = isFeatured, _totalProducts = totalProducts, _priority = priority, _imageUrl = imageUrl, _products = products, _createdAt = createdAt, _updatedAt = updatedAt;
+  const ProductSubCategory._internal({required this.id, storeId, store, required name, description, categoryID, category, required slug, isFeatured, totalProducts, priority, imageUrl, products, createdAt, updatedAt}): _storeId = storeId, _store = store, _name = name, _description = description, _categoryID = categoryID, _category = category, _slug = slug, _isFeatured = isFeatured, _totalProducts = totalProducts, _priority = priority, _imageUrl = imageUrl, _products = products, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory ProductSubCategory({String? id, String? storeId, Store? store, required String name, String? description, String? categoryID, ProductCategory? category, String? slug, bool? isFeatured, int? totalProducts, int? priority, required String imageUrl, List<Product>? products, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
+  factory ProductSubCategory({String? id, String? storeId, Store? store, required String name, String? description, String? categoryID, ProductCategory? category, required String slug, bool? isFeatured, int? totalProducts, int? priority, String? imageUrl, List<Product>? products, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
     return ProductSubCategory._internal(
       id: id == null ? UUID.getUUID() : id,
       storeId: storeId,
@@ -347,7 +347,7 @@ class ProductSubCategory extends Model {
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: ProductSubCategory.SLUG,
-      isRequired: false,
+      isRequired: true,
       ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));
     
@@ -371,7 +371,7 @@ class ProductSubCategory extends Model {
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: ProductSubCategory.IMAGEURL,
-      isRequired: true,
+      isRequired: false,
       ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));
     

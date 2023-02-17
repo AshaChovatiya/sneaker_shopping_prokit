@@ -7,11 +7,12 @@ import 'package:sneaker_shopping_prokit/models/WishlistProduct.dart';
 class AWSMutations {
   static Future<List<WishlistProduct>?> getWishList(
       {required String userId}) async {
-    final request = ModelQueries.get(Wishlist.classType, userId);
+    final request = ModelQueries.list(Wishlist.classType,
+        where: Wishlist.USERID.eq(userId));
     final response = await Amplify.API.query(request: request).response;
     print("Error:- ${response.errors}");
     if (response.data != null) {
-      return response.data!.wishlistProducts;
+      return response.data!.items[0]!.wishlistProducts;
     } else {
       return [];
     }

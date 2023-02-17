@@ -1,3 +1,5 @@
+import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -162,7 +164,14 @@ class SSRegisterScreen extends StatelessWidget {
                     return Align(
                       alignment: Alignment.centerRight,
                       child: InkWell(
-                        onTap: () {
+                        onTap: () async {
+                          var result = await Amplify.Auth.confirmSignUp(
+                              username: '+919898909090',
+                              confirmationCode: '827706');
+
+                          print("Result: $result");
+                          return;
+
                           // if (_formKey.currentState!.validate()) {
                           authenticationProvider.signUpUser(
                               middleName: middleNameController.text,

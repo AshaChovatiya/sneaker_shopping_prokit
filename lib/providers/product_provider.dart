@@ -179,15 +179,19 @@ class ProductProvider extends ChangeNotifier {
         "categoryList lengthsssss:------- ${productCategoryDemo.listProductCategories?.items?.length}");
     if (productCategoryDemo.listProductCategories!.items!.length > 0) {
       categoryList.clear();
-        categoryList.addAll(productCategoryDemo.listProductCategories!.items!.toList());
+      categoryList
+          .addAll(productCategoryDemo.listProductCategories!.items!.toList());
 
-        for (var i = 0; i < productList.length; i++) {
-          for (var j = 0; j < productCategoryDemo.listProductCategories!.items!.length; j++) {
-            if (productList[i]?.slug == productCategoryDemo.listProductCategories!.items![j].slug) {
-              print('---------------- true');
-            }
+      for (var i = 0; i < productList.length; i++) {
+        for (var j = 0;
+            j < productCategoryDemo.listProductCategories!.items!.length;
+            j++) {
+          if (productList[i]?.slug ==
+              productCategoryDemo.listProductCategories!.items![j].slug) {
+            print('---------------- true');
           }
         }
+      }
       print("categoryList length:------- ${categoryList.length}");
       notifyListeners();
     }

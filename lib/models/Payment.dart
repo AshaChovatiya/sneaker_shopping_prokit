@@ -235,8 +235,7 @@ class Payment extends Model {
         operations: [
           ModelOperation.READ,
           ModelOperation.CREATE,
-          ModelOperation.UPDATE,
-          ModelOperation.DELETE
+          ModelOperation.UPDATE
         ]),
       AuthRule(
         authStrategy: AuthStrategy.PRIVATE,

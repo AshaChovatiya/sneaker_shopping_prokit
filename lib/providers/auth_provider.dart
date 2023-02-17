@@ -1,11 +1,9 @@
-import 'package:amplify_api/model_mutations.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 
-import '../models/User.dart';
-import '../screen/SSDashBoardScreen.dart';
+import '../screen/SSVerifyNumberScreen.dart';
 
 class AuthenticationProvider extends ChangeNotifier {
   bool isUserLoggedIn = false;
@@ -14,18 +12,20 @@ class AuthenticationProvider extends ChangeNotifier {
   Future<void> signInUser(
       {String? phoneNumber, String? password, BuildContext? context}) async {
     isLoading = true;
-    signOutCurrentUser();
-    signUpUserServer();
     try {
       final result = await Amplify.Auth.signIn(
         username: '+91' + phoneNumber!,
         password: password!,
       );
+
       safePrint('data ---------$result');
       isUserLoggedIn = result.isSignedIn;
-      if (result.isSignedIn == true) {
+
+      if (result.nextStep?.signInStep == 'CONFIRM_SIGN_IN_WITH_SMS_MFA_CODE') {
         finish(context!);
-        SSDashBoardScreen().launch(context);
+        SSVerifyNumberScreen(
+          isSignIn: true,
+        ).launch(context);
       }
       isLoading = false;
       notifyListeners();
@@ -65,26 +65,6 @@ class AuthenticationProvider extends ChangeNotifier {
     } on AuthException catch (e) {
       safePrint(e.message);
     }
-  }
-
-  signUpUserServer() async {
-    try {
-      final todo = User(
-        firstName: 'name',
-        email: 'test@gmail.com',
-        lastName: 'lastName',
-        phone: '1234567890',
-      );
-
-      final request = ModelMutations.create<User>(todo);
-      final response = await Amplify.API.mutate(request: request).response;
-
-      print("ProductItemData:------- $response");
-    } catch (e) {
-      print("ProductItemData:------- $e");
-    }
-
-    notifyListeners();
   }
 
   Future<void> signOutCurrentUser() async {

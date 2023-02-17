@@ -56,8 +56,17 @@ class UserAddress extends Model {
       );
   }
   
-  String? get userID {
-    return _userID;
+  String get userID {
+    try {
+      return _userID!;
+    } catch(e) {
+      throw new AmplifyCodeGenModelException(
+          AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
+    }
   }
   
   String? get name {
@@ -112,9 +121,9 @@ class UserAddress extends Model {
     return _updatedAt;
   }
   
-  const UserAddress._internal({required this.id, userID, name, phone, email, country, state, city, pinCode, landmark, address, location, area, createdAt, updatedAt}): _userID = userID, _name = name, _phone = phone, _email = email, _country = country, _state = state, _city = city, _pinCode = pinCode, _landmark = landmark, _address = address, _location = location, _area = area, _createdAt = createdAt, _updatedAt = updatedAt;
+  const UserAddress._internal({required this.id, required userID, name, phone, email, country, state, city, pinCode, landmark, address, location, area, createdAt, updatedAt}): _userID = userID, _name = name, _phone = phone, _email = email, _country = country, _state = state, _city = city, _pinCode = pinCode, _landmark = landmark, _address = address, _location = location, _area = area, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory UserAddress({String? id, String? userID, String? name, String? phone, String? email, String? country, String? state, String? city, String? pinCode, String? landmark, String? address, String? location, String? area, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
+  factory UserAddress({String? id, required String userID, String? name, String? phone, String? email, String? country, String? state, String? city, String? pinCode, String? landmark, String? address, String? location, String? area, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
     return UserAddress._internal(
       id: id == null ? UUID.getUUID() : id,
       userID: userID,
@@ -274,7 +283,7 @@ class UserAddress extends Model {
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: UserAddress.USERID,
-      isRequired: false,
+      isRequired: true,
       ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));
     

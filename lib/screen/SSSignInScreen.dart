@@ -1,3 +1,4 @@
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
@@ -100,8 +101,8 @@ class SSSignInScreen extends StatelessWidget {
                   child: InkWell(
                     highlightColor: Colors.transparent,
                     splashColor: Colors.transparent,
-                    onTap: () {
-                      authenticationProvider.signInUser(
+                    onTap: () async {
+                      await authenticationProvider.signInUser(
                           phoneNumber: phoneNumberController.text,
                           password: passwordController.text,
                           context: context);

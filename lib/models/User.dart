@@ -55,6 +55,7 @@ class User extends Model {
   final double? _walletSpent;
   final double? _totalStoreCredit;
   final bool? _isAdmin;
+  final bool? _isCognitoConfirmed;
   final String? _profilePhotoUrl;
   final List<Wishlist>? _wishlists;
   final List<ShoppingCart>? _shopingcarts;
@@ -87,8 +88,17 @@ class User extends Model {
     return _store;
   }
   
-  String? get owner {
-    return _owner;
+  String get owner {
+    try {
+      return _owner!;
+    } catch(e) {
+      throw new AmplifyCodeGenModelException(
+          AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
+    }
   }
   
   String? get firstName {
@@ -179,6 +189,10 @@ class User extends Model {
     return _isAdmin;
   }
   
+  bool? get isCognitoConfirmed {
+    return _isCognitoConfirmed;
+  }
+  
   String? get profilePhotoUrl {
     return _profilePhotoUrl;
   }
@@ -219,9 +233,9 @@ class User extends Model {
     return _updatedAt;
   }
   
-  const User._internal({required this.id, storeId, store, owner, firstName, lastName, email, phone, gender, dob, country, state, city, pinCode, landmark, address, location, area, isActive, authProvider, totalOrders, totalSpent, walletBalance, walletSpent, totalStoreCredit, isAdmin, profilePhotoUrl, wishlists, shopingcarts, reviews, orders, payments, userAddress, couponCodes, createdAt, updatedAt}): _storeId = storeId, _store = store, _owner = owner, _firstName = firstName, _lastName = lastName, _email = email, _phone = phone, _gender = gender, _dob = dob, _country = country, _state = state, _city = city, _pinCode = pinCode, _landmark = landmark, _address = address, _location = location, _area = area, _isActive = isActive, _authProvider = authProvider, _totalOrders = totalOrders, _totalSpent = totalSpent, _walletBalance = walletBalance, _walletSpent = walletSpent, _totalStoreCredit = totalStoreCredit, _isAdmin = isAdmin, _profilePhotoUrl = profilePhotoUrl, _wishlists = wishlists, _shopingcarts = shopingcarts, _reviews = reviews, _orders = orders, _payments = payments, _userAddress = userAddress, _couponCodes = couponCodes, _createdAt = createdAt, _updatedAt = updatedAt;
+  const User._internal({required this.id, storeId, store, required owner, firstName, lastName, email, phone, gender, dob, country, state, city, pinCode, landmark, address, location, area, isActive, authProvider, totalOrders, totalSpent, walletBalance, walletSpent, totalStoreCredit, isAdmin, isCognitoConfirmed, profilePhotoUrl, wishlists, shopingcarts, reviews, orders, payments, userAddress, couponCodes, createdAt, updatedAt}): _storeId = storeId, _store = store, _owner = owner, _firstName = firstName, _lastName = lastName, _email = email, _phone = phone, _gender = gender, _dob = dob, _country = country, _state = state, _city = city, _pinCode = pinCode, _landmark = landmark, _address = address, _location = location, _area = area, _isActive = isActive, _authProvider = authProvider, _totalOrders = totalOrders, _totalSpent = totalSpent, _walletBalance = walletBalance, _walletSpent = walletSpent, _totalStoreCredit = totalStoreCredit, _isAdmin = isAdmin, _isCognitoConfirmed = isCognitoConfirmed, _profilePhotoUrl = profilePhotoUrl, _wishlists = wishlists, _shopingcarts = shopingcarts, _reviews = reviews, _orders = orders, _payments = payments, _userAddress = userAddress, _couponCodes = couponCodes, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory User({String? id, String? storeId, Store? store, String? owner, String? firstName, String? lastName, String? email, String? phone, String? gender, TemporalDate? dob, String? country, String? state, String? city, String? pinCode, String? landmark, String? address, String? location, String? area, bool? isActive, String? authProvider, int? totalOrders, double? totalSpent, double? walletBalance, double? walletSpent, double? totalStoreCredit, bool? isAdmin, String? profilePhotoUrl, List<Wishlist>? wishlists, List<ShoppingCart>? shopingcarts, List<Review>? reviews, List<Order>? orders, List<Payment>? payments, List<UserAddress>? userAddress, List<CouponCode>? couponCodes, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
+  factory User({String? id, String? storeId, Store? store, required String owner, String? firstName, String? lastName, String? email, String? phone, String? gender, TemporalDate? dob, String? country, String? state, String? city, String? pinCode, String? landmark, String? address, String? location, String? area, bool? isActive, String? authProvider, int? totalOrders, double? totalSpent, double? walletBalance, double? walletSpent, double? totalStoreCredit, bool? isAdmin, bool? isCognitoConfirmed, String? profilePhotoUrl, List<Wishlist>? wishlists, List<ShoppingCart>? shopingcarts, List<Review>? reviews, List<Order>? orders, List<Payment>? payments, List<UserAddress>? userAddress, List<CouponCode>? couponCodes, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
     return User._internal(
       id: id == null ? UUID.getUUID() : id,
       storeId: storeId,
@@ -249,6 +263,7 @@ class User extends Model {
       walletSpent: walletSpent,
       totalStoreCredit: totalStoreCredit,
       isAdmin: isAdmin,
+      isCognitoConfirmed: isCognitoConfirmed,
       profilePhotoUrl: profilePhotoUrl,
       wishlists: wishlists != null ? List<Wishlist>.unmodifiable(wishlists) : wishlists,
       shopingcarts: shopingcarts != null ? List<ShoppingCart>.unmodifiable(shopingcarts) : shopingcarts,
@@ -295,6 +310,7 @@ class User extends Model {
       _walletSpent == other._walletSpent &&
       _totalStoreCredit == other._totalStoreCredit &&
       _isAdmin == other._isAdmin &&
+      _isCognitoConfirmed == other._isCognitoConfirmed &&
       _profilePhotoUrl == other._profilePhotoUrl &&
       DeepCollectionEquality().equals(_wishlists, other._wishlists) &&
       DeepCollectionEquality().equals(_shopingcarts, other._shopingcarts) &&
@@ -340,6 +356,7 @@ class User extends Model {
     buffer.write("walletSpent=" + (_walletSpent != null ? _walletSpent!.toString() : "null") + ", ");
     buffer.write("totalStoreCredit=" + (_totalStoreCredit != null ? _totalStoreCredit!.toString() : "null") + ", ");
     buffer.write("isAdmin=" + (_isAdmin != null ? _isAdmin!.toString() : "null") + ", ");
+    buffer.write("isCognitoConfirmed=" + (_isCognitoConfirmed != null ? _isCognitoConfirmed!.toString() : "null") + ", ");
     buffer.write("profilePhotoUrl=" + "$_profilePhotoUrl" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
@@ -348,7 +365,7 @@ class User extends Model {
     return buffer.toString();
   }
   
-  User copyWith({String? storeId, Store? store, String? owner, String? firstName, String? lastName, String? email, String? phone, String? gender, TemporalDate? dob, String? country, String? state, String? city, String? pinCode, String? landmark, String? address, String? location, String? area, bool? isActive, String? authProvider, int? totalOrders, double? totalSpent, double? walletBalance, double? walletSpent, double? totalStoreCredit, bool? isAdmin, String? profilePhotoUrl, List<Wishlist>? wishlists, List<ShoppingCart>? shopingcarts, List<Review>? reviews, List<Order>? orders, List<Payment>? payments, List<UserAddress>? userAddress, List<CouponCode>? couponCodes, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
+  User copyWith({String? storeId, Store? store, String? owner, String? firstName, String? lastName, String? email, String? phone, String? gender, TemporalDate? dob, String? country, String? state, String? city, String? pinCode, String? landmark, String? address, String? location, String? area, bool? isActive, String? authProvider, int? totalOrders, double? totalSpent, double? walletBalance, double? walletSpent, double? totalStoreCredit, bool? isAdmin, bool? isCognitoConfirmed, String? profilePhotoUrl, List<Wishlist>? wishlists, List<ShoppingCart>? shopingcarts, List<Review>? reviews, List<Order>? orders, List<Payment>? payments, List<UserAddress>? userAddress, List<CouponCode>? couponCodes, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
     return User._internal(
       id: id,
       storeId: storeId ?? this.storeId,
@@ -376,6 +393,7 @@ class User extends Model {
       walletSpent: walletSpent ?? this.walletSpent,
       totalStoreCredit: totalStoreCredit ?? this.totalStoreCredit,
       isAdmin: isAdmin ?? this.isAdmin,
+      isCognitoConfirmed: isCognitoConfirmed ?? this.isCognitoConfirmed,
       profilePhotoUrl: profilePhotoUrl ?? this.profilePhotoUrl,
       wishlists: wishlists ?? this.wishlists,
       shopingcarts: shopingcarts ?? this.shopingcarts,
@@ -417,6 +435,7 @@ class User extends Model {
       _walletSpent = (json['walletSpent'] as num?)?.toDouble(),
       _totalStoreCredit = (json['totalStoreCredit'] as num?)?.toDouble(),
       _isAdmin = json['isAdmin'],
+      _isCognitoConfirmed = json['isCognitoConfirmed'],
       _profilePhotoUrl = json['profilePhotoUrl'],
       _wishlists = json['wishlists'] is List
         ? (json['wishlists'] as List)
@@ -464,11 +483,11 @@ class User extends Model {
       _updatedAt = json['updatedAt'] != null ? TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'storeId': _storeId, 'store': _store?.toJson(), 'owner': _owner, 'firstName': _firstName, 'lastName': _lastName, 'email': _email, 'phone': _phone, 'gender': _gender, 'dob': _dob?.format(), 'country': _country, 'state': _state, 'city': _city, 'pinCode': _pinCode, 'landmark': _landmark, 'address': _address, 'location': _location, 'area': _area, 'isActive': _isActive, 'authProvider': _authProvider, 'totalOrders': _totalOrders, 'totalSpent': _totalSpent, 'walletBalance': _walletBalance, 'walletSpent': _walletSpent, 'totalStoreCredit': _totalStoreCredit, 'isAdmin': _isAdmin, 'profilePhotoUrl': _profilePhotoUrl, 'wishlists': _wishlists?.map((Wishlist? e) => e?.toJson()).toList(), 'shopingcarts': _shopingcarts?.map((ShoppingCart? e) => e?.toJson()).toList(), 'reviews': _reviews?.map((Review? e) => e?.toJson()).toList(), 'orders': _orders?.map((Order? e) => e?.toJson()).toList(), 'payments': _payments?.map((Payment? e) => e?.toJson()).toList(), 'userAddress': _userAddress?.map((UserAddress? e) => e?.toJson()).toList(), 'couponCodes': _couponCodes?.map((CouponCode? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'storeId': _storeId, 'store': _store?.toJson(), 'owner': _owner, 'firstName': _firstName, 'lastName': _lastName, 'email': _email, 'phone': _phone, 'gender': _gender, 'dob': _dob?.format(), 'country': _country, 'state': _state, 'city': _city, 'pinCode': _pinCode, 'landmark': _landmark, 'address': _address, 'location': _location, 'area': _area, 'isActive': _isActive, 'authProvider': _authProvider, 'totalOrders': _totalOrders, 'totalSpent': _totalSpent, 'walletBalance': _walletBalance, 'walletSpent': _walletSpent, 'totalStoreCredit': _totalStoreCredit, 'isAdmin': _isAdmin, 'isCognitoConfirmed': _isCognitoConfirmed, 'profilePhotoUrl': _profilePhotoUrl, 'wishlists': _wishlists?.map((Wishlist? e) => e?.toJson()).toList(), 'shopingcarts': _shopingcarts?.map((ShoppingCart? e) => e?.toJson()).toList(), 'reviews': _reviews?.map((Review? e) => e?.toJson()).toList(), 'orders': _orders?.map((Order? e) => e?.toJson()).toList(), 'payments': _payments?.map((Payment? e) => e?.toJson()).toList(), 'userAddress': _userAddress?.map((UserAddress? e) => e?.toJson()).toList(), 'couponCodes': _couponCodes?.map((CouponCode? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
-    'id': id, 'storeId': _storeId, 'store': _store, 'owner': _owner, 'firstName': _firstName, 'lastName': _lastName, 'email': _email, 'phone': _phone, 'gender': _gender, 'dob': _dob, 'country': _country, 'state': _state, 'city': _city, 'pinCode': _pinCode, 'landmark': _landmark, 'address': _address, 'location': _location, 'area': _area, 'isActive': _isActive, 'authProvider': _authProvider, 'totalOrders': _totalOrders, 'totalSpent': _totalSpent, 'walletBalance': _walletBalance, 'walletSpent': _walletSpent, 'totalStoreCredit': _totalStoreCredit, 'isAdmin': _isAdmin, 'profilePhotoUrl': _profilePhotoUrl, 'wishlists': _wishlists, 'shopingcarts': _shopingcarts, 'reviews': _reviews, 'orders': _orders, 'payments': _payments, 'userAddress': _userAddress, 'couponCodes': _couponCodes, 'createdAt': _createdAt, 'updatedAt': _updatedAt
+    'id': id, 'storeId': _storeId, 'store': _store, 'owner': _owner, 'firstName': _firstName, 'lastName': _lastName, 'email': _email, 'phone': _phone, 'gender': _gender, 'dob': _dob, 'country': _country, 'state': _state, 'city': _city, 'pinCode': _pinCode, 'landmark': _landmark, 'address': _address, 'location': _location, 'area': _area, 'isActive': _isActive, 'authProvider': _authProvider, 'totalOrders': _totalOrders, 'totalSpent': _totalSpent, 'walletBalance': _walletBalance, 'walletSpent': _walletSpent, 'totalStoreCredit': _totalStoreCredit, 'isAdmin': _isAdmin, 'isCognitoConfirmed': _isCognitoConfirmed, 'profilePhotoUrl': _profilePhotoUrl, 'wishlists': _wishlists, 'shopingcarts': _shopingcarts, 'reviews': _reviews, 'orders': _orders, 'payments': _payments, 'userAddress': _userAddress, 'couponCodes': _couponCodes, 'createdAt': _createdAt, 'updatedAt': _updatedAt
   };
 
   static final QueryModelIdentifier<UserModelIdentifier> MODEL_IDENTIFIER = QueryModelIdentifier<UserModelIdentifier>();
@@ -500,6 +519,7 @@ class User extends Model {
   static final QueryField WALLETSPENT = QueryField(fieldName: "walletSpent");
   static final QueryField TOTALSTORECREDIT = QueryField(fieldName: "totalStoreCredit");
   static final QueryField ISADMIN = QueryField(fieldName: "isAdmin");
+  static final QueryField ISCOGNITOCONFIRMED = QueryField(fieldName: "isCognitoConfirmed");
   static final QueryField PROFILEPHOTOURL = QueryField(fieldName: "profilePhotoUrl");
   static final QueryField WISHLISTS = QueryField(
     fieldName: "wishlists",
@@ -547,8 +567,7 @@ class User extends Model {
         operations: [
           ModelOperation.READ,
           ModelOperation.CREATE,
-          ModelOperation.UPDATE,
-          ModelOperation.DELETE
+          ModelOperation.UPDATE
         ])
     ];
     
@@ -573,7 +592,7 @@ class User extends Model {
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: User.OWNER,
-      isRequired: false,
+      isRequired: true,
       ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));
     
@@ -705,6 +724,12 @@ class User extends Model {
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: User.ISADMIN,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.bool)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: User.ISCOGNITOCONFIRMED,
       isRequired: false,
       ofType: ModelFieldType(ModelFieldTypeEnum.bool)
     ));

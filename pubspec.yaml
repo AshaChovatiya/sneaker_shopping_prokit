@@ -20,6 +20,7 @@ dependencies:
   google_fonts: ^2.2.0
   provider: ^6.0.5
   form_field_validator: ^1.1.0
+  pinput:
 
   # Sneaker Shopping App
   mobx: ^2.0.3

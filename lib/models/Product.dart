@@ -145,8 +145,17 @@ class Product extends Model {
     return _createdAt;
   }
   
-  String? get slug {
-    return _slug;
+  String get slug {
+    try {
+      return _slug!;
+    } catch(e) {
+      throw new AmplifyCodeGenModelException(
+          AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
+    }
   }
   
   String? get productDescription {
@@ -282,9 +291,9 @@ class Product extends Model {
     return _reviews;
   }
   
-  const Product._internal({required this.id, required title, brand, vendor, categoryId, subCategoryId, subCategory, storeId, store, isFeatured, category, productType, createdAt, slug, productDescription, longDescription, updatedAt, isPublished, publishedAt, required price, sku, size, color, status, position, currency, costPrice, listingPrice, taxable, barcode, tags, weight, weightUnit, inventory, blockedInventory, rating, totalOrders, additionalInfo, thumbImages, isTaxEnabled, isInventoryEnabled, hasVarient, variants, images, reviews}): _title = title, _brand = brand, _vendor = vendor, _categoryId = categoryId, _subCategoryId = subCategoryId, _subCategory = subCategory, _storeId = storeId, _store = store, _isFeatured = isFeatured, _category = category, _productType = productType, _createdAt = createdAt, _slug = slug, _productDescription = productDescription, _longDescription = longDescription, _updatedAt = updatedAt, _isPublished = isPublished, _publishedAt = publishedAt, _price = price, _sku = sku, _size = size, _color = color, _status = status, _position = position, _currency = currency, _costPrice = costPrice, _listingPrice = listingPrice, _taxable = taxable, _barcode = barcode, _tags = tags, _weight = weight, _weightUnit = weightUnit, _inventory = inventory, _blockedInventory = blockedInventory, _rating = rating, _totalOrders = totalOrders, _additionalInfo = additionalInfo, _thumbImages = thumbImages, _isTaxEnabled = isTaxEnabled, _isInventoryEnabled = isInventoryEnabled, _hasVarient = hasVarient, _variants = variants, _images = images, _reviews = reviews;
+  const Product._internal({required this.id, required title, brand, vendor, categoryId, subCategoryId, subCategory, storeId, store, isFeatured, category, productType, createdAt, required slug, productDescription, longDescription, updatedAt, isPublished, publishedAt, required price, sku, size, color, status, position, currency, costPrice, listingPrice, taxable, barcode, tags, weight, weightUnit, inventory, blockedInventory, rating, totalOrders, additionalInfo, thumbImages, isTaxEnabled, isInventoryEnabled, hasVarient, variants, images, reviews}): _title = title, _brand = brand, _vendor = vendor, _categoryId = categoryId, _subCategoryId = subCategoryId, _subCategory = subCategory, _storeId = storeId, _store = store, _isFeatured = isFeatured, _category = category, _productType = productType, _createdAt = createdAt, _slug = slug, _productDescription = productDescription, _longDescription = longDescription, _updatedAt = updatedAt, _isPublished = isPublished, _publishedAt = publishedAt, _price = price, _sku = sku, _size = size, _color = color, _status = status, _position = position, _currency = currency, _costPrice = costPrice, _listingPrice = listingPrice, _taxable = taxable, _barcode = barcode, _tags = tags, _weight = weight, _weightUnit = weightUnit, _inventory = inventory, _blockedInventory = blockedInventory, _rating = rating, _totalOrders = totalOrders, _additionalInfo = additionalInfo, _thumbImages = thumbImages, _isTaxEnabled = isTaxEnabled, _isInventoryEnabled = isInventoryEnabled, _hasVarient = hasVarient, _variants = variants, _images = images, _reviews = reviews;
   
-  factory Product({String? id, required String title, String? brand, String? vendor, String? categoryId, String? subCategoryId, ProductSubCategory? subCategory, String? storeId, Store? store, bool? isFeatured, ProductCategory? category, String? productType, TemporalDateTime? createdAt, String? slug, String? productDescription, String? longDescription, TemporalDateTime? updatedAt, bool? isPublished, TemporalDateTime? publishedAt, required double price, String? sku, String? size, String? color, ProductStatus? status, int? position, String? currency, double? costPrice, double? listingPrice, bool? taxable, String? barcode, String? tags, double? weight, String? weightUnit, int? inventory, int? blockedInventory, double? rating, int? totalOrders, String? additionalInfo, String? thumbImages, bool? isTaxEnabled, bool? isInventoryEnabled, bool? hasVarient, List<Variant>? variants, List<ProductImage>? images, List<Review>? reviews}) {
+  factory Product({String? id, required String title, String? brand, String? vendor, String? categoryId, String? subCategoryId, ProductSubCategory? subCategory, String? storeId, Store? store, bool? isFeatured, ProductCategory? category, String? productType, TemporalDateTime? createdAt, required String slug, String? productDescription, String? longDescription, TemporalDateTime? updatedAt, bool? isPublished, TemporalDateTime? publishedAt, required double price, String? sku, String? size, String? color, ProductStatus? status, int? position, String? currency, double? costPrice, double? listingPrice, bool? taxable, String? barcode, String? tags, double? weight, String? weightUnit, int? inventory, int? blockedInventory, double? rating, int? totalOrders, String? additionalInfo, String? thumbImages, bool? isTaxEnabled, bool? isInventoryEnabled, bool? hasVarient, List<Variant>? variants, List<ProductImage>? images, List<Review>? reviews}) {
     return Product._internal(
       id: id == null ? UUID.getUUID() : id,
       title: title,
@@ -631,10 +640,7 @@ class Product extends Model {
       AuthRule(
         authStrategy: AuthStrategy.PUBLIC,
         operations: [
-          ModelOperation.READ,
-          ModelOperation.CREATE,
-          ModelOperation.UPDATE,
-          ModelOperation.DELETE
+          ModelOperation.READ
         ]),
       AuthRule(
         authStrategy: AuthStrategy.PRIVATE,
@@ -733,7 +739,7 @@ class Product extends Model {
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: Product.SLUG,
-      isRequired: false,
+      isRequired: true,
       ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));
     

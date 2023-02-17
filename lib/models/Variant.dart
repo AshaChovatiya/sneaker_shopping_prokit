@@ -63,8 +63,17 @@ class Variant extends Model {
       );
   }
   
-  String? get productId {
-    return _productId;
+  String get productId {
+    try {
+      return _productId!;
+    } catch(e) {
+      throw new AmplifyCodeGenModelException(
+          AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
+    }
   }
   
   String get title {
@@ -161,9 +170,9 @@ class Variant extends Model {
     return _blockedInventory;
   }
   
-  const Variant._internal({required this.id, productId, required title, required price, sku, size, color, status, position, currency, costPrice, listingPrice, createdAt, updatedAt, taxable, barcode, imageUrl, weight, weightUnit, inventory, blockedInventory}): _productId = productId, _title = title, _price = price, _sku = sku, _size = size, _color = color, _status = status, _position = position, _currency = currency, _costPrice = costPrice, _listingPrice = listingPrice, _createdAt = createdAt, _updatedAt = updatedAt, _taxable = taxable, _barcode = barcode, _imageUrl = imageUrl, _weight = weight, _weightUnit = weightUnit, _inventory = inventory, _blockedInventory = blockedInventory;
+  const Variant._internal({required this.id, required productId, required title, required price, sku, size, color, status, position, currency, costPrice, listingPrice, createdAt, updatedAt, taxable, barcode, imageUrl, weight, weightUnit, inventory, blockedInventory}): _productId = productId, _title = title, _price = price, _sku = sku, _size = size, _color = color, _status = status, _position = position, _currency = currency, _costPrice = costPrice, _listingPrice = listingPrice, _createdAt = createdAt, _updatedAt = updatedAt, _taxable = taxable, _barcode = barcode, _imageUrl = imageUrl, _weight = weight, _weightUnit = weightUnit, _inventory = inventory, _blockedInventory = blockedInventory;
   
-  factory Variant({String? id, String? productId, required String title, required double price, String? sku, String? size, String? color, ProductStatus? status, int? position, String? currency, double? costPrice, double? listingPrice, TemporalDateTime? createdAt, TemporalDateTime? updatedAt, bool? taxable, String? barcode, String? imageUrl, double? weight, String? weightUnit, int? inventory, int? blockedInventory}) {
+  factory Variant({String? id, required String productId, required String title, required double price, String? sku, String? size, String? color, ProductStatus? status, int? position, String? currency, double? costPrice, double? listingPrice, TemporalDateTime? createdAt, TemporalDateTime? updatedAt, bool? taxable, String? barcode, String? imageUrl, double? weight, String? weightUnit, int? inventory, int? blockedInventory}) {
     return Variant._internal(
       id: id == null ? UUID.getUUID() : id,
       productId: productId,
@@ -359,7 +368,7 @@ class Variant extends Model {
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: Variant.PRODUCTID,
-      isRequired: false,
+      isRequired: true,
       ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));
     
