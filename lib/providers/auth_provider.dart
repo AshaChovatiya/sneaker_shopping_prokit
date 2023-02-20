@@ -3,6 +3,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 
+import '../screen/SSDashBoardScreen.dart';
 import '../screen/SSVerifyNumberScreen.dart';
 
 class AuthenticationProvider extends ChangeNotifier {
@@ -21,12 +22,16 @@ class AuthenticationProvider extends ChangeNotifier {
       safePrint('data ---------$result');
       isUserLoggedIn = result.isSignedIn;
 
-      if (result.nextStep?.signInStep == 'CONFIRM_SIGN_IN_WITH_SMS_MFA_CODE') {
-        finish(context!);
-        SSVerifyNumberScreen(
-          isSignIn: true,
-        ).launch(context);
-      }
+      finish(context!);
+      SSDashBoardScreen().launch(context);
+
+      //TOdo: uncomment this code when you want to verify the number
+      // if (result.nextStep?.signInStep == 'CONFIRM_SIGN_IN_WITH_SMS_MFA_CODE') {
+      //   finish(context!);
+      //   SSVerifyNumberScreen(
+      //     isSignIn: true,
+      //   ).launch(context);
+      // }
       isLoading = false;
       notifyListeners();
     } on AuthException catch (e) {

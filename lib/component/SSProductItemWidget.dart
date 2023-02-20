@@ -21,7 +21,7 @@ class SSProductItemWidget extends StatelessWidget {
       child: Wrap(
         runSpacing: 16,
         spacing: 16,
-        children: _productProvider.productList.map(
+        children: _productProvider.productList!.listProducts!.items!.map(
           (e) {
             return InkWell(
               highlightColor: Colors.transparent,
@@ -29,11 +29,11 @@ class SSProductItemWidget extends StatelessWidget {
               onTap: () {
                 SSDetailScreen(
                   img: list[0].img,
-                  productId: e?.id,
+                  productId: e.id,
                 ).launch(context);
               },
               child: SSBestODWidget(
-                title: e!.title,
+                title: e.title,
                 img: e.thumbImages == ''
                     ? imagePlaceHolder
                     : imageBaseApi + e.thumbImages.toString(),

@@ -4,21 +4,22 @@ import 'package:amplify_api/model_queries.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:sneaker_shopping_prokit/model/Items.dart';
+import 'package:sneaker_shopping_prokit/model/ListProductCategoryModel.dart';
 import 'package:sneaker_shopping_prokit/models/ModelProvider.dart';
 
-import '../model/ProductCategoryDemo.dart';
-import '../schema/graph_mutation_query.dart';
+import '../model/ProductListModel.dart';
+import '../schema/graph_query.dart';
 
 class ProductProvider extends ChangeNotifier {
-  List<Product?> productList = [];
-  List<Product?> newArrivals = [];
+  ProductListModel? productList = ProductListModel();
+  ProductListModel? newArrivals = ProductListModel();
   List<Items> categoryList = [];
-  Product? productDataModel;
+  Items? productDataModel;
   bool productDetailLoading = false;
+  bool homeLoading = false;
 
   Future<void> getData() async {
-    changeAdd();
+    // changeAdd();
     // String getProductImage = '''
     //     query GetProductImage(1: ID!) {
     //       getProductImage(id: 1) {
@@ -60,35 +61,37 @@ class ProductProvider extends ChangeNotifier {
     // final request = ModelQueries.list(
     //   Product.classType,
     // );
-    var request = Amplify.API.query(
-        request: GraphQLRequest<String>(
-      document: OrderSchema.listProduct(),
-    ));
-    var response = await request.response;
-    if (jsonDecode(response.data!)['listProducts']['items'].length > 0) {
-      productList.clear();
-      for (var i = 0;
-          i < jsonDecode(response.data!)['listProducts']['items'].length;
-          i++) {
-        if (jsonDecode(response.data!)['listProducts']['items'] != null) {
-          productList.add(Product.fromJson(
-              jsonDecode(response.data!)['listProducts']['items'][i]));
+    try {
+      homeLoading = true;
+      var request = Amplify.API.query(
+          request: GraphQLRequest<String>(
+        document: GraphQuerySchema.listProduct(),
+      ));
+      var response = await request.response;
+      productList =
+          ProductListModel.fromJson(jsonDecode(response.data!)['listProducts']);
+
+      newArrivals = ProductListModel();
+      if (productList!.listProducts != null)
+        for (var j = 0; j < productList!.listProducts!.items!.length; j++) {
+          if (productList!.listProducts!.items![j].isFeatured == true) {
+            newArrivals!.listProducts!.items!
+                .add(productList!.listProducts!.items![j]);
+          }
         }
-      }
-      newArrivals.clear();
-      for (var j = 0; j < productList.length; j++) {
-        if (productList[j]!.isFeatured == true) {
-          newArrivals.add(productList[j]);
-        }
-      }
+      print("Data:------- ${productList?.listProducts!.items!.length}");
+
+      await getAllCategory();
+      homeLoading = false;
+      notifyListeners();
+    } catch (e) {
+      homeLoading = false;
     }
-    print("Data:------- ${productList.length}");
-    getAllCategory();
     notifyListeners();
   }
 
   getProductItemData(String? productId) async {
-    var getProduct = OrderSchema.getSingleProduct(productId!);
+    var getProduct = GraphQuerySchema.getSingleProduct(productId!);
     productDetailLoading = true;
 
     try {
@@ -99,7 +102,7 @@ class ProductProvider extends ChangeNotifier {
       var response = await operation.response;
       print(response.errors);
       productDataModel =
-          Product.fromJson(jsonDecode(response.data!)['getProduct']);
+          Items.fromJson(jsonDecode(response.data!)['getProduct']);
       print("ProductItemData:------- ${productDataModel!.id}");
       productDetailLoading = false;
     } catch (e) {
@@ -167,7 +170,7 @@ class ProductProvider extends ChangeNotifier {
   }*/
 
   Future<void> getAllCategory() async {
-    var getProduct = OrderSchema.getListProductCategories();
+    var getProduct = GraphQuerySchema.getListProductCategories();
 
     var operation = Amplify.API.query(
         request: GraphQLRequest<String>(
@@ -175,45 +178,28 @@ class ProductProvider extends ChangeNotifier {
     ));
     var response = await operation.response;
     // ProductCategory.fromJson(jsonDecode(response.data!));
-    ProductCategoryDemo productCategoryDemo =
-        ProductCategoryDemo.fromJson(jsonDecode(response.data!));
+    ListProductCategoryModel listProductCategoryModel =
+        ListProductCategoryModel.fromJson(jsonDecode(response.data!));
     print(
-        "categoryList lengthsssss:------- ${productCategoryDemo.listProductCategories?.items?.length}");
-    if (productCategoryDemo.listProductCategories!.items!.length > 0) {
-      categoryList.clear();
-      categoryList
-          .addAll(productCategoryDemo.listProductCategories!.items!.toList());
-
-      for (var i = 0; i < productList.length; i++) {
-        for (var j = 0;
-            j < productCategoryDemo.listProductCategories!.items!.length;
-            j++) {
-          if (productList[i]?.slug ==
-              productCategoryDemo.listProductCategories!.items![j].slug) {
-            print('---------------- true');
-          }
-        }
-      }
-      print("categoryList length:------- ${categoryList.length}");
-      notifyListeners();
-    }
+        "categoryList lengthsssss:------- ${listProductCategoryModel.data!.listProductCategories!.items?.length}");
   }
 
-  changeAdd()async {
-    String req = '''mutation MyMutation {
-  createUserAddress(input: {email: "abc1@gmail.com", userID: "2e90184d-5691-4f3d-9719-e87c059b7bb4"}) {
-    id
-  }
-}
-''';
-
-    var operation = Amplify.API.mutate(
-        request: GraphQLRequest<String>(
-      document: req,
-    ));
-
-    var response = await operation.response;
-    var data = response.data;
-    print('-------------$data');
-  }
+//
+//   changeAdd() async {
+//     String req = '''mutation MyMutation {
+//   createUserAddress(input: {email: "abc1@gmail.com", userID: "2e90184d-5691-4f3d-9719-e87c059b7bb4"}) {
+//     id
+//   }
+// }
+// ''';
+//
+//     var operation = Amplify.API.mutate(
+//         request: GraphQLRequest<String>(
+//       document: req,
+//     ));
+//
+//     var response = await operation.response;
+//     var data = response.data;
+//     print('-------------$data');
+//   }
 }

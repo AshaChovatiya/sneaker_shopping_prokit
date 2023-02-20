@@ -10,6 +10,15 @@ class SearchScreenProvider extends ChangeNotifier {
 
   SearchScreenProvider() {
     searchProductCategories();
+    // signOutCurrentUserGlobally();
+  }
+
+  Future<void> signOutCurrentUserGlobally() async {
+    try {
+      await Amplify.Auth.signOut(options: SignOutOptions(globalSignOut: true));
+    } on AmplifyException catch (e) {
+      print(e.message);
+    }
   }
 
   onChangeSearch(bool isSearch) {

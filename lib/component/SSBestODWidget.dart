@@ -5,6 +5,7 @@ import 'package:sneaker_shopping_prokit/models/Product.dart';
 import 'package:sneaker_shopping_prokit/providers/initial_provider.dart';
 import 'package:sneaker_shopping_prokit/service/mutations.dart';
 
+import '../model/ProductListModel.dart';
 import '../models/WishlistProduct.dart';
 
 class SSBestODWidget extends StatelessWidget {
@@ -13,7 +14,7 @@ class SSBestODWidget extends StatelessWidget {
   final String? subtitle;
   final String? amount;
   final String? amountType;
-  final Product? product;
+  final Items? product;
 
   SSBestODWidget(
       {this.img,
@@ -51,8 +52,9 @@ class SSBestODWidget extends StatelessWidget {
                           context.read<InitialProvider>().currentUser?.userId;
                       if (userId == null || product == null) return;
 
-                      final WishlistProduct wishlistProduct = WishlistProduct(
-                        productId: product!.id,
+                      //Todo Add to wishlist
+                      /*final WishlistProduct wishlistProduct = WishlistProduct(
+                        productId: product!.id.toString(),
                         wishlistId: '1',
                         quantity: 0,
                         product: product,
@@ -60,7 +62,7 @@ class SSBestODWidget extends StatelessWidget {
                       );
 
                       await AWSMutations.addWishList(
-                          userId: userId, wishlistProduct: wishlistProduct);
+                          userId: userId, wishlistProduct: wishlistProduct);*/
                     },
                     child: Container(
                       margin: EdgeInsets.only(right: 8, top: 8),
@@ -79,14 +81,15 @@ class SSBestODWidget extends StatelessWidget {
             ),
           ),
           SizedBox(height: 4),
-          Text(subtitle!, style: secondaryTextStyle(size: 12)),
+          Text(subtitle ?? '', style: secondaryTextStyle(size: 12)),
           SizedBox(height: 4),
           Container(
             width: context.width() / 2 - 12,
-            child: Text(title!, maxLines: 2, style: boldTextStyle(size: 14)),
+            child:
+                Text(title ?? '', maxLines: 2, style: boldTextStyle(size: 14)),
           ),
           SizedBox(height: 4),
-          Text('${amountType! + ' ' + amount.toString()}',
+          Text('${amountType ?? '' + ' ' + amount.toString()}',
               style: secondaryTextStyle(size: 12)),
         ],
       ),
