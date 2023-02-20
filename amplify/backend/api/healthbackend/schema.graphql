@@ -33,6 +33,12 @@ enum ProductStatus {
   DISABLED
 }
 
+enum CouponType {
+  PERCENTAGE
+  FIXED
+  BOGO
+}
+
 type User @model(subscriptions: null) @searchable @auth(rules: [{allow: public, operations: [read]}, {allow: private, operations: [read]}, {allow: owner, ownerField: "owner", identityClaim: "sub", operations: [read, create, update]}]) {
   id: ID!
   storeId: ID @index(name: "bystoreIdUser", queryField: "bystoreIdUser", sortKeyFields: ["createdAt"])
@@ -412,21 +418,24 @@ type ShoppingCartProduct @model(subscriptions: null) @auth(rules: [{allow: publi
 
 type CouponCode @model(subscriptions: null) @searchable @auth(rules: [{allow: public, operations: [read]}, {allow: private, operations: [read, create, update, delete]}]) {
   id: ID!
-  code: String! @index(name: "bycodeCouponCode", queryField: "bycodeCouponCode", sortKeyFields: ["createdAt"]) @index(name: "bycodeUserIdCouponCode", queryField: "bycodeUserIdCouponCode", sortKeyFields: ["userId"]) @index(name: "bycodeisForAllCouponCode", queryField: "bycodeisForAllCouponCode", sortKeyFields: ["isForAll"])
-  isForAll: Int
+  code: String! @index(name: "bycodeCouponCode", queryField: "bycodeCouponCode", sortKeyFields: ["createdAt"]) @index(name: "bycodeUserIdCouponCode", queryField: "bycodeUserIdCouponCode", sortKeyFields: ["userId"])
   storeId: ID
   store: Store @hasOne(fields: ["storeId"])
   userId: ID @index(name: "byuserIdCouponCode", queryField: "byuserIdCouponCode", sortKeyFields: ["createdAt"])
   user: User @hasOne(fields: ["userId"])
   discount: Float!
-  expirationDate: AWSDate!
-  maxUse: Int!
+  expirationDate: AWSDate
+  maxUse: Int
   totalUsed: Int
-  isActive: Boolean
+  isActive: Boolean @default(value: "true")
+  isFeatured: Boolean @default(value: "false")
+  couponType: CouponType @default(value: "PERCENTAGE")
+  minOrderValue: Int @default(value: "0")
+  maxDiscount: Int
   createdAt: AWSDateTime
   updatedAt: AWSDateTime
 }
 
 type Query {
-  applyCoupon(code: String): AWSJSON @function(name: "healthapplyCoupn-${env}") @auth(rules: [{allow: public, provider: apiKey}, {allow: private, provider: userPools}])
+  applyCoupon(code: String!): CouponCode @function(name: "healthapplyCoupn-${env}") @auth(rules: [{allow: public, provider: apiKey}, {allow: private, provider: userPools}])
 }

@@ -1,3 +1,5 @@
+import 'package:sneaker_shopping_prokit/utils/SSConstants.dart';
+
 class Images {
   List<ImageItems>? items;
 
@@ -40,7 +42,7 @@ class ImageItems {
   ImageItems.fromJson(Map<String, dynamic> json) {
     height = json['height'];
     id = json['id'];
-    imageKey = json['imageKey'];
+    imageKey = json.containsKey('imageKey') ? json['imageKey'] : null;
     productId = json['productId'];
     position = json['position'];
     isThumb = json['isThumb'];

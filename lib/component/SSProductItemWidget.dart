@@ -14,8 +14,8 @@ class SSProductItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ProductProvider _productProvider =
-        Provider.of<ProductProvider>(context, listen: false);
+    final ProductProvider _productProvider =
+        Provider.of<ProductProvider>(context);
     return SingleChildScrollView(
       padding: EdgeInsets.fromLTRB(16, 16, 16, 60),
       child: Wrap(

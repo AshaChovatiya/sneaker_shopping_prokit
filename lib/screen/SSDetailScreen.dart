@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/component/AddToCartBottomSheet.dart';
@@ -88,25 +89,24 @@ class SSDetailScreenState extends State<SSDetailScreen> {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Container(
+                      height: context.height() * 0.4,
+                      width: context.width(),
                       padding: EdgeInsets.all(8),
-                      decoration:
-                          BoxDecoration(color: Colors.grey.withOpacity(0.3)),
+                      decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.3),
+                          image: DecorationImage(
+                              image: CachedNetworkImageProvider(
+                                  productProvider.selectedImage != null
+                                      ? imageBaseApi +
+                                          productProvider
+                                              .selectedImage!.imageKey
+                                              .toString()
+                                              .validate()
+                                      : imagePlaceHolder),
+                              fit: BoxFit.fill)),
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          CachedNetworkImage(
-                            height: 250,
-                            width: MediaQuery.of(context).size.width,
-                            fit: BoxFit.cover,
-                            imageUrl: imageBaseApi +
-                                productProvider.productDataModel!.images!
-                                    .items![index].imageKey
-                                    .toString(),
-                            placeholder: (context, url) =>
-                                Center(child: CircularProgressIndicator()),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
-                          ),
-                          SizedBox(height: 16),
                           SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: Row(
@@ -121,14 +121,15 @@ class SSDetailScreenState extends State<SSDetailScreen> {
                                   highlightColor: Colors.transparent,
                                   radius: 8,
                                   onTap: () {
-                                    setState(() {
+                                    productProvider.changeSelectedImage(e);
+                                    /*setState(() {
                                       index = productProvider
                                           .productDataModel!.images!.items!
                                           .indexOf(ImageItems(
                                         imageKey: e.imageKey,
                                         position: e.position,
                                       ));
-                                    });
+                                    });*/
                                   },
                                   child: Container(
                                       margin: EdgeInsets.only(right: 8),
@@ -162,7 +163,6 @@ class SSDetailScreenState extends State<SSDetailScreen> {
                               }).toList(),
                             ),
                           ),
-                          SizedBox(height: 16),
                         ],
                       ),
                     ),
@@ -327,21 +327,29 @@ class SSDetailScreenState extends State<SSDetailScreen> {
                               ),
                             },
                           ),
-                          Text(
+                          Html(
+                              data: productProvider
+                                      .productDataModel!.additionalInfo ??
+                                  ''),
+                          /* Text(
                               productProvider
                                       .productDataModel!.additionalInfo ??
                                   '',
                               textAlign: TextAlign.start,
                               overflow: TextOverflow.clip,
-                              style: secondaryTextStyle()),
+                              style: secondaryTextStyle()),*/
                           SizedBox(height: 8),
-                          Text(
+                          Html(
+                              data: productProvider
+                                      .productDataModel!.longDescription ??
+                                  ''),
+                          /* Text(
                               productProvider
                                       .productDataModel!.longDescription ??
                                   '',
                               textAlign: TextAlign.start,
                               overflow: TextOverflow.clip,
-                              style: secondaryTextStyle()),
+                              style: secondaryTextStyle()),*/
                         ],
                       ),
                     ),

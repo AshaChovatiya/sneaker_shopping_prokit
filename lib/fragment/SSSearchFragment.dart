@@ -8,9 +8,34 @@ import 'package:sneaker_shopping_prokit/utils/SSConstants.dart';
 import 'package:sneaker_shopping_prokit/utils/SSDataGenerator.dart';
 import 'package:sneaker_shopping_prokit/utils/SSWidgets.dart';
 
-class SSSearchFragment extends StatelessWidget {
+class SSSearchFragment extends StatefulWidget {
+  @override
+  State<SSSearchFragment> createState() => _SSSearchFragmentState();
+}
+
+class _SSSearchFragmentState extends State<SSSearchFragment> {
   final List<SneakerShoppingModel> list = getSearchData();
+
   final searchController = TextEditingController();
+
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    Provider.of<SearchScreenProvider>(context, listen: false)
+        .searchProductItems
+        ?.clear();
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        Provider.of<SearchScreenProvider>(context, listen: false)
+            .searchProductData(search: searchController.text, isScroll: true);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,148 +50,253 @@ class SSSearchFragment extends StatelessWidget {
         ),
         title: Text("Search", style: boldTextStyle()),
       ),
-      body: ChangeNotifierProvider(
-        create: (_) => SearchScreenProvider(),
-        child: Consumer<SearchScreenProvider>(
-          builder: (context, _searchScreenProvider, _) {
-            return Padding(
-              padding: EdgeInsets.only(top: 16, left: 16, right: 16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  TextField(
-                    controller: searchController,
-                    obscureText: false,
-                    textAlign: TextAlign.start,
-                    maxLines: 1,
-                    style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontStyle: FontStyle.normal,
-                        fontSize: 14,
-                        color: Color(0xff000000)),
-                    decoration: sSInputDecoration(
-                      context: context,
-                      name: 'Search',
-                      icon: Icon(Icons.search,
-                          color: Colors.grey.withOpacity(0.7), size: 24),
-                    ),
-                    onChanged: (val) {
-                      if (val.isNotEmpty) {
-                        _searchScreenProvider.onChangeSearch(true);
-                        _searchScreenProvider.searchProductCategories(
-                          search: searchController.text,
-                        );
-                      } else {
-                        _searchScreenProvider.onChangeSearch(false);
-                        _searchScreenProvider.searchProductCategories();
-                      }
-                    },
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  _searchScreenProvider.isSearchLoading
-                      ? Expanded(
-                          child: Center(child: CircularProgressIndicator()))
-                      : Expanded(
-                          child: _searchScreenProvider
-                                      .searchProductCategoriesList.length >
-                                  0
-                              ? ListView.builder(
-                                  padding: EdgeInsets.only(top: 0, bottom: 8),
-                                  itemCount: _searchScreenProvider
-                                      .searchProductCategoriesList.length,
-                                  // shrinkWrap: true,
-                                  // physics: NeverScrollableScrollPhysics(),
-                                  itemBuilder: (_, index) {
-                                    return Padding(
-                                      padding:
-                                          EdgeInsets.only(top: 8, bottom: 8),
-                                      child: InkWell(
-                                        onTap: () {
-                                          SSProductScreen(img: list[index].img!)
-                                              .launch(context);
-                                        },
-                                        child: Stack(
-                                          alignment: Alignment.centerLeft,
+      body: Column(
+        children: [
+          Consumer<SearchScreenProvider>(
+              builder: (context, _searchScreenProvider, _) {
+            return TextField(
+              controller: searchController,
+              obscureText: false,
+              textAlign: TextAlign.start,
+              maxLines: 1,
+              style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontStyle: FontStyle.normal,
+                  fontSize: 14,
+                  color: Color(0xff000000)),
+              decoration: sSInputDecoration(
+                context: context,
+                icon: Icon(Icons.search,
+                    color: Colors.grey.withOpacity(0.7), size: 24),
+              ),
+              onEditingComplete: () {
+                _searchScreenProvider.searchProductData(
+                    search: searchController.text);
+              },
+            );
+          }),
+          SizedBox(
+            height: 10,
+          ),
+          Expanded(
+            child: Consumer<SearchScreenProvider>(
+              builder: (context, _searchScreenProvider, _) {
+                return _searchScreenProvider.isSearchLoading
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : Padding(
+                        padding: EdgeInsets.only(top: 16, left: 16, right: 16),
+                        child: _searchScreenProvider.isSearchLoading
+                            ? Center(child: CircularProgressIndicator())
+                            : _searchScreenProvider
+                                        .searchProductItems?.isNotEmpty ??
+                                    false
+                                ? ListView.builder(
+                                    controller: _scrollController,
+                                    padding: EdgeInsets.only(top: 0, bottom: 8),
+                                    itemCount: _searchScreenProvider
+                                        .searchProductItems?.length,
+                                    // shrinkWrap: true,
+                                    // physics: NeverScrollableScrollPhysics(),
+                                    itemBuilder: (_, index) {
+                                      if (_searchScreenProvider.isPagination &&
+                                          index ==
+                                              _searchScreenProvider
+                                                      .searchProductItems!
+                                                      .length -
+                                                  1) {
+                                        return Column(
                                           children: [
-                                            Image.network(
-                                                _searchScreenProvider
-                                                            .searchProductCategoriesList[
-                                                                index]!
-                                                            .imageUrl ==
-                                                        ''
-                                                    ? imagePlaceHolder
-                                                    : imageBaseApi +
-                                                        _searchScreenProvider
-                                                            .searchProductCategoriesList[
-                                                                index]!
-                                                            .imageUrl
-                                                            .toString(),
-                                                height: 250,
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                fit: BoxFit.cover),
-                                            Container(
-                                                height: 250,
-                                                color: Colors.black26),
                                             Padding(
-                                              padding: EdgeInsets.only(left: 8),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    _searchScreenProvider
-                                                        .searchProductCategoriesList[
-                                                            index]!
-                                                        .name
-                                                        .toString(),
-                                                    style: boldTextStyle(
-                                                        color: Colors.white,
-                                                        size: 12),
-                                                  ),
-                                                  SizedBox(height: 8),
-                                                  Container(
-                                                      height: 1,
-                                                      width: 50,
-                                                      color: Colors.white),
-                                                  SizedBox(height: 8),
-                                                  Text(
-                                                      _searchScreenProvider
-                                                              .searchProductCategoriesList[
-                                                                  index]!
-                                                              .slug ??
-                                                          '',
-                                                      style: boldTextStyle(
-                                                          color: Colors.white))
-                                                ],
+                                              padding: EdgeInsets.only(
+                                                  top: 8, bottom: 8),
+                                              child: InkWell(
+                                                onTap: () {
+                                                  SSProductScreen(
+                                                          img: list[index].img!)
+                                                      .launch(context);
+                                                },
+                                                child: Stack(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  children: [
+                                                    Image.network(
+                                                        _searchScreenProvider
+                                                                    .searchProductItems![
+                                                                        index]
+                                                                    .images!
+                                                                    .productImagesItems![
+                                                                        0]
+                                                                    .imageKey ==
+                                                                ''
+                                                            ? imagePlaceHolder
+                                                            : imageBaseApi +
+                                                                _searchScreenProvider
+                                                                    .searchProductItems![
+                                                                        index]
+                                                                    .images!
+                                                                    .productImagesItems![
+                                                                        0]
+                                                                    .imageKey!,
+                                                        height: 250,
+                                                        width: MediaQuery.of(
+                                                                context)
+                                                            .size
+                                                            .width,
+                                                        fit: BoxFit.fill),
+                                                    Container(
+                                                        height: 250,
+                                                        color: Colors.black26),
+                                                    Padding(
+                                                      padding: EdgeInsets.only(
+                                                          left: 8),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            _searchScreenProvider
+                                                                .searchProductItems![
+                                                                    index]
+                                                                .title
+                                                                .toString(),
+                                                            style: boldTextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                size: 12),
+                                                          ),
+                                                          SizedBox(height: 8),
+                                                          Container(
+                                                              height: 1,
+                                                              width: 50,
+                                                              color:
+                                                                  Colors.white),
+                                                          SizedBox(height: 8),
+                                                          Text(
+                                                              _searchScreenProvider
+                                                                      .searchProductItems![
+                                                                          index]
+                                                                      .slug ??
+                                                                  '',
+                                                              style: boldTextStyle(
+                                                                  color: Colors
+                                                                      .white))
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(16.0),
+                                              child: Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              ),
+                                            )
                                           ],
+                                        );
+                                      }
+                                      return Padding(
+                                        padding:
+                                            EdgeInsets.only(top: 8, bottom: 8),
+                                        child: InkWell(
+                                          onTap: () {
+                                            SSProductScreen(
+                                                    img: list[index].img!)
+                                                .launch(context);
+                                          },
+                                          child: Stack(
+                                            alignment: Alignment.centerLeft,
+                                            children: [
+                                              Image.network(
+                                                  _searchScreenProvider
+                                                              .searchProductItems![
+                                                                  index]
+                                                              .images!
+                                                              .productImagesItems![
+                                                                  0]
+                                                              .imageKey ==
+                                                          ''
+                                                      ? imagePlaceHolder
+                                                      : imageBaseApi +
+                                                          _searchScreenProvider
+                                                              .searchProductItems![
+                                                                  index]
+                                                              .images!
+                                                              .productImagesItems![
+                                                                  0]
+                                                              .imageKey!,
+                                                  height: 250,
+                                                  width: MediaQuery.of(context)
+                                                      .size
+                                                      .width,
+                                                  fit: BoxFit.fill),
+                                              Container(
+                                                  height: 250,
+                                                  color: Colors.black26),
+                                              Padding(
+                                                padding:
+                                                    EdgeInsets.only(left: 8),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      _searchScreenProvider
+                                                          .searchProductItems![
+                                                              index]
+                                                          .title
+                                                          .toString(),
+                                                      style: boldTextStyle(
+                                                          color: Colors.white,
+                                                          size: 12),
+                                                    ),
+                                                    SizedBox(height: 8),
+                                                    Container(
+                                                        height: 1,
+                                                        width: 50,
+                                                        color: Colors.white),
+                                                    SizedBox(height: 8),
+                                                    Text(
+                                                        _searchScreenProvider
+                                                                .searchProductItems![
+                                                                    index]
+                                                                .slug ??
+                                                            '',
+                                                        style: boldTextStyle(
+                                                            color:
+                                                                Colors.white))
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    );
-                                  },
-                                )
-                              : Center(
-                                  child: Text(
-                                    'No Result Found',
-                                    style: boldTextStyle(
-                                        color: Colors.black, size: 12),
+                                      );
+                                    },
+                                  )
+                                : Center(
+                                    child: Text(
+                                      'No Result Found',
+                                      style: boldTextStyle(
+                                          color: Colors.black, size: 12),
+                                    ),
                                   ),
-                                ),
-                        )
-                ],
-              ),
-            );
-          },
-        ),
+                      );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

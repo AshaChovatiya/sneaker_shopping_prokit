@@ -4,6 +4,7 @@ import 'package:amplify_api/model_queries.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:sneaker_shopping_prokit/model/ImageModel.dart';
 import 'package:sneaker_shopping_prokit/model/ListProductCategoryModel.dart';
 import 'package:sneaker_shopping_prokit/models/ModelProvider.dart';
 
@@ -17,6 +18,12 @@ class ProductProvider extends ChangeNotifier {
   Items? productDataModel;
   bool productDetailLoading = false;
   bool homeLoading = false;
+  ImageItems? selectedImage;
+
+  changeSelectedImage(ImageItems image) {
+    selectedImage = image;
+    notifyListeners();
+  }
 
   Future<void> getData() async {
     // changeAdd();
@@ -70,7 +77,6 @@ class ProductProvider extends ChangeNotifier {
       var response = await request.response;
       productList =
           ProductListModel.fromJson(jsonDecode(response.data!)['listProducts']);
-
       newArrivals = ProductListModel();
       if (productList!.listProducts != null)
         for (var j = 0; j < productList!.listProducts!.items!.length; j++) {
@@ -79,9 +85,9 @@ class ProductProvider extends ChangeNotifier {
                 .add(productList!.listProducts!.items![j]);
           }
         }
-      print("Data:------- ${productList?.listProducts!.items!.length}");
 
       await getAllCategory();
+
       homeLoading = false;
       notifyListeners();
     } catch (e) {
@@ -103,6 +109,7 @@ class ProductProvider extends ChangeNotifier {
       print(response.errors);
       productDataModel =
           Items.fromJson(jsonDecode(response.data!)['getProduct']);
+      selectedImage = productDataModel!.images!.items![0];
       print("ProductItemData:------- ${productDataModel!.id}");
       productDetailLoading = false;
     } catch (e) {

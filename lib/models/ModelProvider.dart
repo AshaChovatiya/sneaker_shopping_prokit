@@ -43,6 +43,7 @@ import 'Address.dart';
 
 export 'Address.dart';
 export 'CouponCode.dart';
+export 'CouponType.dart';
 export 'Order.dart';
 export 'OrderProduct.dart';
 export 'OrderStatus.dart';
@@ -68,7 +69,7 @@ export 'warehouse.dart';
 
 class ModelProvider implements ModelProviderInterface {
   @override
-  String version = "4a86d315d871a19d0c48008e5c6cf0c4";
+  String version = "d1f0b3b72e27f5f96be302a99e9d97ab";
   @override
   List<ModelSchema> modelSchemas = [CouponCode.schema, Order.schema, OrderProduct.schema, Payment.schema, Product.schema, ProductCategory.schema, ProductImage.schema, ProductInventory.schema, ProductSubCategory.schema, Review.schema, ShoppingCart.schema, ShoppingCartProduct.schema, Store.schema, User.schema, UserAddress.schema, Variant.schema, Wishlist.schema, WishlistProduct.schema, warehouse.schema];
   static final ModelProvider _instance = ModelProvider();

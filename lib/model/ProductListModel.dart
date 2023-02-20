@@ -6,7 +6,11 @@ class ProductListModel {
   ProductListModel({this.listProducts});
 
   ProductListModel.fromJson(Map<String, dynamic> json) {
-    listProducts = ListProducts.fromJson(json);
+    try {
+      listProducts = ListProducts.fromJson(json);
+    } catch (e) {
+      print("ProductListModel Error:- $e");
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -25,12 +29,16 @@ class ListProducts {
   ListProducts({this.nextToken, this.items});
 
   ListProducts.fromJson(Map<String, dynamic> json) {
-    nextToken = json['nextToken'];
-    if (json['items'] != null) {
-      items = <Items>[];
-      json['items'].forEach((v) {
-        items!.add(new Items.fromJson(v));
-      });
+    try {
+      nextToken = json['nextToken'];
+      if (json['items'] != null) {
+        items = <Items>[];
+        json['items'].forEach((v) {
+          items!.add(new Items.fromJson(v));
+        });
+      }
+    } catch (e) {
+      print("ListProducts Error:- $e");
     }
   }
 
@@ -52,7 +60,7 @@ class Items {
   String? brand;
   String? categoryId;
   dynamic color;
-  int? costPrice;
+  double? costPrice;
   String? createdAt;
   dynamic currency;
   dynamic hasVarient;
@@ -123,44 +131,50 @@ class Items {
       this.weightUnit});
 
   Items.fromJson(Map<String, dynamic> json) {
-    additionalInfo = json['additionalInfo'];
-    barcode = json['barcode'];
-    blockedInventory = json['blockedInventory'];
-    brand = json['brand'];
-    images =
-        json['images'] != null ? new Images.fromJson(json['images']) : null;
-    categoryId = json['categoryId'];
-    color = json['color'];
-    costPrice = json['costPrice'];
-    createdAt = json['createdAt'];
-    currency = json['currency'];
-    hasVarient = json['hasVarient'];
-    id = json['id'];
-    inventory = json['inventory'];
-    isFeatured = json['isFeatured'];
-    isInventoryEnabled = json['isInventoryEnabled'];
-    isPublished = json['isPublished'];
-    isTaxEnabled = json['isTaxEnabled'];
-    listingPrice = json['listingPrice'];
-    longDescription = json['longDescription'];
-    position = json['position'];
-    price = json['price'];
-    productDescription = json['productDescription'];
-    productType = json['productType'];
-    rating = json['rating'];
-    size = json['size'];
-    sku = json['sku'];
-    slug = json['slug'];
-    status = json['status'];
-    subCategoryId = json['subCategoryId'];
-    thumbImages = json['thumbImages'];
-    taxable = json['taxable'];
-    tags = json['tags'];
-    title = json['title'];
-    totalOrders = json['totalOrders'];
-    updatedAt = json['updatedAt'];
-    weight = json['weight'];
-    weightUnit = json['weightUnit'];
+    try {
+      additionalInfo =
+          json.containsKey('additionalInfo') ? json['additionalInfo'] : '';
+      barcode = json.containsKey('barcode') ? json['barcode'] : '';
+      blockedInventory =
+          json.containsKey('blockedInventory') ? json['blockedInventory'] : '';
+      brand = json.containsKey('brand') ? json['brand'] : '';
+      images =
+          json['images'] != null ? new Images.fromJson(json['images']) : null;
+      categoryId = json.containsKey('categoryId') ? json['categoryId'] : '';
+      color = json['color'];
+      costPrice = json['costPrice'];
+      createdAt = json['createdAt'];
+      currency = json['currency'];
+      hasVarient = json['hasVarient'];
+      id = json['id'];
+      inventory = json['inventory'];
+      isFeatured = json['isFeatured'];
+      isInventoryEnabled = json['isInventoryEnabled'];
+      isPublished = json['isPublished'];
+      isTaxEnabled = json['isTaxEnabled'];
+      listingPrice = json['listingPrice'];
+      longDescription = json['longDescription'];
+      position = json['position'];
+      price = json['price'];
+      productDescription = json['productDescription'];
+      productType = json['productType'];
+      rating = json['rating'];
+      size = json['size'];
+      sku = json['sku'];
+      slug = json['slug'];
+      status = json['status'];
+      subCategoryId = json['subCategoryId'];
+      thumbImages = json['thumbImages'];
+      taxable = json['taxable'];
+      tags = json['tags'];
+      title = json['title'];
+      totalOrders = json['totalOrders'];
+      updatedAt = json['updatedAt'];
+      weight = json['weight'];
+      weightUnit = json['weightUnit'];
+    } catch (e) {
+      print("Items Error:- $e");
+    }
   }
 
   Map<String, dynamic> toJson() {

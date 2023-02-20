@@ -30,7 +30,6 @@ class CouponCode extends Model {
   static const classType = const _CouponCodeModelType();
   final String id;
   final String? _code;
-  final int? _isForAll;
   final String? _storeId;
   final Store? _store;
   final String? _userId;
@@ -40,6 +39,10 @@ class CouponCode extends Model {
   final int? _maxUse;
   final int? _totalUsed;
   final bool? _isActive;
+  final bool? _isFeatured;
+  final CouponType? _couponType;
+  final int? _minOrderValue;
+  final int? _maxDiscount;
   final TemporalDateTime? _createdAt;
   final TemporalDateTime? _updatedAt;
 
@@ -67,10 +70,6 @@ class CouponCode extends Model {
           underlyingException: e.toString()
           );
     }
-  }
-  
-  int? get isForAll {
-    return _isForAll;
   }
   
   String? get storeId {
@@ -102,30 +101,12 @@ class CouponCode extends Model {
     }
   }
   
-  TemporalDate get expirationDate {
-    try {
-      return _expirationDate!;
-    } catch(e) {
-      throw new AmplifyCodeGenModelException(
-          AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
-          recoverySuggestion:
-            AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
-          underlyingException: e.toString()
-          );
-    }
+  TemporalDate? get expirationDate {
+    return _expirationDate;
   }
   
-  int get maxUse {
-    try {
-      return _maxUse!;
-    } catch(e) {
-      throw new AmplifyCodeGenModelException(
-          AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
-          recoverySuggestion:
-            AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
-          underlyingException: e.toString()
-          );
-    }
+  int? get maxUse {
+    return _maxUse;
   }
   
   int? get totalUsed {
@@ -136,6 +117,22 @@ class CouponCode extends Model {
     return _isActive;
   }
   
+  bool? get isFeatured {
+    return _isFeatured;
+  }
+  
+  CouponType? get couponType {
+    return _couponType;
+  }
+  
+  int? get minOrderValue {
+    return _minOrderValue;
+  }
+  
+  int? get maxDiscount {
+    return _maxDiscount;
+  }
+  
   TemporalDateTime? get createdAt {
     return _createdAt;
   }
@@ -144,13 +141,12 @@ class CouponCode extends Model {
     return _updatedAt;
   }
   
-  const CouponCode._internal({required this.id, required code, isForAll, storeId, store, userId, user, required discount, required expirationDate, required maxUse, totalUsed, isActive, createdAt, updatedAt}): _code = code, _isForAll = isForAll, _storeId = storeId, _store = store, _userId = userId, _user = user, _discount = discount, _expirationDate = expirationDate, _maxUse = maxUse, _totalUsed = totalUsed, _isActive = isActive, _createdAt = createdAt, _updatedAt = updatedAt;
+  const CouponCode._internal({required this.id, required code, storeId, store, userId, user, required discount, expirationDate, maxUse, totalUsed, isActive, isFeatured, couponType, minOrderValue, maxDiscount, createdAt, updatedAt}): _code = code, _storeId = storeId, _store = store, _userId = userId, _user = user, _discount = discount, _expirationDate = expirationDate, _maxUse = maxUse, _totalUsed = totalUsed, _isActive = isActive, _isFeatured = isFeatured, _couponType = couponType, _minOrderValue = minOrderValue, _maxDiscount = maxDiscount, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory CouponCode({String? id, required String code, int? isForAll, String? storeId, Store? store, String? userId, User? user, required double discount, required TemporalDate expirationDate, required int maxUse, int? totalUsed, bool? isActive, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
+  factory CouponCode({String? id, required String code, String? storeId, Store? store, String? userId, User? user, required double discount, TemporalDate? expirationDate, int? maxUse, int? totalUsed, bool? isActive, bool? isFeatured, CouponType? couponType, int? minOrderValue, int? maxDiscount, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
     return CouponCode._internal(
       id: id == null ? UUID.getUUID() : id,
       code: code,
-      isForAll: isForAll,
       storeId: storeId,
       store: store,
       userId: userId,
@@ -160,6 +156,10 @@ class CouponCode extends Model {
       maxUse: maxUse,
       totalUsed: totalUsed,
       isActive: isActive,
+      isFeatured: isFeatured,
+      couponType: couponType,
+      minOrderValue: minOrderValue,
+      maxDiscount: maxDiscount,
       createdAt: createdAt,
       updatedAt: updatedAt);
   }
@@ -174,7 +174,6 @@ class CouponCode extends Model {
     return other is CouponCode &&
       id == other.id &&
       _code == other._code &&
-      _isForAll == other._isForAll &&
       _storeId == other._storeId &&
       _store == other._store &&
       _userId == other._userId &&
@@ -184,6 +183,10 @@ class CouponCode extends Model {
       _maxUse == other._maxUse &&
       _totalUsed == other._totalUsed &&
       _isActive == other._isActive &&
+      _isFeatured == other._isFeatured &&
+      _couponType == other._couponType &&
+      _minOrderValue == other._minOrderValue &&
+      _maxDiscount == other._maxDiscount &&
       _createdAt == other._createdAt &&
       _updatedAt == other._updatedAt;
   }
@@ -198,7 +201,6 @@ class CouponCode extends Model {
     buffer.write("CouponCode {");
     buffer.write("id=" + "$id" + ", ");
     buffer.write("code=" + "$_code" + ", ");
-    buffer.write("isForAll=" + (_isForAll != null ? _isForAll!.toString() : "null") + ", ");
     buffer.write("storeId=" + "$_storeId" + ", ");
     buffer.write("userId=" + "$_userId" + ", ");
     buffer.write("discount=" + (_discount != null ? _discount!.toString() : "null") + ", ");
@@ -206,6 +208,10 @@ class CouponCode extends Model {
     buffer.write("maxUse=" + (_maxUse != null ? _maxUse!.toString() : "null") + ", ");
     buffer.write("totalUsed=" + (_totalUsed != null ? _totalUsed!.toString() : "null") + ", ");
     buffer.write("isActive=" + (_isActive != null ? _isActive!.toString() : "null") + ", ");
+    buffer.write("isFeatured=" + (_isFeatured != null ? _isFeatured!.toString() : "null") + ", ");
+    buffer.write("couponType=" + (_couponType != null ? enumToString(_couponType)! : "null") + ", ");
+    buffer.write("minOrderValue=" + (_minOrderValue != null ? _minOrderValue!.toString() : "null") + ", ");
+    buffer.write("maxDiscount=" + (_maxDiscount != null ? _maxDiscount!.toString() : "null") + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
@@ -213,11 +219,10 @@ class CouponCode extends Model {
     return buffer.toString();
   }
   
-  CouponCode copyWith({String? code, int? isForAll, String? storeId, Store? store, String? userId, User? user, double? discount, TemporalDate? expirationDate, int? maxUse, int? totalUsed, bool? isActive, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
+  CouponCode copyWith({String? code, String? storeId, Store? store, String? userId, User? user, double? discount, TemporalDate? expirationDate, int? maxUse, int? totalUsed, bool? isActive, bool? isFeatured, CouponType? couponType, int? minOrderValue, int? maxDiscount, TemporalDateTime? createdAt, TemporalDateTime? updatedAt}) {
     return CouponCode._internal(
       id: id,
       code: code ?? this.code,
-      isForAll: isForAll ?? this.isForAll,
       storeId: storeId ?? this.storeId,
       store: store ?? this.store,
       userId: userId ?? this.userId,
@@ -227,6 +232,10 @@ class CouponCode extends Model {
       maxUse: maxUse ?? this.maxUse,
       totalUsed: totalUsed ?? this.totalUsed,
       isActive: isActive ?? this.isActive,
+      isFeatured: isFeatured ?? this.isFeatured,
+      couponType: couponType ?? this.couponType,
+      minOrderValue: minOrderValue ?? this.minOrderValue,
+      maxDiscount: maxDiscount ?? this.maxDiscount,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt);
   }
@@ -234,7 +243,6 @@ class CouponCode extends Model {
   CouponCode.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
       _code = json['code'],
-      _isForAll = (json['isForAll'] as num?)?.toInt(),
       _storeId = json['storeId'],
       _store = json['store']?['serializedData'] != null
         ? Store.fromJson(new Map<String, dynamic>.from(json['store']['serializedData']))
@@ -248,21 +256,24 @@ class CouponCode extends Model {
       _maxUse = (json['maxUse'] as num?)?.toInt(),
       _totalUsed = (json['totalUsed'] as num?)?.toInt(),
       _isActive = json['isActive'],
+      _isFeatured = json['isFeatured'],
+      _couponType = enumFromString<CouponType>(json['couponType'], CouponType.values),
+      _minOrderValue = (json['minOrderValue'] as num?)?.toInt(),
+      _maxDiscount = (json['maxDiscount'] as num?)?.toInt(),
       _createdAt = json['createdAt'] != null ? TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'code': _code, 'isForAll': _isForAll, 'storeId': _storeId, 'store': _store?.toJson(), 'userId': _userId, 'user': _user?.toJson(), 'discount': _discount, 'expirationDate': _expirationDate?.format(), 'maxUse': _maxUse, 'totalUsed': _totalUsed, 'isActive': _isActive, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'code': _code, 'storeId': _storeId, 'store': _store?.toJson(), 'userId': _userId, 'user': _user?.toJson(), 'discount': _discount, 'expirationDate': _expirationDate?.format(), 'maxUse': _maxUse, 'totalUsed': _totalUsed, 'isActive': _isActive, 'isFeatured': _isFeatured, 'couponType': enumToString(_couponType), 'minOrderValue': _minOrderValue, 'maxDiscount': _maxDiscount, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
-    'id': id, 'code': _code, 'isForAll': _isForAll, 'storeId': _storeId, 'store': _store, 'userId': _userId, 'user': _user, 'discount': _discount, 'expirationDate': _expirationDate, 'maxUse': _maxUse, 'totalUsed': _totalUsed, 'isActive': _isActive, 'createdAt': _createdAt, 'updatedAt': _updatedAt
+    'id': id, 'code': _code, 'storeId': _storeId, 'store': _store, 'userId': _userId, 'user': _user, 'discount': _discount, 'expirationDate': _expirationDate, 'maxUse': _maxUse, 'totalUsed': _totalUsed, 'isActive': _isActive, 'isFeatured': _isFeatured, 'couponType': _couponType, 'minOrderValue': _minOrderValue, 'maxDiscount': _maxDiscount, 'createdAt': _createdAt, 'updatedAt': _updatedAt
   };
 
   static final QueryModelIdentifier<CouponCodeModelIdentifier> MODEL_IDENTIFIER = QueryModelIdentifier<CouponCodeModelIdentifier>();
   static final QueryField ID = QueryField(fieldName: "id");
   static final QueryField CODE = QueryField(fieldName: "code");
-  static final QueryField ISFORALL = QueryField(fieldName: "isForAll");
   static final QueryField STOREID = QueryField(fieldName: "storeId");
   static final QueryField STORE = QueryField(
     fieldName: "store",
@@ -276,6 +287,10 @@ class CouponCode extends Model {
   static final QueryField MAXUSE = QueryField(fieldName: "maxUse");
   static final QueryField TOTALUSED = QueryField(fieldName: "totalUsed");
   static final QueryField ISACTIVE = QueryField(fieldName: "isActive");
+  static final QueryField ISFEATURED = QueryField(fieldName: "isFeatured");
+  static final QueryField COUPONTYPE = QueryField(fieldName: "couponType");
+  static final QueryField MINORDERVALUE = QueryField(fieldName: "minOrderValue");
+  static final QueryField MAXDISCOUNT = QueryField(fieldName: "maxDiscount");
   static final QueryField CREATEDAT = QueryField(fieldName: "createdAt");
   static final QueryField UPDATEDAT = QueryField(fieldName: "updatedAt");
   static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
@@ -312,12 +327,6 @@ class CouponCode extends Model {
     ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
-      key: CouponCode.ISFORALL,
-      isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.int)
-    ));
-    
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: CouponCode.STOREID,
       isRequired: false,
       ofType: ModelFieldType(ModelFieldTypeEnum.string)
@@ -351,13 +360,13 @@ class CouponCode extends Model {
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: CouponCode.EXPIRATIONDATE,
-      isRequired: true,
+      isRequired: false,
       ofType: ModelFieldType(ModelFieldTypeEnum.date)
     ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: CouponCode.MAXUSE,
-      isRequired: true,
+      isRequired: false,
       ofType: ModelFieldType(ModelFieldTypeEnum.int)
     ));
     
@@ -371,6 +380,30 @@ class CouponCode extends Model {
       key: CouponCode.ISACTIVE,
       isRequired: false,
       ofType: ModelFieldType(ModelFieldTypeEnum.bool)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: CouponCode.ISFEATURED,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.bool)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: CouponCode.COUPONTYPE,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.enumeration)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: CouponCode.MINORDERVALUE,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.int)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: CouponCode.MAXDISCOUNT,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.int)
     ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(

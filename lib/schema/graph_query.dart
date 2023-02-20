@@ -1896,4 +1896,59 @@ class GraphQuerySchema {
   }
 """;*/
   }
+
+  static searchProduct(String query, String? nextToken) {
+    if (nextToken == null) {
+      return '''query MyQuery {
+  searchProducts(aggregates: {name: "$query", field: title, type: terms}, limit: 10,) {
+    total
+    items {
+      barcode
+      price
+      thumbImages
+      title
+      currency
+      costPrice
+      categoryId
+      brand
+      tags
+      slug
+      productDescription
+      images(limit: 1) {
+        items {
+          imageKey
+          productId
+        }
+      }
+    }
+    nextToken
+  }
+}''';
+    }
+    return '''query MyQuery {
+  searchProducts(aggregates: {name: "$query", field: title, type: terms}, limit: 10, nextToken: "$nextToken") {
+    total
+    items {
+      barcode
+      price
+      thumbImages
+      title
+      currency
+      costPrice
+      categoryId
+      brand
+      tags
+      slug
+      productDescription
+      images(limit: 1) {
+        items {
+          imageKey
+          productId
+        }
+      }
+    }
+    nextToken
+  }
+}''';
+  }
 }
