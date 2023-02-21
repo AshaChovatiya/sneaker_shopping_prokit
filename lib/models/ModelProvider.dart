@@ -43,7 +43,6 @@ import 'Address.dart';
 
 export 'Address.dart';
 export 'CouponCode.dart';
-export 'CouponType.dart';
 export 'Order.dart';
 export 'OrderProduct.dart';
 export 'OrderStatus.dart';

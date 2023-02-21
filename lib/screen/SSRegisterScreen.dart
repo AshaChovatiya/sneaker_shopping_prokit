@@ -165,14 +165,14 @@ class SSRegisterScreen extends StatelessWidget {
                       alignment: Alignment.centerRight,
                       child: InkWell(
                         onTap: () async {
-                          var result = await Amplify.Auth.confirmSignUp(
-                              username: '+919898909090',
-                              confirmationCode: '827706');
+                          // var result = await Amplify.Auth.confirmSignUp(
+                          //     username: '+919898909090',
+                          //     confirmationCode: '827706');
+                          //
+                          // print("Result: $result");
+                          // return;
 
-                          print("Result: $result");
-                          return;
-
-                          // if (_formKey.currentState!.validate()) {
+                           if (_formKey.currentState!.validate()) {
                           authenticationProvider.signUpUser(
                               middleName: middleNameController.text,
                               email: emailController.text,
@@ -181,7 +181,7 @@ class SSRegisterScreen extends StatelessWidget {
                               nickName: userNameController.text,
                               phoneNumber: mobileNumberController.text,
                               context: context);
-                          // }
+                          }
                         },
                         child: Container(
                           margin: EdgeInsets.all(0),

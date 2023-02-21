@@ -5,6 +5,7 @@ import 'package:nb_utils/nb_utils.dart';
 
 import '../screen/SSDashBoardScreen.dart';
 import '../screen/SSVerifyNumberScreen.dart';
+import '../utils/common_snack_bar.dart';
 
 class AuthenticationProvider extends ChangeNotifier {
   bool isUserLoggedIn = false;
@@ -20,6 +21,7 @@ class AuthenticationProvider extends ChangeNotifier {
       );
 
       safePrint('data ---------$result');
+
       isUserLoggedIn = result.isSignedIn;
 
       finish(context!);
@@ -37,6 +39,7 @@ class AuthenticationProvider extends ChangeNotifier {
     } on AuthException catch (e) {
       isLoading = false;
       safePrint(e.message);
+      GlobalSnackBar.show(context!, '${e.message}');
       notifyListeners();
     }
   }
