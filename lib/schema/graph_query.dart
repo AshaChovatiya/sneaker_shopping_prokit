@@ -524,6 +524,51 @@ class GraphQuerySchema {
 }''';
   }
 
+  static String getShoppingCartList({required String userId}) {
+    return '''query MyQuery {
+  listShoppingCarts(filter: {userId: {eq: "$userId"}}) {
+    nextToken
+    items {
+      userId
+      id
+      shoppingcartProducts {
+        items {
+          id
+          productId
+          quantity
+          shoppingcartId
+          product {
+            brand
+            additionalInfo
+            costPrice
+            price
+            productDescription
+            sku
+            listingPrice
+            isFeatured
+            thumbImages
+            images {
+              items {
+                imageKey
+                productId
+                id
+              }
+            }
+            title
+            totalOrders
+            currency
+            color
+            size
+            status
+          }
+        }
+      }
+    }
+  }
+}
+''';
+  }
+
   static String getWishlistProductId({required String userId}) {
     return '''query MyQuery {
   listWishlists(filter: {userId: {eq: "$userId"}}) {

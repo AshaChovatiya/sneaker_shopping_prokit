@@ -40,4 +40,33 @@ class GraphMutationSchema {
   }
 }''';
   }
+
+
+  static createShoppingCartMutation({required String userID}) {
+    return '''mutation MyMutation {
+  createShoppingCart(input: {userId: "$userID"}) {
+    id
+  }
+}
+''';
+  }
+
+  static createShoppingCartToProductMutation(
+      {required String shoppingCartId,
+      required int qty,
+      required String productId}) {
+    return '''mutation MyMutation {
+  createShoppingCartProduct(input: {shoppingcartId: "$shoppingCartId", quantity: $qty, productId: "$productId"}) {
+    id
+  }
+}''';
+  }
+
+  static deleteShoppingCartItem({required String shoppingCartId}) {
+    return '''mutation MyMutation {
+  deleteShoppingCart(input: {id: "$shoppingCartId"}) {
+    id
+  }
+}''';
+  }
 }

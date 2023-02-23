@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/component/AddToCartBottomSheet.dart';
+import 'package:sneaker_shopping_prokit/component/AddToShoppingCart.dart';
 import 'package:sneaker_shopping_prokit/utils/SSWidgets.dart';
 import 'package:sneaker_shopping_prokit/utils/common_snack_bar.dart';
 
@@ -397,9 +398,12 @@ class SSDetailScreenState extends State<SSDetailScreen> {
                       ),
                       context: context,
                       builder: (_) {
-                        return AddToCartBottomSheet(
+                        return AddToShoppingCartBottomSheet(
                           productDataModel: productProvider.productDataModel!,
                         );
+                        // return AddToCartBottomSheet(
+                        //   productDataModel: productProvider.productDataModel!,
+                        // );
                       },
                     );
                   },

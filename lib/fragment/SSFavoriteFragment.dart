@@ -240,8 +240,7 @@ class SSFavoriteFragment extends StatelessWidget {
                                                             ChangeNotifierProvider(
                                                               create: (context) =>
                                                                   WishListProvider(),
-                                                              child: Consumer<
-                                                                      WishListProvider>(
+                                                              child: Consumer<WishListProvider>(
                                                                   builder: (context,
                                                                       dialogWishListProvider,
                                                                       child) {
