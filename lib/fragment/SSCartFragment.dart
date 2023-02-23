@@ -69,8 +69,9 @@ class SSCartFragmentState extends State<SSCartFragment> {
                             highlightColor: Colors.transparent,
                             splashColor: Colors.transparent,
                             onTap: () {
-                              SSDetailScreen(img: list[index].img)
-                                  .launch(context);
+                              SSDetailScreen(
+                                productId: '',
+                              ).launch(context);
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,

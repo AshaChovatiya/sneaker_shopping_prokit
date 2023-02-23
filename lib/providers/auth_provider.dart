@@ -14,6 +14,7 @@ class AuthenticationProvider extends ChangeNotifier {
   Future<void> signInUser(
       {String? phoneNumber, String? password, BuildContext? context}) async {
     isLoading = true;
+    notifyListeners();
     try {
       final result = await Amplify.Auth.signIn(
         username: '+91' + phoneNumber!,
@@ -24,8 +25,15 @@ class AuthenticationProvider extends ChangeNotifier {
 
       isUserLoggedIn = result.isSignedIn;
 
-      finish(context!);
-      SSDashBoardScreen().launch(context);
+      if (result.isSignedIn) {
+        finish(context!);
+        SSDashBoardScreen().launch(context);
+      } else {
+        SSVerifyNumberScreen(
+          isSignIn: true,
+          destination: result.nextStep?.codeDeliveryDetails?.destination,
+        ).launch(context!);
+      }
 
       //TOdo: uncomment this code when you want to verify the number
       // if (result.nextStep?.signInStep == 'CONFIRM_SIGN_IN_WITH_SMS_MFA_CODE') {
@@ -39,7 +47,22 @@ class AuthenticationProvider extends ChangeNotifier {
     } on AuthException catch (e) {
       isLoading = false;
       safePrint(e.message);
-      GlobalSnackBar.show(context!, '${e.message}');
+      if (e.message == 'User not confirmed in the system.') {
+        final result =
+            await Amplify.Auth.resendSignUpCode(username: '+91' + phoneNumber!);
+        print("resendSignUpCode result: $result");
+        SSVerifyNumberScreen(
+          isSignIn: true,
+          destination: result.codeDeliveryDetails.destination,
+        ).launch(context!);
+      } else {
+        GlobalSnackBar.show(
+            context: context!,
+            message: '${e.message}',
+            type: SnackBarType.ERROR);
+      }
+      GlobalSnackBar.show(
+          context: context, message: '${e.message}', type: SnackBarType.ERROR);
       notifyListeners();
     }
   }
@@ -54,6 +77,8 @@ class AuthenticationProvider extends ChangeNotifier {
       String? email,
       String? phoneNumber,
       required BuildContext context}) async {
+    isLoading = true;
+    notifyListeners();
     try {
       final userAttributes = <CognitoUserAttributeKey, String>{
         CognitoUserAttributeKey.name: name.toString(),
@@ -67,11 +92,20 @@ class AuthenticationProvider extends ChangeNotifier {
         password: password!,
         options: CognitoSignUpOptions(userAttributes: userAttributes),
       );
-      safePrint('data ---------$result');
+      safePrint('data ---------${result}');
       isSignUpComplete = result.isSignUpComplete;
+      SSVerifyNumberScreen(
+        isSignIn: false,
+        destination: result.nextStep.codeDeliveryDetails?.destination,
+        phoneNumber: '+91' + phoneNumber.toString(),
+      ).launch(context);
+      isLoading = false;
       notifyListeners();
     } on AuthException catch (e) {
+      isLoading = false;
       safePrint(e.message);
+      GlobalSnackBar.show(
+          context: context, message: '${e.message}', type: SnackBarType.ERROR);
     }
   }
 

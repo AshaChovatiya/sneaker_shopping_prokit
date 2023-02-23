@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
+import 'package:sneaker_shopping_prokit/component/AddToCartBottomSheet.dart';
 import 'package:sneaker_shopping_prokit/models/Product.dart';
 import 'package:sneaker_shopping_prokit/providers/initial_provider.dart';
+import 'package:sneaker_shopping_prokit/providers/product_provider.dart';
 import 'package:sneaker_shopping_prokit/service/mutations.dart';
+import 'package:sneaker_shopping_prokit/utils/common_snack_bar.dart';
 
 import '../model/ProductListModel.dart';
 import '../models/WishlistProduct.dart';
@@ -15,14 +18,17 @@ class SSBestODWidget extends StatelessWidget {
   final String? amount;
   final String? amountType;
   final Items? product;
+  final bool isWishList;
 
-  SSBestODWidget(
-      {this.img,
-      this.title,
-      this.subtitle,
-      this.amount,
-      this.amountType,
-      this.product});
+  SSBestODWidget({
+    this.img,
+    this.title,
+    this.subtitle,
+    this.amount,
+    this.amountType,
+    this.product,
+    this.isWishList = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -48,21 +54,58 @@ class SSBestODWidget extends StatelessWidget {
                   alignment: Alignment.topRight,
                   child: InkWell(
                     onTap: () async {
-                      final userId =
-                          context.read<InitialProvider>().currentUser?.userId;
-                      if (userId == null || product == null) return;
+                      if (product?.id == null) {
+                        GlobalSnackBar.show(
+                          context: context,
+                          message: 'Something went wrong',
+                          type: SnackBarType.ERROR,
+                        );
 
-                      //Todo Add to wishlist
-                      /*final WishlistProduct wishlistProduct = WishlistProduct(
-                        productId: product!.id.toString(),
-                        wishlistId: '1',
-                        quantity: 0,
-                        product: product,
-                        variant: null,
+                        return;
+                      }
+
+                      if (isWishList) {
+                        showDialog(
+                            context: context,
+                            builder: (_) {
+                              return AlertDialog(
+                                title: Text('Remove from wishlist'),
+                                content: Text(
+                                    'Are you sure you want to remove this product from wishlist?'),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text('Cancel')),
+                                  TextButton(
+                                      onPressed: () async {
+                                        Navigator.pop(context);
+                                        Provider.of<ProductProvider>(context,
+                                            listen: false)
+                                          ..deleteWishList(
+                                              wishListId: product!.id!);
+                                      },
+                                      child: Text('Remove')),
+                                ],
+                              );
+                            });
+
+                        return;
+                      }
+                      showModalBottomSheet(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(16),
+                              topRight: Radius.circular(16)),
+                        ),
+                        context: context,
+                        builder: (_) {
+                          return AddToCartBottomSheet(
+                            productDataModel: product!,
+                          );
+                        },
                       );
-
-                      await AWSMutations.addWishList(
-                          userId: userId, wishlistProduct: wishlistProduct);*/
                     },
                     child: Container(
                       margin: EdgeInsets.only(right: 8, top: 8),
@@ -73,7 +116,10 @@ class SSBestODWidget extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                         color: context.cardColor,
                       ),
-                      child: Icon(Icons.favorite, color: Colors.red, size: 18),
+                      child: Icon(
+                          isWishList ? Icons.favorite : Icons.favorite_outline,
+                          color: isWishList ? Colors.red : Colors.black,
+                          size: 18),
                     ),
                   ),
                 ),

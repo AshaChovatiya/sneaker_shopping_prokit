@@ -29,7 +29,9 @@ class _SSHomeFragmentState extends State<SSHomeFragment> {
   }
 
   Future<void> init() async {
-    Provider.of<ProductProvider>(context, listen: false).getData();
+    if (mounted) {
+      Provider.of<ProductProvider>(context, listen: false).getData();
+    }
     afterBuildCreated(() {
       // dialog();
     });
@@ -125,12 +127,13 @@ class _SSHomeFragmentState extends State<SSHomeFragment> {
                                       borderRadius: BorderRadius.circular(10),
                                       onTap: () {
                                         SSDetailScreen(
-                                          img: items.items![index].images!
-                                              .items![0].imageKey,
                                           productId: items.items![index].id,
                                         ).launch(context);
                                       },
                                       child: SSBestODWidget(
+                                        isWishList: productProvider
+                                            .wishListedProducts
+                                            .contains(items.items![index].id),
                                         product: items.items![index],
                                         title: items.items![index].title,
                                         img: items.items![index].thumbImages !=

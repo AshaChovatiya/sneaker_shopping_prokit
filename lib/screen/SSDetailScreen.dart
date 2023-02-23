@@ -6,6 +6,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/component/AddToCartBottomSheet.dart';
 import 'package:sneaker_shopping_prokit/utils/SSWidgets.dart';
+import 'package:sneaker_shopping_prokit/utils/common_snack_bar.dart';
 
 import '../../../main.dart';
 import '../model/ImageModel.dart';
@@ -13,10 +14,9 @@ import '../providers/product_provider.dart';
 import '../utils/SSConstants.dart';
 
 class SSDetailScreen extends StatefulWidget {
-  final String? img;
   final String? productId;
 
-  SSDetailScreen({this.img, this.productId});
+  SSDetailScreen({this.productId});
 
   @override
   SSDetailScreenState createState() => SSDetailScreenState();
@@ -50,6 +50,9 @@ class SSDetailScreenState extends State<SSDetailScreen> {
     if (mounted) super.setState(fn);
   }
 
+  String? productId;
+  String? imageUrl;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,6 +81,13 @@ class SSDetailScreenState extends State<SSDetailScreen> {
         ],
       ),
       body: Consumer<ProductProvider>(builder: (context, productProvider, _) {
+        if (productProvider.productDataModel != null) {
+          productId = productProvider.productDataModel!.id;
+          imageUrl =
+              productProvider.productDataModel!.images?.items?[0].imageKey ??
+                  imagePlaceHolder;
+        }
+
         return productProvider.productDetailLoading
             ? Center(
                 child: CircularProgressIndicator(),
@@ -365,29 +375,43 @@ class SSDetailScreenState extends State<SSDetailScreen> {
               decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey.withOpacity(0.5)),
                   borderRadius: BorderRadius.circular(8)),
-              child: IconButton(
-                icon: Icon(Icons.shopping_cart_outlined),
-                onPressed: () {},
-              ),
+              child: Consumer<ProductProvider>(
+                  builder: (context, productProvider, child) {
+                return IconButton(
+                  icon: Icon(Icons.shopping_cart_outlined),
+                  onPressed: () {
+                    if (productId == null) {
+                      GlobalSnackBar.show(
+                        context: context,
+                        message: 'Something went wrong',
+                        type: SnackBarType.ERROR,
+                      );
+
+                      return;
+                    }
+                    showModalBottomSheet(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(16),
+                            topRight: Radius.circular(16)),
+                      ),
+                      context: context,
+                      builder: (_) {
+                        return AddToCartBottomSheet(
+                          productDataModel: productProvider.productDataModel!,
+                        );
+                      },
+                    );
+                  },
+                );
+              }),
             ),
             SizedBox(width: 8),
             Expanded(
               child: sSAppButton(
                 context: context,
                 title: 'Buy Now',
-                onPressed: () {
-                  showModalBottomSheet(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(16),
-                          topRight: Radius.circular(16)),
-                    ),
-                    context: context,
-                    builder: (_) {
-                      return AddToCartBottomSheet();
-                    },
-                  );
-                },
+                onPressed: () {},
               ),
             ),
           ],

@@ -48,22 +48,22 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(
-      builder: (_) => MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-            create: (_) => ProductProvider(),
-          ),
-          ChangeNotifierProvider(
-            create: (_) => InitialProvider()..checkSignInStatus(),
-          ),
-          ChangeNotifierProvider(create: (_) => SearchScreenProvider()),
-        ],
-        child: ScreenUtilInit(
-            designSize: const Size(360, 690),
-            builder: (context, child) {
-              return Consumer<InitialProvider>(
-                  builder: (context, initialProvider, child) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => ProductProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => InitialProvider()..checkSignInStatus(),
+        ),
+        ChangeNotifierProvider(create: (_) => SearchScreenProvider()),
+      ],
+      child: ScreenUtilInit(
+          designSize: const Size(360, 690),
+          builder: (context, child) {
+            return Consumer<InitialProvider>(
+                builder: (context, initialProvider, child) {
+              return Observer(builder: (context) {
                 return MaterialApp(
                   debugShowCheckedModeBanner: false,
                   title:
@@ -87,8 +87,8 @@ class _MyAppState extends State<MyApp> {
                       locale,
                 );
               });
-            }),
-      ),
+            });
+          }),
     );
   }
 }

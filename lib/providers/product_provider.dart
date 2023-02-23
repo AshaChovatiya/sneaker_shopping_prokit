@@ -4,16 +4,62 @@ import 'package:amplify_api/model_queries.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:sneaker_shopping_prokit/model/ImageModel.dart';
 import 'package:sneaker_shopping_prokit/model/ListProductCategoryModel.dart';
 import 'package:sneaker_shopping_prokit/models/ModelProvider.dart';
+import 'package:sneaker_shopping_prokit/schema/graph_mutation_query.dart';
 
 import '../model/ProductListModel.dart';
 import '../schema/graph_query.dart';
+import '../utils/common_snack_bar.dart';
 
 class ProductProvider extends ChangeNotifier {
   ProductListModel? productList = ProductListModel();
   ProductListModel? newArrivals = ProductListModel();
+  List<Items>? _productDetail = [];
+  List<String> _wishListedProducts = [];
+  List<String> _wishListedIds = [];
+
+  List<String> get wishListedIds => _wishListedIds;
+
+  set wishListedIds(List<String> value) {
+    _wishListedIds = value;
+    notifyListeners();
+  }
+
+  List<String> get wishListedProducts => _wishListedProducts;
+
+  set wishListedProducts(List<String> value) {
+    _wishListedProducts = value;
+    notifyListeners();
+  }
+
+  bool _isPagination = false;
+
+  bool get isPagination => _isPagination;
+
+  set isPagination(bool value) {
+    _isPagination = value;
+  }
+
+  List<Items>? get productDetail => _productDetail;
+
+  bool _isCompleted = false;
+
+  bool get isCompleted => _isCompleted;
+
+  set isCompleted(bool value) {
+    _isCompleted = value;
+    notifyListeners();
+  }
+
+  set productDetail(List<Items>? value) {
+    if (value == null) return;
+    _productDetail?.addAll(value);
+    notifyListeners();
+  }
+
   List<Items> categoryList = [];
   Items? productDataModel;
   bool productDetailLoading = false;
@@ -25,71 +71,71 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getData() async {
-    // changeAdd();
-    // String getProductImage = '''
-    //     query GetProductImage(1: ID!) {
-    //       getProductImage(id: 1) {
-    //         id
-    //         productId
-    //         position
-    //         createdAt
-    //         updatedAt
-    //         alt
-    //         width
-    //         height
-    //         imageKey
-    //         isThumb
-    //       }
-    //     }
-    //   ''';
-    // final response = await Amplify.API
-    //     .query<String>(
-    //         request: GraphQLRequest(document: '''
-    //     query GetProductImage(\$id: ID!) {
-    //       getProductImage(id: \$id) {
-    //         id
-    //         productId
-    //         position
-    //         createdAt
-    //         updatedAt
-    //         alt
-    //         width
-    //         height
-    //         imageKey
-    //         isThumb
-    //       }
-    //     }
-    //   ''', variables: {
-    //       'id': '',
-    //     }))
-    //     .response;
-    // print("DData:- ${response.data}");
-    // final request = ModelQueries.list(
-    //   Product.classType,
-    // );
-    try {
+  Future<void> getData({bool isScroll = false}) async {
+    if (isScroll == false) {
+      isCompleted = false;
+    }
+    if (isPagination || isCompleted) {
+      return;
+    }
+    if (isScroll) {
+      isPagination = true;
+      homeLoading = false;
+    } else {
+      isPagination = false;
       homeLoading = true;
+    }
+    notifyListeners();
+    try {
+      final userId =
+          await Amplify.Auth.getCurrentUser().then((value) => value.userId);
+      if (isScroll == false) {
+        var request = Amplify.API.query(
+            request: GraphQLRequest<String>(
+          document: GraphQuerySchema.getWishlistProductId(userId: userId),
+        ));
+        var response = await request.response;
+
+        if (response.data != null) {
+          wishListedProducts = List<String>.from(
+              jsonDecode(response.data!)['listWishlists']['items']
+                  .map((e) => e['wishlistProducts']['items'][0]['productId']));
+          wishListedIds = List<String>.from(
+              jsonDecode(response.data!)['listWishlists']['items']
+                  .map((e) => e['id']));
+        }
+
+        print("response.data of WishList! ${response.data!}");
+      }
       var request = Amplify.API.query(
           request: GraphQLRequest<String>(
-        document: GraphQuerySchema.listProduct(),
+        document: GraphQuerySchema.listProduct(
+            nextToken: productList?.listProducts?.nextToken ?? null),
       ));
       var response = await request.response;
       productList =
           ProductListModel.fromJson(jsonDecode(response.data!)['listProducts']);
-      newArrivals = ProductListModel();
-      if (productList!.listProducts != null)
-        for (var j = 0; j < productList!.listProducts!.items!.length; j++) {
-          if (productList!.listProducts!.items![j].isFeatured == true) {
-            newArrivals!.listProducts!.items!
-                .add(productList!.listProducts!.items![j]);
+      if (isScroll == false) {
+        newArrivals = ProductListModel();
+        _productDetail = [];
+        productDetail = productList!.listProducts!.items;
+
+        if (productList!.listProducts != null)
+          for (var j = 0; j < productList!.listProducts!.items!.length; j++) {
+            if (productList!.listProducts!.items![j].isFeatured == true) {
+              newArrivals!.listProducts!.items!
+                  .add(productList!.listProducts!.items![j]);
+            }
           }
-        }
+      } else {
+        productDetail = productList!.listProducts!.items;
+      }
+      if (productList!.listProducts!.nextToken == null) {
+        isCompleted = true;
+      }
 
-      await getAllCategory();
-
+      isPagination = false;
       homeLoading = false;
-      notifyListeners();
     } catch (e) {
       homeLoading = false;
     }
@@ -132,6 +178,37 @@ class ProductProvider extends ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  Future<void> deleteWishList({required String wishListId}) async {
+    int wishList =
+        wishListedProducts.indexWhere((element) => wishListId == element);
+
+    if (wishList != -1) {
+      wishListedProducts.removeAt(wishList);
+      wishListedIds.removeAt(wishList);
+      notifyListeners();
+    }
+
+    var request = Amplify.API.mutate(
+        request: GraphQLRequest<String>(
+      document: GraphMutationSchema.deleteWishList(
+          wishListId: wishListedIds[wishList]),
+    ));
+
+    var response = await request.response;
+
+    if (response.errors.isEmpty && response.data != null) {
+      // getData();
+    } else {
+      if (response.errors.isNotEmpty) {
+        GlobalSnackBar.show(
+            context: navigatorKey.currentContext!,
+            message: response.errors.first.message,
+            type: SnackBarType.ERROR);
+        print("response.errors: ${response.errors}");
+      }
+    }
   }
 
   /*Future<void> getAllCategory() async {

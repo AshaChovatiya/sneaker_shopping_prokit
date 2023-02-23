@@ -138,7 +138,9 @@ class _SSProductScreenState extends State<SSProductScreen> {
                       highlightColor: Colors.transparent,
                       splashColor: Colors.transparent,
                       onTap: () {
-                        SSDetailScreen(img: e.img).launch(context);
+                        SSDetailScreen(
+                          productId: '',
+                        ).launch(context);
                       },
                       child: Container(
                         margin: EdgeInsets.only(bottom: 8),

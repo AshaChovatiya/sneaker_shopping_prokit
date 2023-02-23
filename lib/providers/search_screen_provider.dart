@@ -12,6 +12,15 @@ class SearchScreenProvider extends ChangeNotifier {
   bool isSearchLoading = false;
   bool isPagination = false;
   bool isSearch = false;
+  bool _isCompleted = false;
+
+  bool get isCompleted => _isCompleted;
+
+  set isCompleted(bool value) {
+    _isCompleted = value;
+    notifyListeners();
+  }
+
   List<ProductCategory?> searchProductCategoriesList = [];
   SearchProduct searchProduct = SearchProduct();
   List<SearchProductItems>? _searchProductItems = [];
@@ -39,9 +48,10 @@ class SearchScreenProvider extends ChangeNotifier {
 
   Future<void> searchProductData(
       {String? search, bool isScroll = false}) async {
-    if (isPagination ||
-        (searchProduct.searchProducts?.total ?? 0) <
-            (searchProductItems?.length ?? 0)) return;
+    if (isScroll == false) {
+      isCompleted = false;
+    }
+    if (isPagination || isCompleted) return;
     if (isScroll) {
       isPagination = true;
       isSearchLoading = false;
@@ -54,7 +64,7 @@ class SearchScreenProvider extends ChangeNotifier {
     var request = Amplify.API.query(
         request: GraphQLRequest<String>(
       document: GraphQuerySchema.searchProduct(
-          (search?.isEmpty) ?? true ? '' : search.toString(),
+          (search?.isEmpty) ?? true ? 'Wow' : search.toString(),
           isScroll ? searchProduct.searchProducts!.nextToken : null),
     ));
     var response = await request.response;
@@ -72,10 +82,12 @@ class SearchScreenProvider extends ChangeNotifier {
 
       searchProductItems = searchProduct.searchProducts!.searchProductItems;
 
+      if (searchProduct.searchProducts!.nextToken == null) {
+        isCompleted = true;
+      }
+
       print("searchProductData:- ${searchProductItems?.length}");
-      print("searchProductData:- ${searchProduct.searchProducts?.total}");
-      print(
-          "searchProductData Token:- ${searchProduct.searchProducts?.nextToken}");
+      print("NextToken:- ${searchProduct.searchProducts!.nextToken}");
     } else {
       print("searchProductData error:- ${response.errors}");
     }

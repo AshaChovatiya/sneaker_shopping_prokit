@@ -1,4 +1,5 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +9,8 @@ import 'package:sneaker_shopping_prokit/providers/initial_provider.dart';
 import 'package:sneaker_shopping_prokit/utils/SSColors.dart';
 import 'package:sneaker_shopping_prokit/utils/SSDataGenerator.dart';
 import 'package:sneaker_shopping_prokit/utils/SSWidgets.dart';
+
+import '../screen/SSSignInScreen.dart';
 
 class SSProfileFragment extends StatefulWidget {
   @override
@@ -146,6 +149,51 @@ class _SSProfileFragmentState extends State<SSProfileFragment> {
                 thickness: 0,
                 indent: 0,
                 endIndent: 0),
+            InkWell(
+              onTap: () async {
+                await showDialog(
+                    context: context,
+                    builder: (dialogContext) {
+                      return AlertDialog(
+                        title: Text("Logout"),
+                        content: Text("Are you sure you want to logout?"),
+                        actions: [
+                          TextButton(
+                              onPressed: () {
+                                Navigator.pop(dialogContext);
+                              },
+                              child: Text("Cancel")),
+                          TextButton(
+                              onPressed: () async {
+                                try {
+                                  await Amplify.Auth.signOut();
+                                  Navigator.pop(dialogContext);
+                                  finish(context);
+                                  SSSignInScreen().launch(context);
+                                } on AuthException catch (e) {
+                                  print(e);
+                                }
+                              },
+                              child: Text("Logout")),
+                        ],
+                      );
+                    });
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Text('Logout',
+                      textAlign: TextAlign.start,
+                      overflow: TextOverflow.clip,
+                      style: boldTextStyle(size: 16)),
+                  Icon(Icons.arrow_forward_ios,
+                      color: context.iconColor, size: 17),
+                ],
+              ),
+            ),
+            SizedBox(height: 8, width: 16),
           ],
         ),
       ),

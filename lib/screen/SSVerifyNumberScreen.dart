@@ -3,14 +3,26 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pinput/pinput.dart';
+import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/main.dart';
+import 'package:sneaker_shopping_prokit/providers/initial_provider.dart';
 import 'package:sneaker_shopping_prokit/screen/SSResetScreen.dart';
+import 'package:sneaker_shopping_prokit/screen/SSSignInScreen.dart';
 
 import 'SSDashBoardScreen.dart';
 
 class SSVerifyNumberScreen extends StatefulWidget {
-  SSVerifyNumberScreen({Key? key, required this.isSignIn}) : super(key: key);
+  SSVerifyNumberScreen(
+      {Key? key,
+      required this.isSignIn,
+      this.destination,
+      this.phoneNumber,
+      this.isReset = false})
+      : super(key: key);
   final bool isSignIn;
+  final String? destination;
+  final bool isReset;
+  final String? phoneNumber;
 
   @override
   State<SSVerifyNumberScreen> createState() => _SSVerifyNumberScreenState();
@@ -73,12 +85,17 @@ class _SSVerifyNumberScreenState extends State<SSVerifyNumberScreen> {
           mainAxisSize: MainAxisSize.max,
           children: [
             SizedBox(height: 32, width: MediaQuery.of(context).size.width),
-            Text("Verify Mobile Number",
+            Text("Verify Your Account",
+                textAlign: TextAlign.start,
+                overflow: TextOverflow.clip,
+                style: boldTextStyle(size: 20)),
+            Text(
+                "OTP has been sent to ${widget.destination ?? 'your mobile number or mail'}",
                 textAlign: TextAlign.start,
                 overflow: TextOverflow.clip,
                 style: boldTextStyle(size: 20)),
             SizedBox(height: 16, width: 16),
-            Text("Enter the otp code sent  to you",
+            Text("Enter the otp code sent  to you mail/mobile number",
                 textAlign: TextAlign.start,
                 overflow: TextOverflow.clip,
                 style: secondaryTextStyle()),
@@ -123,11 +140,9 @@ class _SSVerifyNumberScreenState extends State<SSVerifyNumberScreen> {
                 focusNode: focusNode,
                 defaultPinTheme: defaultPinTheme,
                 onCompleted: (pin) async {
-                  if (widget.isSignIn) {
-                    setState(() {
-                      otpPin = pin;
-                    });
-                  }
+                  setState(() {
+                    otpPin = pin;
+                  });
                 },
                 focusedPinTheme: defaultPinTheme.copyWith(
                   height: 50,
@@ -168,20 +183,31 @@ class _SSVerifyNumberScreenState extends State<SSVerifyNumberScreen> {
               child: InkWell(
                 borderRadius: BorderRadius.circular(50),
                 onTap: () async {
-                  if (widget.isSignIn) {
+                  if (widget.isReset) {
+                    return;
+                  }
+
+                  if (!widget.isSignIn) {
+                    final result = await Amplify.Auth.confirmSignUp(
+                        username: widget.phoneNumber!,
+                        confirmationCode: '$otpPin');
+                    if (result.isSignUpComplete) {
+                      finish(context);
+                      SSSignInScreen().launch(context);
+                    } else {
+                      showError = true;
+                      setState(() {});
+                    }
+                  } else {
                     final result = await Amplify.Auth.confirmSignIn(
-                        confirmationValue: otpPin);
-                    print(
-                        '----------------------${result.nextStep!.signInStep}');
-                    if (result.nextStep!.additionalInfo != null) {
+                        confirmationValue: '$otpPin');
+                    if (result.isSignedIn) {
                       finish(context);
                       SSDashBoardScreen().launch(context);
                     } else {
                       showError = true;
                       setState(() {});
                     }
-                  } else {
-                    SSResetScreen().launch(context);
                   }
                 },
                 child: Container(

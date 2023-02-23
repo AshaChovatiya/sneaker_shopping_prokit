@@ -58,9 +58,10 @@ class SSSignInScreen extends StatelessWidget {
                   controller: phoneNumberController,
                   obscureText: false,
                   textAlign: TextAlign.start,
+                  keyboardType: TextInputType.number,
                   maxLines: 1,
-                  validator:
-                      RequiredValidator(errorText: 'Please Enter Mobile Number'),
+                  validator: RequiredValidator(
+                      errorText: 'Please Enter Mobile Number'),
                   style: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontStyle: FontStyle.normal,
@@ -75,7 +76,7 @@ class SSSignInScreen extends StatelessWidget {
                 SizedBox(height: 16, width: 16),
                 TextFormField(
                   controller: passwordController,
-                  obscureText: false,
+                  obscureText: true,
                   textAlign: TextAlign.start,
                   maxLines: 1,
                   validator: passwordValidator,
@@ -116,26 +117,28 @@ class SSSignInScreen extends StatelessWidget {
                               context: context);
                         }
                       },
-                      child: authenticationProvider.isLoading
-                          ? Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          : Container(
-                              margin: EdgeInsets.zero,
-                              padding: EdgeInsets.zero,
-                              width: 50,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                color: appStore.isDarkModeOn
-                                    ? context.cardColor
-                                    : Color(0xff010101),
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                    color: Color(0x4d9e9e9e), width: 1),
-                              ),
-                              child: Icon(Icons.arrow_forward,
-                                  color: Color(0xfffcfdff), size: 24),
-                            ),
+                      child: Container(
+                        margin: EdgeInsets.zero,
+                        padding: EdgeInsets.zero,
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: appStore.isDarkModeOn
+                              ? context.cardColor
+                              : Color(0xff010101),
+                          shape: BoxShape.circle,
+                          border:
+                              Border.all(color: Color(0x4d9e9e9e), width: 1),
+                        ),
+                        child: authenticationProvider.isLoading
+                            ? Center(
+                                child: CircularProgressIndicator(
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(Colors.white),
+                              ))
+                            : Icon(Icons.arrow_forward,
+                                color: Color(0xfffcfdff), size: 24),
+                      ),
                     ),
                   );
                 }),

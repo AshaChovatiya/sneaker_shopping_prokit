@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
+import 'package:sneaker_shopping_prokit/main.dart';
 import 'package:sneaker_shopping_prokit/model/SneakerShoppingModel.dart';
 import 'package:sneaker_shopping_prokit/providers/search_screen_provider.dart';
 import 'package:sneaker_shopping_prokit/screen/SSProductScreen.dart';
@@ -27,7 +28,8 @@ class _SSSearchFragmentState extends State<SSSearchFragment> {
     Provider.of<SearchScreenProvider>(context, listen: false)
         .searchProductItems
         ?.clear();
-
+    Provider.of<SearchScreenProvider>(context, listen: false)
+      ..searchProductData(search: "Wow", isScroll: false);
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
@@ -54,25 +56,36 @@ class _SSSearchFragmentState extends State<SSSearchFragment> {
         children: [
           Consumer<SearchScreenProvider>(
               builder: (context, _searchScreenProvider, _) {
-            return TextField(
-              controller: searchController,
-              obscureText: false,
-              textAlign: TextAlign.start,
-              maxLines: 1,
-              style: TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.normal,
-                  fontSize: 14,
-                  color: Color(0xff000000)),
-              decoration: sSInputDecoration(
-                context: context,
-                icon: Icon(Icons.search,
-                    color: Colors.grey.withOpacity(0.7), size: 24),
+            return Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+              child: TextField(
+                controller: searchController,
+                obscureText: false,
+                textAlign: TextAlign.start,
+                maxLines: 1,
+                style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontStyle: FontStyle.normal,
+                    fontSize: 14,
+                    color: appStore.isDarkModeOn
+                        ? Color(0xffffffff)
+                        : Color(0xff000000)),
+                decoration: sSInputDecoration(
+                  name: "Search",
+                  context: context,
+                  icon: Icon(Icons.search,
+                      color: Colors.grey.withOpacity(0.7), size: 24),
+                ),
+                onChanged: (value) async {
+                  await _searchScreenProvider.searchProductData(
+                      search: searchController.text);
+                },
+                /*onEditingComplete: () {
+                  _searchScreenProvider.searchProductData(
+                      search: searchController.text);
+                },*/
               ),
-              onEditingComplete: () {
-                _searchScreenProvider.searchProductData(
-                    search: searchController.text);
-              },
             );
           }),
           SizedBox(
@@ -289,7 +302,10 @@ class _SSSearchFragmentState extends State<SSSearchFragment> {
                                     child: Text(
                                       'No Result Found',
                                       style: boldTextStyle(
-                                          color: Colors.black, size: 12),
+                                          color: appStore.isDarkModeOn
+                                              ? Color(0xffffffff)
+                                              : Color(0xff000000),
+                                          size: 12),
                                     ),
                                   ),
                       );

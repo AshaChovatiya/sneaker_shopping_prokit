@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 
+enum SnackBarType {
+  SUCCESS,
+  ERROR,
+  WARNING,
+  INFO,
+}
+
 class GlobalSnackBar {
   final String message;
 
@@ -7,22 +14,62 @@ class GlobalSnackBar {
     required this.message,
   });
 
-  static show(
-      BuildContext context,
-      String message,
-      ) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        elevation: 0.0,
-        behavior: SnackBarBehavior.floating,
-        content: Text(message),
-        duration: new Duration(seconds: 3),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
-        ),
-        //backgroundColor: Colors.redAccent,
+  static show({
+    required BuildContext context,
+    required String message,
+    SnackBarType type = SnackBarType.INFO,
+  }) {
+    Widget snackBarWidget = Container(
+      padding: EdgeInsets.symmetric(horizontal: 10.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          type == SnackBarType.ERROR
+              ? Icon(
+                  Icons.info_outline,
+                  color: Colors.red,
+                )
+              : type == SnackBarType.SUCCESS
+                  ? Icon(
+                      Icons.check_circle_outline,
+                      color: Colors.white,
+                    )
+                  : type == SnackBarType.WARNING
+                      ? Icon(
+                          Icons.warning,
+                          color: Colors.black,
+                        )
+                      : Icon(
+                          Icons.info_outline,
+                          color: Colors.white,
+                        ),
+          SizedBox(
+            width: 10.0,
+          ),
+          Text(message),
+        ],
       ),
     );
+
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: snackBarWidget,
+          duration: new Duration(seconds: 3),
+          backgroundColor: type == SnackBarType.ERROR
+              ? Colors.redAccent
+              : type == SnackBarType.SUCCESS
+                  ? Colors.green
+                  : type == SnackBarType.WARNING
+                      ? Colors.orangeAccent
+                      : Colors.blueAccent,
+          //backgroundColor: Colors.redAccent,
+        ),
+      );
   }
 }

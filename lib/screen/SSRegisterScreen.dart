@@ -107,6 +107,7 @@ class SSRegisterScreen extends StatelessWidget {
                     obscureText: false,
                     textAlign: TextAlign.start,
                     maxLines: 1,
+                    keyboardType: TextInputType.number,
                     validator:
                         RequiredValidator(errorText: 'mobile is required'),
                     style: TextStyle(
@@ -126,6 +127,7 @@ class SSRegisterScreen extends StatelessWidget {
                     obscureText: false,
                     textAlign: TextAlign.start,
                     maxLines: 1,
+                    keyboardType: TextInputType.emailAddress,
                     validator: EmailValidator(
                         errorText: 'enter a valid email address'),
                     style: TextStyle(
@@ -142,7 +144,7 @@ class SSRegisterScreen extends StatelessWidget {
                   SizedBox(height: 16),
                   TextFormField(
                     controller: passwordController,
-                    obscureText: false,
+                    obscureText: true,
                     textAlign: TextAlign.start,
                     maxLines: 1,
                     validator: passwordValidator,
@@ -172,15 +174,15 @@ class SSRegisterScreen extends StatelessWidget {
                           // print("Result: $result");
                           // return;
 
-                           if (_formKey.currentState!.validate()) {
-                          authenticationProvider.signUpUser(
-                              middleName: middleNameController.text,
-                              email: emailController.text,
-                              password: passwordController.text,
-                              name: userNameController.text,
-                              nickName: userNameController.text,
-                              phoneNumber: mobileNumberController.text,
-                              context: context);
+                          if (_formKey.currentState!.validate()) {
+                            authenticationProvider.signUpUser(
+                                middleName: middleNameController.text,
+                                email: emailController.text,
+                                password: passwordController.text,
+                                name: userNameController.text,
+                                nickName: userNameController.text,
+                                phoneNumber: mobileNumberController.text,
+                                context: context);
                           }
                         },
                         child: Container(
@@ -196,8 +198,15 @@ class SSRegisterScreen extends StatelessWidget {
                             border:
                                 Border.all(color: Color(0x4df2e4e4), width: 1),
                           ),
-                          child: Icon(Icons.arrow_forward,
-                              color: Color(0xfffcfdff), size: 24),
+                          child: authenticationProvider.isLoading
+                              ? Center(
+                                  child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Color(0xfffcfdff)),
+                                  ),
+                                )
+                              : Icon(Icons.arrow_forward,
+                                  color: Color(0xfffcfdff), size: 24),
                         ),
                       ),
                     );
