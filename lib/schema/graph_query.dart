@@ -495,7 +495,6 @@ class GraphQuerySchema {
       wishlistProducts {
         items {
           productId
-          quantity
           product {
             title
             totalOrders

@@ -169,7 +169,8 @@ class _SSProfileFragmentState extends State<SSProfileFragment> {
                                   await Amplify.Auth.signOut();
                                   Navigator.pop(dialogContext);
                                   finish(context);
-                                  SSSignInScreen().launch(context);
+                                  SSSignInScreen()
+                                      .launch(context, isNewTask: true);
                                 } on AuthException catch (e) {
                                   print(e);
                                 }

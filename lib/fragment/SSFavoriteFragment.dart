@@ -147,19 +147,6 @@ class SSFavoriteFragment extends StatelessWidget {
                                               overflow: TextOverflow.clip,
                                               style: secondaryTextStyle()),
                                           SizedBox(height: 4),
-                                          Text(
-                                              'Quantity:- ' +
-                                                  (item
-                                                          .wishlistProducts
-                                                          ?.wishlistProductItems?[
-                                                              0]
-                                                          .quantity
-                                                          .toString() ??
-                                                      '0'),
-                                              textAlign: TextAlign.start,
-                                              overflow: TextOverflow.clip,
-                                              style: secondaryTextStyle()),
-                                          SizedBox(height: 4),
                                           Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.start,

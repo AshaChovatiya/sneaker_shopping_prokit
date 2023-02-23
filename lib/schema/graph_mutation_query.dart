@@ -18,17 +18,14 @@ class GraphMutationSchema {
   }
 
   static createWishListProductMutation(
-      {required String productId,
-      required String wishlistId,
-      required int quantity}) {
+      {required String productId, required String wishlistId}) {
     return '''mutation MyMutation {
-  createWishlistProduct(input: {wishlistId: "$wishlistId", quantity: $quantity, productId: "$productId"}) {
+  createWishlistProduct(input: {wishlistId: "$wishlistId", productId: "$productId"}) {
     product {
       title
       id
     }
     productId
-    quantity
   }
 }''';
   }

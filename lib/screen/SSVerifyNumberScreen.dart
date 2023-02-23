@@ -8,6 +8,7 @@ import 'package:sneaker_shopping_prokit/main.dart';
 import 'package:sneaker_shopping_prokit/providers/initial_provider.dart';
 import 'package:sneaker_shopping_prokit/screen/SSResetScreen.dart';
 import 'package:sneaker_shopping_prokit/screen/SSSignInScreen.dart';
+import 'package:sneaker_shopping_prokit/utils/common_snack_bar.dart';
 
 import 'SSDashBoardScreen.dart';
 
@@ -34,6 +35,7 @@ class _SSVerifyNumberScreenState extends State<SSVerifyNumberScreen> {
   final otpController = TextEditingController();
 
   final focusNode = FocusNode();
+  bool isLoading = false;
 
   @override
   void dispose() {
@@ -183,6 +185,8 @@ class _SSVerifyNumberScreenState extends State<SSVerifyNumberScreen> {
               child: InkWell(
                 borderRadius: BorderRadius.circular(50),
                 onTap: () async {
+                  isLoading = true;
+                  setState(() {});
                   if (widget.isReset) {
                     return;
                   }
@@ -192,6 +196,8 @@ class _SSVerifyNumberScreenState extends State<SSVerifyNumberScreen> {
                         username: widget.phoneNumber!,
                         confirmationCode: '$otpPin');
                     if (result.isSignUpComplete) {
+                      GlobalSnackBar.show(
+                          context: context, message: 'Register Successfully');
                       finish(context);
                       SSSignInScreen().launch(context);
                     } else {
@@ -202,6 +208,8 @@ class _SSVerifyNumberScreenState extends State<SSVerifyNumberScreen> {
                     final result = await Amplify.Auth.confirmSignIn(
                         confirmationValue: '$otpPin');
                     if (result.isSignedIn) {
+                      GlobalSnackBar.show(
+                          context: context, message: 'SignIn Successfully');
                       finish(context);
                       SSDashBoardScreen().launch(context);
                     } else {
@@ -222,8 +230,15 @@ class _SSVerifyNumberScreenState extends State<SSVerifyNumberScreen> {
                     shape: BoxShape.circle,
                     border: Border.all(color: Color(0x4d9e9e9e), width: 1),
                   ),
-                  child: Icon(Icons.arrow_forward,
-                      color: Color(0xffffffff), size: 24),
+                  child: isLoading
+                      ? Center(
+                          child: CircularProgressIndicator(
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                      : Icon(Icons.arrow_forward,
+                          color: Color(0xffffffff), size: 24),
                 ),
               ),
             ),

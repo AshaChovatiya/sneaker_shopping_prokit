@@ -9,12 +9,18 @@ import '../utils/common_snack_bar.dart';
 
 class AuthenticationProvider extends ChangeNotifier {
   bool isUserLoggedIn = false;
-  bool isLoading = false;
+  bool _isLoading = false;
+
+  bool get isLoading => _isLoading;
+
+  set isLoading(bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
 
   Future<void> signInUser(
       {String? phoneNumber, String? password, BuildContext? context}) async {
     isLoading = true;
-    notifyListeners();
     try {
       final result = await Amplify.Auth.signIn(
         username: '+91' + phoneNumber!,

@@ -93,7 +93,7 @@ class SSBestODWidget extends StatelessWidget {
 
                         return;
                       }
-                      showModalBottomSheet(
+                      await showModalBottomSheet(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(16),
@@ -106,6 +106,7 @@ class SSBestODWidget extends StatelessWidget {
                           );
                         },
                       );
+                      context.read<ProductProvider>().getData();
                     },
                     child: Container(
                       margin: EdgeInsets.only(right: 8, top: 8),

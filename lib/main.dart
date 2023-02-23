@@ -51,12 +51,8 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => ProductProvider(),
-        ),
-        ChangeNotifierProvider(
           create: (_) => InitialProvider()..checkSignInStatus(),
         ),
-        ChangeNotifierProvider(create: (_) => SearchScreenProvider()),
       ],
       child: ScreenUtilInit(
           designSize: const Size(360, 690),

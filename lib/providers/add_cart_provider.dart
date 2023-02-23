@@ -88,7 +88,9 @@ class AddCartProvider extends ChangeNotifier {
     final request = Amplify.API.mutate(
         request: GraphQLRequest<String>(
       document: GraphMutationSchema.createWishListProductMutation(
-          productId: productId, wishlistId: wishlistId, quantity: quantity),
+        productId: productId,
+        wishlistId: wishlistId,
+      ),
     ));
 
     final response = await request.response;

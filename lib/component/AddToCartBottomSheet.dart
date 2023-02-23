@@ -261,8 +261,6 @@ class AddToCartBottomSheetState extends State<AddToCartBottomSheet> {
                             productId: widget.productDataModel.id!,
                             quantity: increment);
 
-                        context.read<ProductProvider>().getData();
-
                         finish(context);
                       },
                     );

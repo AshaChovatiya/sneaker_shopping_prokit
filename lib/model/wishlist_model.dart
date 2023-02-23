@@ -90,14 +90,12 @@ class WishlistProducts {
 
 class WishlistProductItems {
   String? productId;
-  int? quantity;
   Product? product;
 
-  WishlistProductItems({this.productId, this.quantity, this.product});
+  WishlistProductItems({this.productId, this.product});
 
   WishlistProductItems.fromJson(Map<String, dynamic> json) {
     productId = json['productId'];
-    quantity = json['quantity'];
     product =
         json['product'] != null ? new Product.fromJson(json['product']) : null;
   }
@@ -105,7 +103,6 @@ class WishlistProductItems {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['productId'] = this.productId;
-    data['quantity'] = this.quantity;
     if (this.product != null) {
       data['product'] = this.product!.toJson();
     }
