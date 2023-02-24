@@ -38,7 +38,6 @@ class GraphMutationSchema {
 }''';
   }
 
-
   static createShoppingCartMutation({required String userID}) {
     return '''mutation MyMutation {
   createShoppingCart(input: {userId: "$userID"}) {
@@ -65,5 +64,15 @@ class GraphMutationSchema {
     id
   }
 }''';
+  }
+
+  static createOrderMutation({required Map<dynamic,dynamic> data}) {
+    return '''mutation MyMutation {
+  createOrder(input: "$data") {
+    id
+    orderDate
+  }
+}
+''';
   }
 }

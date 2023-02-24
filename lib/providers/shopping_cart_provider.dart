@@ -11,7 +11,17 @@ import '../utils/common_snack_bar.dart';
 class ShoppingCartProvider extends ChangeNotifier {
   bool _isLoading = false;
   double totalPrice = 0;
+  int buyNowQty = 0;
   bool _isDeleting = false;
+  bool _isShowCheckOut = false;
+  ShoppingcartProductsitems? shoppingCartProductItems;
+
+  bool get isShowCheckOut => _isShowCheckOut;
+
+  set isShowCheckOut(bool value) {
+    _isShowCheckOut = value;
+    notifyListeners();
+  }
 
   bool get isLoading => _isLoading;
 
@@ -34,6 +44,13 @@ class ShoppingCartProvider extends ChangeNotifier {
   set shoppingCart(ShoppingCartListModel? value) {
     if (value == null) return;
     _shoppingCart = value;
+    notifyListeners();
+  }
+
+  onClickBuyNow(ShoppingcartProductsitems? shoppingCartProductItems) {
+    shoppingCartProductItems = shoppingCartProductItems;
+    getTotalPrice(shoppingCartProductItem: shoppingCartProductItems);
+    buyNowQty = shoppingCartProductItems!.quantity!;
     notifyListeners();
   }
 
@@ -132,42 +149,26 @@ class ShoppingCartProvider extends ChangeNotifier {
       }
       shoppingCart = null;
     }
-    getTotalPrice(
-        listShoppingCartItems:
-            shoppingCart!.listShoppingCarts!.listShoppingCartsitems);
     print("response.data: ${response.data}");
     print("response.Error: ${response.errors}");
 
     isLoading = false;
   }
 
-  getTotalPrice({List<ListShoppingCartsitems>? listShoppingCartItems}) {
-    for (var i = 0; i < listShoppingCartItems!.length; i++) {
-      if (listShoppingCartItems[i]
-              .shoppingcartProducts!
-              .shoppingcartProductsitems !=
-          null) {
+  getTotalPrice({ShoppingcartProductsitems? shoppingCartProductItem}) {
+    totalPrice = 0;
+      if (shoppingCartProductItem != null) {
         for (var j = 0;
-            j <
-                int.parse(listShoppingCartItems[i]
-                    .shoppingcartProducts!
-                    .shoppingcartProductsitems![0]
-                    .quantity
-                    .toString());
+            j < int.parse(shoppingCartProductItem.quantity.toString());
             j++) {
-          totalPrice = totalPrice +
-              listShoppingCartItems[i]
-                  .shoppingcartProducts!
-                  .shoppingcartProductsitems![0]
-                  .product!
-                  .price;
+          totalPrice = totalPrice + shoppingCartProductItem.product!.price;
         }
       }
-    }
+
     notifyListeners();
   }
 
-  Future<void> deleteWishList({required String shoppingCartId}) async {
+  Future<void> deleteShoppingCart({required String shoppingCartId}) async {
     isDeleting = true;
     var request = Amplify.API.mutate(
         request: GraphQLRequest<String>(
