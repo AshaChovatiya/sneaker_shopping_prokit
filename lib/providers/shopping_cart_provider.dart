@@ -47,8 +47,8 @@ class ShoppingCartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  onClickBuyNow(ShoppingcartProductsitems? shoppingCartProductItems) {
-    shoppingCartProductItems = shoppingCartProductItems;
+  onClickBuyNow(ShoppingcartProductsitems? shoppingCartProductItem) {
+    shoppingCartProductItems = shoppingCartProductItem;
     getTotalPrice(shoppingCartProductItem: shoppingCartProductItems);
     buyNowQty = shoppingCartProductItems!.quantity!;
     notifyListeners();

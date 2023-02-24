@@ -6,6 +6,9 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:sneaker_shopping_prokit/schema/graph_mutation_query.dart';
 import 'package:sneaker_shopping_prokit/utils/common_snack_bar.dart';
 
+import '../model/shoppingCartList_model.dart';
+import '../screen/SSPaymentScreen.dart';
+
 enum OrderStatus {
   ONHOLD,
   PROCESSING,
@@ -37,7 +40,9 @@ class CheckOutProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> createOrderCart({required Map<dynamic, dynamic> data}) async {
+  Future<void> createOrderCart(
+      {required Map<dynamic, dynamic> data,
+      required ShoppingcartProductsitems? shoppingCartProductItems}) async {
     final request = Amplify.API.mutate(
         request: GraphQLRequest<String>(
       document: GraphMutationSchema.createOrderMutation(data: data),
@@ -66,30 +71,36 @@ class CheckOutProvider extends ChangeNotifier {
       return;
     }
     if (createOrderId == null) return;
+    await createOrderProduct(
+        orderId: createOrderId,
+        price: shoppingCartProductItems?.product?.price,
+        productId: shoppingCartProductItems!.productId!,
+        quantity: shoppingCartProductItems.quantity!);
   }
 
-  /// InProgress----
-  Future<void> createOrderProduct(
-      {required String productId,
-        required int quantity,
-        required int price,
-        required String orderId}) async {
+  Future<void> createOrderProduct({
+    required String orderId,
+    required int price,
+    required String productId,
+    required int quantity,
+  }) async {
     final request = Amplify.API.mutate(
         request: GraphQLRequest<String>(
-          document: GraphMutationSchema.createShoppingCartToProductMutation(
-            productId: productId,
-            shoppingCartId: orderId,
-            qty: quantity,
-          ),
-        ));
+      document: GraphMutationSchema.createOrderProductMutation(
+          productId: productId,
+          price: price,
+          orderId: orderId,
+          quantity: quantity),
+    ));
 
     final response = await request.response;
 
     if (response.errors.isEmpty && response.data != null) {
       GlobalSnackBar.show(
           context: navigatorKey.currentContext!,
-          message: 'Added Successfully to ShoppingCart',
+          message: 'Your Order Is successful',
           type: SnackBarType.SUCCESS);
+      SSPaymentScreen().launch(navigatorKey.currentContext!,);
     } else {
       if (response.errors.isNotEmpty) {
         errorMessage = response.errors.first.message;

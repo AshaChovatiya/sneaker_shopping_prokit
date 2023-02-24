@@ -1,5 +1,6 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/main.dart';
@@ -7,6 +8,8 @@ import 'package:sneaker_shopping_prokit/providers/checkout_provider.dart';
 import 'package:sneaker_shopping_prokit/providers/shopping_cart_provider.dart';
 import 'package:sneaker_shopping_prokit/screen/SSPaymentScreen.dart';
 import 'package:sneaker_shopping_prokit/utils/SSWidgets.dart';
+
+import '../model/shoppingCartList_model.dart';
 
 class SSBillingAddressScreen extends StatefulWidget {
   @override
@@ -806,14 +809,14 @@ class _SSBillingAddressScreenState extends State<SSBillingAddressScreen> {
               onPressed: () async{
                 final userId = await Amplify.Auth.getCurrentUser().then((value) => value.userId);
                 var createOrderData = {
-                  'status': OrderStatus.PROCESSING,
+                  'status': OrderStatus.PROCESSING.name,
                   'currency': "inr",
                   'userId': userId,
                   'totalStoreCredit': 0.0,
                   'totalDiscount': 0.0,
                   'totalAmount': context.read<ShoppingCartProvider>().totalPrice,
                   'totalCashOnDeliveryCharges': 0.0,
-                  'orderDate': '${DateTime.now()}',
+                  'orderDate': '${TemporalDateTime.now()}',
                   'CouponCodeId': "",
                   'BillingAddress': {
                     'name': billingFullNameController.text,
@@ -833,8 +836,8 @@ class _SSBillingAddressScreenState extends State<SSBillingAddressScreen> {
                   },
                   'totalShippingCharges': 0.0
                 };
-                checkOutProvider.createOrderCart(data: createOrderData);
-                SSPaymentScreen().launch(context);
+                ShoppingcartProductsitems? shoppingCartProductItems = context.read<ShoppingCartProvider>().shoppingCartProductItems;
+                checkOutProvider.createOrderCart(data: createOrderData,shoppingCartProductItems:shoppingCartProductItems);
               },
             ),
           );
