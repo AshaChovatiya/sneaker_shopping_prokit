@@ -68,6 +68,7 @@ class SearchProductItems {
   String? slug;
   double? productDescription;
   Images? images;
+  String? productId;
 
   SearchProductItems(
       {this.barcode,
@@ -81,7 +82,8 @@ class SearchProductItems {
       this.tags,
       this.slug,
       this.productDescription,
-      this.images});
+      this.images,
+      this.productId});
 
   SearchProductItems.fromJson(Map<String, dynamic> json) {
     try {
@@ -96,6 +98,7 @@ class SearchProductItems {
       tags = json['tags'];
       slug = json['slug'];
       productDescription = json['productDescription'];
+      productId = json['id'];
       images =
           json['images'] != null ? new Images.fromJson(json['images']) : null;
     } catch (e) {
@@ -115,6 +118,7 @@ class SearchProductItems {
     data['brand'] = this.brand;
     data['tags'] = this.tags;
     data['slug'] = this.slug;
+    data['id'] = this.productId;
     data['productDescription'] = this.productDescription;
     if (this.images != null) {
       data['images'] = this.images!.toJson();

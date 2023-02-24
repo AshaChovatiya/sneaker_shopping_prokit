@@ -4,6 +4,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/model/SneakerShoppingModel.dart';
 import 'package:sneaker_shopping_prokit/screen/SSBillingAddressScreen.dart';
+import 'package:sneaker_shopping_prokit/screen/SSSelectCouponCodeScreen.dart';
 import 'package:sneaker_shopping_prokit/utils/SSConstants.dart';
 import 'package:sneaker_shopping_prokit/utils/SSDataGenerator.dart';
 import 'package:sneaker_shopping_prokit/utils/SSWidgets.dart';
@@ -30,7 +31,9 @@ class SSCartFragmentState extends State<SSCartFragment> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => ShoppingCartProvider()..getShoppingCartList(),
+      create: (_) => ShoppingCartProvider()
+        ..getShoppingCartList()
+        ..getCouponCodes(),
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,
@@ -199,7 +202,11 @@ class SSCartFragmentState extends State<SSCartFragment> {
                                                         onTap: () {
                                                           // SSBillingAddressScreen()
                                                           //     .launch(context);
-                                                          shoppingCartProvider.onClickBuyNow(shoppingCartItem.shoppingcartProducts!.shoppingcartProductsitems![0]);
+                                                          shoppingCartProvider
+                                                              .onClickBuyNow(
+                                                                  shoppingCartItem
+                                                                      .shoppingcartProducts!
+                                                                      .shoppingcartProductsitems![0]);
                                                           shoppingCartProvider
                                                                   .isShowCheckOut =
                                                               true;
@@ -322,7 +329,6 @@ class SSCartFragmentState extends State<SSCartFragment> {
                             : Container(
                                 padding: EdgeInsets.only(
                                     top: 8, left: 16, right: 16, bottom: 16),
-                                height: 170,
                                 width: MediaQuery.of(context).size.width,
                                 decoration: BoxDecoration(
                                   //color: context.cardColor,
@@ -339,7 +345,52 @@ class SSCartFragmentState extends State<SSCartFragment> {
                                           child: Text('Promo code',
                                               style: secondaryTextStyle()),
                                         ),
-                                        Text('NK54T3U', style: boldTextStyle()),
+                                        Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                                shoppingCartProvider
+                                                        .selectedCouponCodeItem
+                                                        ?.code ??
+                                                    'No coupon code available',
+                                                style: boldTextStyle()),
+                                            SizedBox(height: 3),
+                                            InkWell(
+                                              onTap: () {
+                                                if (shoppingCartProvider
+                                                        .selectedCouponCodeItem ==
+                                                    null) {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              ChangeNotifierProvider.value(
+                                                                  value:
+                                                                      shoppingCartProvider,
+                                                                  child:
+                                                                      SSSelectCouponCodeScreen())));
+
+                                                  return;
+                                                }
+                                                shoppingCartProvider
+                                                    .removeCouponCode();
+                                              },
+                                              child: Text(
+                                                  shoppingCartProvider
+                                                              .selectedCouponCodeItem ==
+                                                          null
+                                                      ? 'Select Coupon Code'
+                                                      : 'Remove coupon',
+                                                  style: secondaryTextStyle()
+                                                      .copyWith(
+                                                          fontSize: 10,
+                                                          color: Colors.blue,
+                                                          decoration:
+                                                              TextDecoration
+                                                                  .underline)),
+                                            ),
+                                          ],
+                                        ),
                                         SizedBox(width: 16),
                                         GestureDetector(
                                           onTap: () {
@@ -381,8 +432,8 @@ class SSCartFragmentState extends State<SSCartFragment> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) =>
-                                              ChangeNotifierProvider<
-                                                  ShoppingCartProvider>.value(
+                                                  ChangeNotifierProvider<
+                                                      ShoppingCartProvider>.value(
                                                 value: shoppingCartProvider,
                                                 child: SSBillingAddressScreen(),
                                               ),

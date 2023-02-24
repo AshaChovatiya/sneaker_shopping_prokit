@@ -4,6 +4,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/widgets.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sneaker_shopping_prokit/model/shoppingCartList_model.dart';
+import 'package:sneaker_shopping_prokit/models/coupon_code_model.dart';
 import '../schema/graph_mutation_query.dart';
 import '../schema/graph_query.dart';
 import '../utils/common_snack_bar.dart';
@@ -14,6 +15,16 @@ class ShoppingCartProvider extends ChangeNotifier {
   int buyNowQty = 0;
   bool _isDeleting = false;
   bool _isShowCheckOut = false;
+  CouponCodeItems? _selectedCouponCodeItem;
+
+  CouponCodeItems? get selectedCouponCodeItem => _selectedCouponCodeItem;
+
+  set selectedCouponCodeItem(CouponCodeItems? value) {
+    _selectedCouponCodeItem = value;
+    notifyListeners();
+  }
+
+  CouponCodeData? couponCodeData;
   ShoppingcartProductsitems? shoppingCartProductItems;
 
   bool get isShowCheckOut => _isShowCheckOut;
@@ -155,15 +166,42 @@ class ShoppingCartProvider extends ChangeNotifier {
     isLoading = false;
   }
 
+  Future<void> getCouponCodes() async {
+    isLoading = true;
+    final userId =
+        await Amplify.Auth.getCurrentUser().then((value) => value.userId);
+    var request = Amplify.API.query(
+        request: GraphQLRequest<String>(
+      document: GraphQuerySchema.getCouponCode(userId: userId),
+    ));
+
+    var response = await request.response;
+
+    if (response.errors.isEmpty && response.data != null) {
+      couponCodeData = CouponCodeData.fromJson(jsonDecode(response.data!));
+
+      selectedCouponCodeItem =
+          couponCodeData!.listCouponCodes?.couponCodeItems?.first;
+    } else {
+      if (response.errors.isNotEmpty) {
+        errorMessage = response.errors.first.message;
+        print("response.errors: ${response.errors}");
+      }
+      couponCodeData = null;
+    }
+
+    isLoading = false;
+  }
+
   getTotalPrice({ShoppingcartProductsitems? shoppingCartProductItem}) {
     totalPrice = 0;
-      if (shoppingCartProductItem != null) {
-        for (var j = 0;
-            j < int.parse(shoppingCartProductItem.quantity.toString());
-            j++) {
-          totalPrice = totalPrice + shoppingCartProductItem.product!.price;
-        }
+    if (shoppingCartProductItem != null) {
+      for (var j = 0;
+          j < int.parse(shoppingCartProductItem.quantity.toString());
+          j++) {
+        totalPrice = totalPrice + shoppingCartProductItem.product!.price;
       }
+    }
 
     notifyListeners();
   }
@@ -192,5 +230,10 @@ class ShoppingCartProvider extends ChangeNotifier {
     }
 
     isDeleting = false;
+  }
+
+  removeCouponCode() {
+    selectedCouponCodeItem = null;
+    notifyListeners();
   }
 }

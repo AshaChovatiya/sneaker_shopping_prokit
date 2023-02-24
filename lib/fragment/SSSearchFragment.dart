@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/main.dart';
 import 'package:sneaker_shopping_prokit/model/SneakerShoppingModel.dart';
 import 'package:sneaker_shopping_prokit/providers/search_screen_provider.dart';
+import 'package:sneaker_shopping_prokit/screen/SSDetailScreen.dart';
 import 'package:sneaker_shopping_prokit/screen/SSProductScreen.dart';
 import 'package:sneaker_shopping_prokit/utils/SSConstants.dart';
 import 'package:sneaker_shopping_prokit/utils/SSDataGenerator.dart';
@@ -112,10 +113,13 @@ class SSSearchFragment extends StatelessWidget {
                                                     top: 8, bottom: 8),
                                                 child: InkWell(
                                                   onTap: () {
-                                                    SSProductScreen(
-                                                            img: list[index]
-                                                                .img!)
-                                                        .launch(context);
+                                                    SSDetailScreen(
+                                                      productId:
+                                                          _searchScreenProvider
+                                                              .searchProductItems![
+                                                                  index]
+                                                              .productId,
+                                                    ).launch(context);
                                                   },
                                                   child: Stack(
                                                     alignment:
@@ -211,9 +215,11 @@ class SSSearchFragment extends StatelessWidget {
                                               top: 8, bottom: 8),
                                           child: InkWell(
                                             onTap: () {
-                                              SSProductScreen(
-                                                      img: list[index].img!)
-                                                  .launch(context);
+                                              SSDetailScreen(
+                                                productId: _searchScreenProvider
+                                                    .searchProductItems![index]
+                                                    .productId,
+                                              ).launch(context);
                                             },
                                             child: Stack(
                                               alignment: Alignment.centerLeft,

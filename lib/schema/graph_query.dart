@@ -2,50 +2,6 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 
 class GraphQuerySchema {
-  static getUserDetail(String userId) {
-    return ''' query MyQuery {
-  getUser(id: "$userId") {
-     id
-    city
-    state
-    country
-    address
-    area
-    authProvider
-    dob
-    email
-    firstName
-    gender
-    location
-    totalOrders
-    landmark
-    isCognitoConfirmed
-    phone
-    pinCode
-    profilePhotoUrl
-    userAddress {
-      items {
-        address
-        area
-        city
-        country
-        createdAt
-        email
-        id
-        landmark
-        location
-        name
-        phone
-        state
-        pinCode
-        userID
-        updatedAt
-      }
-    }
-  }
-}''';
-  }
-
   static getSingleProduct(String productId) {
     return '''query MyQuery {
   getProduct(id: "$productId") {
@@ -384,6 +340,7 @@ class GraphQuerySchema {
   searchProducts(filter: {title: {match: "$query"}}, limit: 10,) {
     total
     items {
+      id
       barcode
       price
       thumbImages
@@ -429,60 +386,6 @@ class GraphQuerySchema {
       }
     }
     nextToken
-  }
-}''';
-  }
-
-  static getUserData() async {
-    final userId =
-        await Amplify.Auth.getCurrentUser().then((value) => value.userId);
-
-    return '''query MyQuery {
-  getUser(id: "$userId") {
-    id
-    address
-    area
-    city
-    country
-    dob
-    email
-    firstName
-    gender
-    isActive
-    isAdmin
-    isCognitoConfirmed
-    lastName
-    landmark
-    location
-    profilePhotoUrl
-    authProvider
-    totalSpent
-    totalOrders
-    walletBalance
-    walletSpent
-    phone
-    owner
-    pinCode
-    userAddress {
-      items {
-        state
-        country
-        city
-        area
-        address
-        email
-        createdAt
-        userID
-        pinCode
-        phone
-        name
-        location
-        landmark
-        id
-      }
-    }
-    totalStoreCredit
-    state
   }
 }''';
   }
@@ -579,6 +482,64 @@ class GraphQuerySchema {
         }
       }
       id
+    }
+  }
+}''';
+  }
+
+  static String getUserDetails(String userId) {
+    return '''query MyQuery {
+  getUser(id: "$userId") {
+    id
+    address
+    area
+    authProvider
+    city
+    country
+    createdAt
+    dob
+    email
+    firstName
+    gender
+    isActive
+    isAdmin
+    isCognitoConfirmed
+    landmark
+    lastName
+    location
+    phone
+    pinCode
+    profilePhotoUrl
+    state
+    totalOrders
+    totalSpent
+    walletBalance
+    walletSpent
+  }
+}''';
+  }
+
+  static String getCouponCode({required String userId}) {
+    return '''query MyQuery {
+  listCouponCodes(filter: {userId: {eq: "$userId"}}) {
+    nextToken
+    items {
+      code
+      couponType
+      createdAt
+      description
+      discount
+      expirationDate
+      id
+      isActive
+      isFeatured
+      maxDiscount
+      maxUse
+      minOrderValue
+      paymentMethod
+      totalUsed
+      updatedAt
+      userId
     }
   }
 }''';

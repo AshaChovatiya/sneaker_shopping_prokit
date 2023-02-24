@@ -80,7 +80,7 @@ class CheckOutProvider extends ChangeNotifier {
 
   Future<void> createOrderProduct({
     required String orderId,
-    required int price,
+    required double price,
     required String productId,
     required int quantity,
   }) async {
@@ -100,7 +100,9 @@ class CheckOutProvider extends ChangeNotifier {
           context: navigatorKey.currentContext!,
           message: 'Your Order Is successful',
           type: SnackBarType.SUCCESS);
-      SSPaymentScreen().launch(navigatorKey.currentContext!,);
+      SSPaymentScreen().launch(
+        navigatorKey.currentContext!,
+      );
     } else {
       if (response.errors.isNotEmpty) {
         errorMessage = response.errors.first.message;

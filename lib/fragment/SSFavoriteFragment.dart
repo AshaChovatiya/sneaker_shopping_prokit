@@ -59,6 +59,10 @@ class SSFavoriteFragment extends StatelessWidget {
                             final item = wishListProvider
                                 .wishList!.listWishlists!.items![index];
 
+                            if (item.wishlistProducts?.wishlistProductItems
+                                    ?.isEmpty ??
+                                true) return SizedBox();
+
                             return Padding(
                               padding: EdgeInsets.only(top: 8, bottom: 8),
                               child: InkWell(
@@ -227,7 +231,8 @@ class SSFavoriteFragment extends StatelessWidget {
                                                             ChangeNotifierProvider(
                                                               create: (context) =>
                                                                   WishListProvider(),
-                                                              child: Consumer<WishListProvider>(
+                                                              child: Consumer<
+                                                                      WishListProvider>(
                                                                   builder: (context,
                                                                       dialogWishListProvider,
                                                                       child) {

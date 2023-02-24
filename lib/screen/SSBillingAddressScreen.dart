@@ -1,6 +1,6 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/main.dart';
@@ -30,8 +30,6 @@ class _SSBillingAddressScreenState extends State<SSBillingAddressScreen> {
   final shippingPostCodeController = TextEditingController();
   final shippingCountryController = TextEditingController();
   final shippingStateController = TextEditingController();
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -200,7 +198,8 @@ class _SSBillingAddressScreenState extends State<SSBillingAddressScreen> {
                           BorderSide(color: Color(0xff000000), width: 1),
                     ),
                     hintText: "Jason Anderson",
-                    hintStyle: boldTextStyle(size: 14,color: Colors.grey.withOpacity(0.5)),
+                    hintStyle: boldTextStyle(
+                        size: 14, color: Colors.grey.withOpacity(0.5)),
                     filled: true,
                     fillColor: Color(0x00f2f2f3),
                     isDense: false,
@@ -242,7 +241,8 @@ class _SSBillingAddressScreenState extends State<SSBillingAddressScreen> {
                           BorderSide(color: Color(0xff000000), width: 1),
                     ),
                     hintText: "503, Antom Street",
-                    hintStyle: boldTextStyle(size: 14,color: Colors.grey.withOpacity(0.5)),
+                    hintStyle: boldTextStyle(
+                        size: 14, color: Colors.grey.withOpacity(0.5)),
                     filled: true,
                     fillColor: Color(0x00f2f2f3),
                     isDense: false,
@@ -296,7 +296,9 @@ class _SSBillingAddressScreenState extends State<SSBillingAddressScreen> {
                                     color: Color(0xff000000), width: 1),
                               ),
                               hintText: "Sabah",
-                              hintStyle: boldTextStyle(size: 14,color: Colors.grey.withOpacity(0.5)),
+                              hintStyle: boldTextStyle(
+                                  size: 14,
+                                  color: Colors.grey.withOpacity(0.5)),
                               filled: true,
                               fillColor: Color(0x00f2f2f3),
                               isDense: false,
@@ -347,7 +349,9 @@ class _SSBillingAddressScreenState extends State<SSBillingAddressScreen> {
                                     color: Color(0xff000000), width: 1),
                               ),
                               hintText: "88300",
-                              hintStyle: boldTextStyle(size: 14,color: Colors.grey.withOpacity(0.5)),
+                              hintStyle: boldTextStyle(
+                                  size: 14,
+                                  color: Colors.grey.withOpacity(0.5)),
                               filled: true,
                               fillColor: Color(0x07f2f2f3),
                               isDense: false,
@@ -360,7 +364,6 @@ class _SSBillingAddressScreenState extends State<SSBillingAddressScreen> {
                   ],
                 ),
                 SizedBox(height: 16),
-
                 Text(
                   "State",
                   textAlign: TextAlign.start,
@@ -382,20 +385,21 @@ class _SSBillingAddressScreenState extends State<SSBillingAddressScreen> {
                     disabledBorder: UnderlineInputBorder(
                       borderRadius: BorderRadius.circular(4.0),
                       borderSide:
-                      BorderSide(color: Color(0xff000000), width: 1),
+                          BorderSide(color: Color(0xff000000), width: 1),
                     ),
                     focusedBorder: UnderlineInputBorder(
                       borderRadius: BorderRadius.circular(4.0),
                       borderSide:
-                      BorderSide(color: Color(0xff000000), width: 1),
+                          BorderSide(color: Color(0xff000000), width: 1),
                     ),
                     enabledBorder: UnderlineInputBorder(
                       borderRadius: BorderRadius.circular(4.0),
                       borderSide:
-                      BorderSide(color: Color(0xff000000), width: 1),
+                          BorderSide(color: Color(0xff000000), width: 1),
                     ),
                     hintText: "Gujarat",
-                    hintStyle: boldTextStyle(size: 14,color: Colors.grey.withOpacity(0.5)),
+                    hintStyle: boldTextStyle(
+                        size: 14, color: Colors.grey.withOpacity(0.5)),
                     filled: true,
                     fillColor: Color(0x00f2f2f3),
                     isDense: false,
@@ -437,7 +441,8 @@ class _SSBillingAddressScreenState extends State<SSBillingAddressScreen> {
                           BorderSide(color: Color(0xff000000), width: 1),
                     ),
                     hintText: "India",
-                    hintStyle: boldTextStyle(size: 14,color: Colors.grey.withOpacity(0.5)),
+                    hintStyle: boldTextStyle(
+                        size: 14, color: Colors.grey.withOpacity(0.5)),
                     filled: true,
                     fillColor: Color(0x00f2f2f3),
                     isDense: false,
@@ -445,339 +450,353 @@ class _SSBillingAddressScreenState extends State<SSBillingAddressScreen> {
                   ),
                 ),
                 SizedBox(height: 16),
-                if(checkOutProvider.setAsDefaultBillingAddress)Text(
-                  "Shipping Address",
-                  textAlign: TextAlign.start,
-                  overflow: TextOverflow.clip,
-                  style: secondaryTextStyle(),
-                ),
-                if(checkOutProvider.setAsDefaultBillingAddress)TextField(
-                  controller: TextEditingController(),
-                  obscureText: false,
-                  textAlign: TextAlign.start,
-                  maxLines: 1,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.normal,
-                    fontSize: 14,
-                    color: Color(0xff000000),
+                if (checkOutProvider.setAsDefaultBillingAddress)
+                  Text(
+                    "Shipping Address",
+                    textAlign: TextAlign.start,
+                    overflow: TextOverflow.clip,
+                    style: secondaryTextStyle(),
                   ),
-                  decoration: InputDecoration(
-                    disabledBorder: UnderlineInputBorder(
-                      borderRadius: BorderRadius.circular(4.0),
-                      borderSide:
-                          BorderSide(color: Color(0xff000000), width: 1),
+                if (checkOutProvider.setAsDefaultBillingAddress)
+                  TextField(
+                    controller: TextEditingController(),
+                    obscureText: false,
+                    textAlign: TextAlign.start,
+                    maxLines: 1,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontStyle: FontStyle.normal,
+                      fontSize: 14,
+                      color: Color(0xff000000),
                     ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderRadius: BorderRadius.circular(4.0),
-                      borderSide:
-                          BorderSide(color: Color(0xff000000), width: 1),
+                    decoration: InputDecoration(
+                      disabledBorder: UnderlineInputBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                        borderSide:
+                            BorderSide(color: Color(0xff000000), width: 1),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                        borderSide:
+                            BorderSide(color: Color(0xff000000), width: 1),
+                      ),
+                      enabledBorder: UnderlineInputBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                        borderSide:
+                            BorderSide(color: Color(0xff000000), width: 1),
+                      ),
+                      hintText: "503,Antom Street",
+                      hintStyle: boldTextStyle(
+                          size: 14, color: Colors.grey.withOpacity(0.5)),
+                      filled: true,
+                      fillColor: Color(0x00f2f2f3),
+                      isDense: false,
+                      contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
                     ),
-                    enabledBorder: UnderlineInputBorder(
-                      borderRadius: BorderRadius.circular(4.0),
-                      borderSide:
-                          BorderSide(color: Color(0xff000000), width: 1),
-                    ),
-                    hintText: "503,Antom Street",
-                    hintStyle: boldTextStyle(size: 14,color: Colors.grey.withOpacity(0.5)),
-                    filled: true,
-                    fillColor: Color(0x00f2f2f3),
-                    isDense: false,
-                    contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
                   ),
-                ),
-                if(!checkOutProvider.setAsDefaultBillingAddress)Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 16),
-                    Text(
-                      "Shipping Address",
-                      textAlign: TextAlign.start,
-                      overflow: TextOverflow.clip,
-                      style: boldTextStyle(),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      "Full Name",
-                      textAlign: TextAlign.start,
-                      overflow: TextOverflow.clip,
-                      style: secondaryTextStyle(),
-                    ),
-                    TextField(
-                      controller: shippingFullNameController,
-                      obscureText: false,
-                      textAlign: TextAlign.start,
-                      maxLines: 1,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontStyle: FontStyle.normal,
-                        fontSize: 14,
-                        color: Color(0xff000000),
+                if (!checkOutProvider.setAsDefaultBillingAddress)
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 16),
+                      Text(
+                        "Shipping Address",
+                        textAlign: TextAlign.start,
+                        overflow: TextOverflow.clip,
+                        style: boldTextStyle(),
                       ),
-                      decoration: InputDecoration(
-                        disabledBorder: UnderlineInputBorder(
-                          borderRadius: BorderRadius.circular(4.0),
-                          borderSide:
-                          BorderSide(color: Color(0xff000000), width: 1),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderRadius: BorderRadius.circular(4.0),
-                          borderSide:
-                          BorderSide(color: Color(0xff000000), width: 1),
-                        ),
-                        enabledBorder: UnderlineInputBorder(
-                          borderRadius: BorderRadius.circular(4.0),
-                          borderSide:
-                          BorderSide(color: Color(0xff000000), width: 1),
-                        ),
-                        hintText: "Jason Anderson",
-                        hintStyle: boldTextStyle(size: 14,color: Colors.grey.withOpacity(0.5)),
-                        filled: true,
-                        fillColor: Color(0x00f2f2f3),
-                        isDense: false,
-                        contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
+                      SizedBox(height: 8),
+                      Text(
+                        "Full Name",
+                        textAlign: TextAlign.start,
+                        overflow: TextOverflow.clip,
+                        style: secondaryTextStyle(),
                       ),
-                    ),
-                    SizedBox(height: 16, width: 16),
-                    Text(
-                      "Address",
-                      textAlign: TextAlign.start,
-                      overflow: TextOverflow.clip,
-                      style: secondaryTextStyle(),
-                    ),
-                    TextField(
-                      controller: shippingAddressController,
-                      obscureText: false,
-                      textAlign: TextAlign.start,
-                      maxLines: 1,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontStyle: FontStyle.normal,
-                        fontSize: 14,
-                        color: Color(0xff000000),
-                      ),
-                      decoration: InputDecoration(
-                        disabledBorder: UnderlineInputBorder(
-                          borderRadius: BorderRadius.circular(4.0),
-                          borderSide:
-                          BorderSide(color: Color(0xff000000), width: 1),
+                      TextField(
+                        controller: shippingFullNameController,
+                        obscureText: false,
+                        textAlign: TextAlign.start,
+                        maxLines: 1,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontStyle: FontStyle.normal,
+                          fontSize: 14,
+                          color: Color(0xff000000),
                         ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderRadius: BorderRadius.circular(4.0),
-                          borderSide:
-                          BorderSide(color: Color(0xff000000), width: 1),
-                        ),
-                        enabledBorder: UnderlineInputBorder(
-                          borderRadius: BorderRadius.circular(4.0),
-                          borderSide:
-                          BorderSide(color: Color(0xff000000), width: 1),
-                        ),
-                        hintText: "503, Antom Street",
-                        hintStyle: boldTextStyle(size: 14,color: Colors.grey.withOpacity(0.5)),
-                        filled: true,
-                        fillColor: Color(0x00f2f2f3),
-                        isDense: false,
-                        contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
-                      ),
-                    ),
-                    SizedBox(height: 16, width: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Text(
-                                "City",
-                                textAlign: TextAlign.start,
-                                overflow: TextOverflow.clip,
-                                style: secondaryTextStyle(),
-                              ),
-                              TextField(
-                                controller: shippingCityController,
-                                obscureText: false,
-                                textAlign: TextAlign.start,
-                                maxLines: 1,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontStyle: FontStyle.normal,
-                                  fontSize: 14,
-                                  color: Color(0xff000000),
-                                ),
-                                decoration: InputDecoration(
-                                  disabledBorder: UnderlineInputBorder(
-                                    borderRadius: BorderRadius.circular(4.0),
-                                    borderSide: BorderSide(
-                                        color: Color(0xff000000), width: 1),
-                                  ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderRadius: BorderRadius.circular(4.0),
-                                    borderSide: BorderSide(
-                                        color: Color(0xff000000), width: 1),
-                                  ),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderRadius: BorderRadius.circular(4.0),
-                                    borderSide: BorderSide(
-                                        color: Color(0xff000000), width: 1),
-                                  ),
-                                  hintText: "Sabah",
-                                  hintStyle: boldTextStyle(size: 14,color: Colors.grey.withOpacity(0.5)),
-                                  filled: true,
-                                  fillColor: Color(0x00f2f2f3),
-                                  isDense: false,
-                                  contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
-                                ),
-                              ),
-                            ],
+                        decoration: InputDecoration(
+                          disabledBorder: UnderlineInputBorder(
+                            borderRadius: BorderRadius.circular(4.0),
+                            borderSide:
+                                BorderSide(color: Color(0xff000000), width: 1),
                           ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Text(
-                                "Postcode",
-                                textAlign: TextAlign.start,
-                                overflow: TextOverflow.clip,
-                                style: secondaryTextStyle(),
-                              ),
-                              TextField(
-                                controller: shippingPostCodeController,
-                                obscureText: false,
-                                textAlign: TextAlign.start,
-                                maxLines: 1,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontStyle: FontStyle.normal,
-                                  fontSize: 14,
-                                  color: Color(0xff000000),
-                                ),
-                                decoration: InputDecoration(
-                                  disabledBorder: UnderlineInputBorder(
-                                    borderRadius: BorderRadius.circular(4.0),
-                                    borderSide: BorderSide(
-                                        color: Color(0xff000000), width: 1),
-                                  ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderRadius: BorderRadius.circular(4.0),
-                                    borderSide: BorderSide(
-                                        color: Color(0xff000000), width: 1),
-                                  ),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderRadius: BorderRadius.circular(4.0),
-                                    borderSide: BorderSide(
-                                        color: Color(0xff000000), width: 1),
-                                  ),
-                                  hintText: "88300",
-                                  hintStyle: boldTextStyle(size: 14,color: Colors.grey.withOpacity(0.5)),
-                                  filled: true,
-                                  fillColor: Color(0x07f2f2f3),
-                                  isDense: false,
-                                  contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
-                                ),
-                              ),
-                            ],
+                          focusedBorder: UnderlineInputBorder(
+                            borderRadius: BorderRadius.circular(4.0),
+                            borderSide:
+                                BorderSide(color: Color(0xff000000), width: 1),
                           ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderRadius: BorderRadius.circular(4.0),
+                            borderSide:
+                                BorderSide(color: Color(0xff000000), width: 1),
+                          ),
+                          hintText: "Jason Anderson",
+                          hintStyle: boldTextStyle(
+                              size: 14, color: Colors.grey.withOpacity(0.5)),
+                          filled: true,
+                          fillColor: Color(0x00f2f2f3),
+                          isDense: false,
+                          contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
                         ),
-                      ],
-                    ),
-                    SizedBox(height: 16),
-                    Text(
-                      "State",
-                      textAlign: TextAlign.start,
-                      overflow: TextOverflow.clip,
-                      style: secondaryTextStyle(),
-                    ),
-                    TextField(
-                      controller: shippingStateController,
-                      obscureText: false,
-                      textAlign: TextAlign.start,
-                      maxLines: 1,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontStyle: FontStyle.normal,
-                        fontSize: 14,
-                        color: Color(0xff000000),
                       ),
-                      decoration: InputDecoration(
-                        disabledBorder: UnderlineInputBorder(
-                          borderRadius: BorderRadius.circular(4.0),
-                          borderSide:
-                          BorderSide(color: Color(0xff000000), width: 1),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderRadius: BorderRadius.circular(4.0),
-                          borderSide:
-                          BorderSide(color: Color(0xff000000), width: 1),
-                        ),
-                        enabledBorder: UnderlineInputBorder(
-                          borderRadius: BorderRadius.circular(4.0),
-                          borderSide:
-                          BorderSide(color: Color(0xff000000), width: 1),
-                        ),
-                        hintText: "Gujarat",
-                        hintStyle: boldTextStyle(size: 14,color: Colors.grey.withOpacity(0.5)),
-                        filled: true,
-                        fillColor: Color(0x00f2f2f3),
-                        isDense: false,
-                        contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
+                      SizedBox(height: 16, width: 16),
+                      Text(
+                        "Address",
+                        textAlign: TextAlign.start,
+                        overflow: TextOverflow.clip,
+                        style: secondaryTextStyle(),
                       ),
-                    ),
-                    SizedBox(height: 16),
-                    Text(
-                      "Country",
-                      textAlign: TextAlign.start,
-                      overflow: TextOverflow.clip,
-                      style: secondaryTextStyle(),
-                    ),
-                    TextField(
-                      controller: shippingCountryController,
-                      obscureText: false,
-                      textAlign: TextAlign.start,
-                      maxLines: 1,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontStyle: FontStyle.normal,
-                        fontSize: 14,
-                        color: Color(0xff000000),
+                      TextField(
+                        controller: shippingAddressController,
+                        obscureText: false,
+                        textAlign: TextAlign.start,
+                        maxLines: 1,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontStyle: FontStyle.normal,
+                          fontSize: 14,
+                          color: Color(0xff000000),
+                        ),
+                        decoration: InputDecoration(
+                          disabledBorder: UnderlineInputBorder(
+                            borderRadius: BorderRadius.circular(4.0),
+                            borderSide:
+                                BorderSide(color: Color(0xff000000), width: 1),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderRadius: BorderRadius.circular(4.0),
+                            borderSide:
+                                BorderSide(color: Color(0xff000000), width: 1),
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderRadius: BorderRadius.circular(4.0),
+                            borderSide:
+                                BorderSide(color: Color(0xff000000), width: 1),
+                          ),
+                          hintText: "503, Antom Street",
+                          hintStyle: boldTextStyle(
+                              size: 14, color: Colors.grey.withOpacity(0.5)),
+                          filled: true,
+                          fillColor: Color(0x00f2f2f3),
+                          isDense: false,
+                          contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
+                        ),
                       ),
-                      decoration: InputDecoration(
-                        disabledBorder: UnderlineInputBorder(
-                          borderRadius: BorderRadius.circular(4.0),
-                          borderSide:
-                          BorderSide(color: Color(0xff000000), width: 1),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderRadius: BorderRadius.circular(4.0),
-                          borderSide:
-                          BorderSide(color: Color(0xff000000), width: 1),
-                        ),
-                        enabledBorder: UnderlineInputBorder(
-                          borderRadius: BorderRadius.circular(4.0),
-                          borderSide:
-                          BorderSide(color: Color(0xff000000), width: 1),
-                        ),
-                        hintText: "India",
-                        hintStyle: boldTextStyle(size: 14,color: Colors.grey.withOpacity(0.5)),
-                        filled: true,
-                        fillColor: Color(0x00f2f2f3),
-                        isDense: false,
-                        contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
+                      SizedBox(height: 16, width: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Text(
+                                  "City",
+                                  textAlign: TextAlign.start,
+                                  overflow: TextOverflow.clip,
+                                  style: secondaryTextStyle(),
+                                ),
+                                TextField(
+                                  controller: shippingCityController,
+                                  obscureText: false,
+                                  textAlign: TextAlign.start,
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 14,
+                                    color: Color(0xff000000),
+                                  ),
+                                  decoration: InputDecoration(
+                                    disabledBorder: UnderlineInputBorder(
+                                      borderRadius: BorderRadius.circular(4.0),
+                                      borderSide: BorderSide(
+                                          color: Color(0xff000000), width: 1),
+                                    ),
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderRadius: BorderRadius.circular(4.0),
+                                      borderSide: BorderSide(
+                                          color: Color(0xff000000), width: 1),
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderRadius: BorderRadius.circular(4.0),
+                                      borderSide: BorderSide(
+                                          color: Color(0xff000000), width: 1),
+                                    ),
+                                    hintText: "Sabah",
+                                    hintStyle: boldTextStyle(
+                                        size: 14,
+                                        color: Colors.grey.withOpacity(0.5)),
+                                    filled: true,
+                                    fillColor: Color(0x00f2f2f3),
+                                    isDense: false,
+                                    contentPadding:
+                                        EdgeInsets.fromLTRB(12, 8, 12, 8),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Text(
+                                  "Postcode",
+                                  textAlign: TextAlign.start,
+                                  overflow: TextOverflow.clip,
+                                  style: secondaryTextStyle(),
+                                ),
+                                TextField(
+                                  controller: shippingPostCodeController,
+                                  obscureText: false,
+                                  textAlign: TextAlign.start,
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 14,
+                                    color: Color(0xff000000),
+                                  ),
+                                  decoration: InputDecoration(
+                                    disabledBorder: UnderlineInputBorder(
+                                      borderRadius: BorderRadius.circular(4.0),
+                                      borderSide: BorderSide(
+                                          color: Color(0xff000000), width: 1),
+                                    ),
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderRadius: BorderRadius.circular(4.0),
+                                      borderSide: BorderSide(
+                                          color: Color(0xff000000), width: 1),
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderRadius: BorderRadius.circular(4.0),
+                                      borderSide: BorderSide(
+                                          color: Color(0xff000000), width: 1),
+                                    ),
+                                    hintText: "88300",
+                                    hintStyle: boldTextStyle(
+                                        size: 14,
+                                        color: Colors.grey.withOpacity(0.5)),
+                                    filled: true,
+                                    fillColor: Color(0x07f2f2f3),
+                                    isDense: false,
+                                    contentPadding:
+                                        EdgeInsets.fromLTRB(12, 8, 12, 8),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    SizedBox(height: 16),
-                  ],
-                ),
+                      SizedBox(height: 16),
+                      Text(
+                        "State",
+                        textAlign: TextAlign.start,
+                        overflow: TextOverflow.clip,
+                        style: secondaryTextStyle(),
+                      ),
+                      TextField(
+                        controller: shippingStateController,
+                        obscureText: false,
+                        textAlign: TextAlign.start,
+                        maxLines: 1,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontStyle: FontStyle.normal,
+                          fontSize: 14,
+                          color: Color(0xff000000),
+                        ),
+                        decoration: InputDecoration(
+                          disabledBorder: UnderlineInputBorder(
+                            borderRadius: BorderRadius.circular(4.0),
+                            borderSide:
+                                BorderSide(color: Color(0xff000000), width: 1),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderRadius: BorderRadius.circular(4.0),
+                            borderSide:
+                                BorderSide(color: Color(0xff000000), width: 1),
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderRadius: BorderRadius.circular(4.0),
+                            borderSide:
+                                BorderSide(color: Color(0xff000000), width: 1),
+                          ),
+                          hintText: "Gujarat",
+                          hintStyle: boldTextStyle(
+                              size: 14, color: Colors.grey.withOpacity(0.5)),
+                          filled: true,
+                          fillColor: Color(0x00f2f2f3),
+                          isDense: false,
+                          contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                        "Country",
+                        textAlign: TextAlign.start,
+                        overflow: TextOverflow.clip,
+                        style: secondaryTextStyle(),
+                      ),
+                      TextField(
+                        controller: shippingCountryController,
+                        obscureText: false,
+                        textAlign: TextAlign.start,
+                        maxLines: 1,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontStyle: FontStyle.normal,
+                          fontSize: 14,
+                          color: Color(0xff000000),
+                        ),
+                        decoration: InputDecoration(
+                          disabledBorder: UnderlineInputBorder(
+                            borderRadius: BorderRadius.circular(4.0),
+                            borderSide:
+                                BorderSide(color: Color(0xff000000), width: 1),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderRadius: BorderRadius.circular(4.0),
+                            borderSide:
+                                BorderSide(color: Color(0xff000000), width: 1),
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderRadius: BorderRadius.circular(4.0),
+                            borderSide:
+                                BorderSide(color: Color(0xff000000), width: 1),
+                          ),
+                          hintText: "India",
+                          hintStyle: boldTextStyle(
+                              size: 14, color: Colors.grey.withOpacity(0.5)),
+                          filled: true,
+                          fillColor: Color(0x00f2f2f3),
+                          isDense: false,
+                          contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                    ],
+                  ),
                 SizedBox(height: 16),
                 Theme(
                   data: ThemeData(
@@ -800,24 +819,35 @@ class _SSBillingAddressScreenState extends State<SSBillingAddressScreen> {
             ),
           );
         }),
-        bottomNavigationBar: Consumer<CheckOutProvider>(builder: (context,checkOutProvider,_){
-          return  Padding(
+        bottomNavigationBar:
+            Consumer<CheckOutProvider>(builder: (context, checkOutProvider, _) {
+          return Padding(
             padding: EdgeInsets.all(16),
             child: sSAppButton(
               context: context,
               title: 'Continue to payment',
-              onPressed: () async{
-                final userId = await Amplify.Auth.getCurrentUser().then((value) => value.userId);
+              onPressed: () async {
+                final userId = await Amplify.Auth.getCurrentUser()
+                    .then((value) => value.userId);
                 var createOrderData = {
                   'status': OrderStatus.PROCESSING.name,
                   'currency': "inr",
                   'userId': userId,
                   'totalStoreCredit': 0.0,
                   'totalDiscount': 0.0,
-                  'totalAmount': context.read<ShoppingCartProvider>().totalPrice,
+                  'totalAmount':
+                      context.read<ShoppingCartProvider>().totalPrice,
                   'totalCashOnDeliveryCharges': 0.0,
                   'orderDate': '${TemporalDateTime.now()}',
-                  'CouponCodeId': "",
+                  'CouponCodeId': context
+                              .read<ShoppingCartProvider>()
+                              .selectedCouponCodeItem !=
+                          null
+                      ? context
+                          .read<ShoppingCartProvider>()
+                          .selectedCouponCodeItem!
+                          .id
+                      : '',
                   'BillingAddress': {
                     'name': billingFullNameController.text,
                     'address': billingAddressController.text,
@@ -836,8 +866,12 @@ class _SSBillingAddressScreenState extends State<SSBillingAddressScreen> {
                   },
                   'totalShippingCharges': 0.0
                 };
-                ShoppingcartProductsitems? shoppingCartProductItems = context.read<ShoppingCartProvider>().shoppingCartProductItems;
-                checkOutProvider.createOrderCart(data: createOrderData,shoppingCartProductItems:shoppingCartProductItems);
+                checkOutProvider.createOrderCart(
+                    data: createOrderData,
+                    shoppingCartProductItems: context
+                        .read<ShoppingCartProvider>()
+                        .shoppingCartProductItems);
+                SSPaymentScreen().launch(context);
               },
             ),
           );
