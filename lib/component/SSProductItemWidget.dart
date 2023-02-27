@@ -40,53 +40,56 @@ class _SSProductItemWidgetState extends State<SSProductItemWidget> {
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
               ),
             )
-          : CustomScrollView(
-              controller: scrollController,
-              slivers: [
-                SliverGrid(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final e = _productProvider.productDetail![index];
-                      return InkWell(
-                        highlightColor: Colors.transparent,
-                        splashColor: Colors.transparent,
-                        onTap: () {
-                          SSDetailScreen(
-                            productId: e.id,
-                          ).launch(context);
-                        },
-                        child: SSBestODWidget(
-                          isWishList: _productProvider.wishListedProducts
-                              .contains(e.id),
-                          title: e.title,
-                          img: e.thumbImages == null
-                              ? imagePlaceHolder
-                              : imageBaseApi + e.thumbImages.toString(),
-                          subtitle: e.productType,
-                          amount: e.price.toString(),
-                          amountType: e.currency,
-                          product: e,
-                        ),
-                      );
-                    },
-                    childCount: _productProvider.productDetail?.length,
+          : Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+            child: CustomScrollView(
+                controller: scrollController,
+                slivers: [
+                  SliverGrid(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final e = _productProvider.productDetail![index];
+                        return InkWell(
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
+                          onTap: () {
+                            SSDetailScreen(
+                              productId: e.id,
+                            ).launch(context);
+                          },
+                          child: SSBestODWidget(
+                            isWishList: _productProvider.wishListedProducts
+                                .contains(e.id),
+                            title: e.title,
+                            img: e.thumbImages == null
+                                ? imagePlaceHolder
+                                : imageBaseApi + e.thumbImages.toString(),
+                            subtitle: e.productType,
+                            amount: e.price.toString(),
+                            amountType: e.currency,
+                            product: e,
+                          ),
+                        );
+                      },
+                      childCount: _productProvider.productDetail?.length,
+                    ),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 10,
+                        crossAxisSpacing: 10,
+                        childAspectRatio: 0.6),
                   ),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 10,
-                      crossAxisSpacing: 10,
-                      childAspectRatio: 0.6),
-                ),
-                if (_productProvider.isPagination)
-                  SliverToBoxAdapter(
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                  if (_productProvider.isPagination)
+                    SliverToBoxAdapter(
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                        ),
                       ),
                     ),
-                  ),
-              ],
-            );
+                ],
+              ),
+          );
     });
     /* SingleChildScrollView(
       controller: scrollController,

@@ -6,11 +6,15 @@ import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/main.dart';
 import 'package:sneaker_shopping_prokit/model/SneakerShoppingModel.dart';
 import 'package:sneaker_shopping_prokit/providers/profile_provider.dart';
+import 'package:sneaker_shopping_prokit/screen/SSSelectCouponCodeScreen.dart';
 import 'package:sneaker_shopping_prokit/utils/SSColors.dart';
 import 'package:sneaker_shopping_prokit/utils/SSDataGenerator.dart';
 import 'package:sneaker_shopping_prokit/utils/SSWidgets.dart';
 
+import '../screen/SSMyOrderListScreen.dart';
+import '../screen/SSMyVoucherScreen.dart';
 import '../screen/SSSignInScreen.dart';
+import '../screen/SSSoppingAddressScreen.dart';
 
 class SSProfileFragment extends StatelessWidget {
   final List<SneakerShoppingModel> data = getAccount();
@@ -110,44 +114,47 @@ class SSProfileFragment extends StatelessWidget {
                     shrinkWrap: true,
                     itemCount: data.length,
                     itemBuilder: (_, index) {
-                      return InkWell(
-                        onTap: () {
-                          if (index == 0) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => SSSignInScreen()));
-                          }
-                        },
-                        child: Padding(
-                          padding: EdgeInsets.only(top: 4, bottom: 4),
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Text(data[index].name!,
-                                      textAlign: TextAlign.start,
-                                      overflow: TextOverflow.clip,
-                                      style: boldTextStyle(size: 16)),
-                                  Icon(Icons.arrow_forward_ios,
-                                      color: context.iconColor, size: 17),
-                                ],
-                              ),
-                              SizedBox(height: 8, width: 16),
-                              Divider(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  height: 16,
-                                  thickness: 0,
-                                  indent: 0,
-                                  endIndent: 0),
-                            ],
-                          ),
-                        ),
-                      );
+                      return listTileWidgets(
+                          context: context,
+                          sneakerShoppingModel: data[index],
+                          onTab: () {
+                            if (index == 0) {
+                              return Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => SSMyOrderListScreen()));
+                            } else if (index == 1) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => SSMyVoucherScreen()));
+                            } else if (index == 2) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => SSSoppingAddressScreen()));
+                            } else if (index == 3) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => SSSignInScreen()));
+                            } else if (index == 4) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => SSSignInScreen()));
+                            } else if (index == 5) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => SSSignInScreen()));
+                            } else if (index == 6) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => SSSignInScreen()));
+                            }
+                          });
                     },
                   ),
                   Row(
@@ -224,6 +231,47 @@ class SSProfileFragment extends StatelessWidget {
           ),
         );
       }),
+    );
+  }
+
+  listTileWidgets(
+      {required BuildContext context,
+      required SneakerShoppingModel sneakerShoppingModel,
+      Function? onTab}) {
+    return GestureDetector(
+      onTap: () {
+        onTab!();
+      },
+      child: Container(
+        color: Colors.transparent,
+        child: Padding(
+          padding: EdgeInsets.only(top: 4, bottom: 4),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Text(sneakerShoppingModel.name!,
+                      textAlign: TextAlign.start,
+                      overflow: TextOverflow.clip,
+                      style: boldTextStyle(size: 16)),
+                  Icon(Icons.arrow_forward_ios,
+                      color: context.iconColor, size: 17),
+                ],
+              ),
+              SizedBox(height: 8, width: 16),
+              Divider(
+                  color: Colors.grey.withOpacity(0.5),
+                  height: 16,
+                  thickness: 0,
+                  indent: 0,
+                  endIndent: 0),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

@@ -1,6 +1,3 @@
-import 'package:amplify_api/amplify_api.dart';
-import 'package:amplify_flutter/amplify_flutter.dart';
-
 class GraphQuerySchema {
   static getSingleProduct(String productId) {
     return '''query MyQuery {
@@ -540,6 +537,91 @@ class GraphQuerySchema {
       totalUsed
       updatedAt
       userId
+    }
+  }
+}''';
+  }
+
+  static String getMyOrder({required String userId}) {
+    return '''query MyQuery {
+  listOrders(filter: {userId: {eq: "$userId"}}) {
+    items {
+      id
+      products {
+        items {
+          additionalInfo
+          cashOnDeliveryCharges
+          centralGstPercentage
+          compensationCessPercentage
+          currency
+          deliveryPartner
+          discount
+          dispatchDate
+          id
+          orderId
+          quantity
+          title
+          totalPrice
+          status
+          productId
+          product {
+            additionalInfo
+            brand
+            color
+            currency
+            id
+            price
+            productType
+            longDescription
+            isFeatured
+            status
+            title
+            thumbImages
+            listingPrice
+            totalOrders
+          }
+          price
+          invoiceDate
+          invoiceNumber
+          onHold
+        }
+      }
+      currency
+      orderDate
+      totalAmount
+      totalCashOnDeliveryCharges
+      totalDiscount
+      totalGiftCharges
+      totalPrepaidAmount
+      totalShippingCharges
+      totalStoreCredit
+      CouponCodeId
+      status
+    }
+  }
+}
+''';
+  }
+
+  static String getUserAddressOrder({required String userId}) {
+    return '''query MyQuery {
+  byuserIDUserAddress(userID: "$userId") {
+    items {
+      city
+      country
+      userID
+      updatedAt
+      state
+      pinCode
+      phone
+      location
+      name
+      landmark
+      id
+      email
+      createdAt
+      area
+      address
     }
   }
 }''';

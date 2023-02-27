@@ -119,7 +119,7 @@ class SSBestODWidget extends StatelessWidget {
                       ),
                       child: Icon(
                           isWishList ? Icons.favorite : Icons.favorite_outline,
-                          color: isWishList ? Colors.red : Colors.black,
+                          color: isWishList ? Colors.red : context.iconColor,
                           size: 18),
                     ),
                   ),
