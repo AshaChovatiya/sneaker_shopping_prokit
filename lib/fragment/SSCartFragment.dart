@@ -203,6 +203,10 @@ class SSCartFragmentState extends State<SSCartFragment> {
                                                           // SSBillingAddressScreen()
                                                           //     .launch(context);
                                                           shoppingCartProvider
+                                                                  .shoppingCartId =
+                                                              shoppingCartItem
+                                                                  .id;
+                                                          shoppingCartProvider
                                                               .onClickBuyNow(
                                                                   shoppingCartItem
                                                                       .shoppingcartProducts!
@@ -435,7 +439,18 @@ class SSCartFragmentState extends State<SSCartFragment> {
                                                   ChangeNotifierProvider<
                                                       ShoppingCartProvider>.value(
                                                 value: shoppingCartProvider,
-                                                child: SSBillingAddressScreen(),
+                                                child: SSBillingAddressScreen(
+                                                  shoppingCartId:
+                                                      shoppingCartProvider
+                                                          .shoppingCartId,
+                                                  productId: shoppingCartProvider
+                                                      .shoppingCartProductItems!
+                                                      .productId!,
+                                                  qty: shoppingCartProvider
+                                                      .buyNowQty,
+                                                  price: shoppingCartProvider
+                                                      .totalPrice,
+                                                ),
                                               ),
                                             ));
                                       },

@@ -63,8 +63,7 @@ class SearchScreenProvider extends ChangeNotifier {
     notifyListeners();
     var request = Amplify.API.query(
         request: GraphQLRequest<String>(
-      document: GraphQuerySchema.searchProduct(
-          (search?.isEmpty) ?? true ? 'Wow' : search.toString(),
+      document: GraphQuerySchema.searchProduct(search.toString(),
           isScroll ? searchProduct.searchProducts!.nextToken : null),
     ));
     var response = await request.response;

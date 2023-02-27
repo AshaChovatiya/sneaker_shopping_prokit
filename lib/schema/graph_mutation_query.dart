@@ -68,8 +68,14 @@ class GraphMutationSchema {
 
   static createOrderMutation({required Map<dynamic, dynamic> data}) {
     return '''mutation MyMutation {
-  createOrder(input: {status: ${data['status']}, currency: "${data['currency']}", userId: "${data['userId']}", totalStoreCredit: ${data['totalStoreCredit']}, totalShippingCharges: ${data['totalShippingCharges']}, totalAmount: ${data['totalAmount']}, totalDiscount:  ${data['totalDiscount']}, totalCashOnDeliveryCharges: ${data['totalCashOnDeliveryCharges']}, orderDate: "${data['orderDate']}", CouponCodeId: "${data['CouponCodeId']}", BillingAddress: {address: "${data['BillingAddress']['address']}", city: "${data['BillingAddress']['city']}", country: "${data['BillingAddress']['country']}", state: "${data['BillingAddress']['state']}", pinCode: "${data['BillingAddress']['pinCode']}", name: "${data['BillingAddress']['name']}"}, shippingAddress: {address: "${data['shippingAddress']['address']}", city: "${data['shippingAddress']['city']}", country: "${data['shippingAddress']['country']}", state: "${data['shippingAddress']['state']}", pinCode: "${data['shippingAddress']['pinCode']}", name: "${data['shippingAddress']['name']}"}}){
-  id}
+  createOrder(input: {status: ${data['status']}, currency: "${data['currency']}", userId: "${data['userId']}", totalStoreCredit: ${data['totalStoreCredit']}, totalShippingCharges: ${data['totalShippingCharges']}, totalAmount: ${data['totalAmount']}, totalDiscount:  ${data['totalDiscount']}, totalCashOnDeliveryCharges: ${data['totalCashOnDeliveryCharges']}, orderDate: "${data['orderDate']}", CouponCodeId: "${data['CouponCodeId']}", BillingAddress: {address: "${data['BillingAddress']['address']}", city: "${data['BillingAddress']['city']}", country: "${data['BillingAddress']['country']}", state: "${data['BillingAddress']['state']}", pinCode: "${data['BillingAddress']['pinCode']}", name: "${data['BillingAddress']['name']}", phone:"${data['BillingAddress']['phone']}", email: "${data['BillingAddress']['email']}"}, shippingAddress: {address: "${data['shippingAddress']['address']}", city: "${data['shippingAddress']['city']}", country: "${data['shippingAddress']['country']}", state: "${data['shippingAddress']['state']}", pinCode: "${data['shippingAddress']['pinCode']}", name: "${data['shippingAddress']['name']}", phone:"${data['shippingAddress']['phone']}", email:"${data['shippingAddress']['email']}"}}){
+  id
+  totalAmount
+  totalCashOnDeliveryCharges
+  totalDiscount
+  totalShippingCharges
+  currency
+  }
 }''';
   }
 
@@ -82,6 +88,29 @@ class GraphMutationSchema {
     return '''mutation MyMutation {
   createOrderProduct(input: {orderId: "$orderId", price: $price, productId: "$productId", quantity: $quantity}) {
     orderId
+    discount
+    cashOnDeliveryCharges
+    totalPrice
+    shippingCharges
+    invoiceNumber
+    dispatchDate
+    deliveryPartner
+    id
+  }
+}''';
+  }
+
+  static createPaymentMutation(
+      {required String method,
+      required double amount,
+      required String orderId,
+      required String userId}) {
+    return '''mutation MyMutation {
+  createPayment(input: {method: $method, amount: $amount, createdAt: "${TemporalDateTime.now()}", orderId: "$orderId", userId: "$userId"}) {
+    id
+    orderId
+    userId
+    amount
   }
 }''';
   }

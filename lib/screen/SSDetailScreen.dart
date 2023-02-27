@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/component/AddToCartBottomSheet.dart';
+import 'package:sneaker_shopping_prokit/providers/shopping_cart_provider.dart';
 import 'package:sneaker_shopping_prokit/utils/SSWidgets.dart';
 import 'package:sneaker_shopping_prokit/utils/common_snack_bar.dart';
 
@@ -14,6 +15,8 @@ import '../model/ImageModel.dart';
 import '../providers/product_details_provider.dart';
 import '../providers/product_provider.dart';
 import '../utils/SSConstants.dart';
+import 'SSBillingAddressScreen.dart';
+import 'SSSelectCouponCodeScreen.dart';
 
 class SSDetailScreen extends StatefulWidget {
   final String? productId;
@@ -48,9 +51,16 @@ class SSDetailScreenState extends State<SSDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (context) =>
-            ProductDetailsProvider()..getProductItemData(widget.productId),
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (context) =>
+                ProductDetailsProvider()..getProductItemData(widget.productId),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => ShoppingCartProvider()..getCouponCodes(),
+          ),
+        ],
         child: Scaffold(
           appBar: AppBar(
             elevation: 0,
@@ -379,57 +389,186 @@ class SSDetailScreenState extends State<SSDetailScreen> {
           }),
           bottomNavigationBar: Padding(
             padding: EdgeInsets.all(16),
-            child: Row(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.withOpacity(0.5)),
-                      borderRadius: BorderRadius.circular(8)),
-                  child: Consumer<ProductDetailsProvider>(
-                      builder: (context, productProvider, child) {
-                    return IconButton(
-                      icon: Icon(Icons.shopping_cart_outlined),
-                      onPressed: () {
-                        if (productId == null) {
-                          GlobalSnackBar.show(
-                            context: context,
-                            message: 'Something went wrong',
-                            type: SnackBarType.ERROR,
-                          );
+            child: Consumer<ShoppingCartProvider>(
+                builder: (context, shoppingCartProvider, child) {
+              return shoppingCartProvider.isShowCheckOut
+                  ? Container(
+                      padding: EdgeInsets.only(
+                          top: 8, left: 16, right: 16, bottom: 16),
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        //color: context.cardColor,
+                        boxShadow: defaultBoxShadow(),
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(16),
+                            topRight: Radius.circular(16)),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text('Promo code',
+                                    style: secondaryTextStyle()),
+                              ),
+                              Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                      shoppingCartProvider
+                                              .selectedCouponCodeItem?.code ??
+                                          'No coupon code available',
+                                      style: boldTextStyle()),
+                                  SizedBox(height: 3),
+                                  InkWell(
+                                    onTap: () {
+                                      if (shoppingCartProvider
+                                              .selectedCouponCodeItem ==
+                                          null) {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ChangeNotifierProvider.value(
+                                                        value:
+                                                            shoppingCartProvider,
+                                                        child:
+                                                            SSSelectCouponCodeScreen())));
 
-                          return;
-                        }
-                        showModalBottomSheet(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(16),
-                                topRight: Radius.circular(16)),
+                                        return;
+                                      }
+                                      shoppingCartProvider.removeCouponCode();
+                                    },
+                                    child: Text(
+                                        shoppingCartProvider
+                                                    .selectedCouponCodeItem ==
+                                                null
+                                            ? 'Select Coupon Code'
+                                            : 'Remove coupon',
+                                        style: secondaryTextStyle().copyWith(
+                                            fontSize: 10,
+                                            color: Colors.blue,
+                                            decoration:
+                                                TextDecoration.underline)),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(width: 16),
+                              GestureDetector(
+                                onTap: () {
+                                  shoppingCartProvider.isShowCheckOut = false;
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.grey.withOpacity(0.6)),
+                                  child: Icon(Icons.close,
+                                      size: 16, color: Colors.white),
+                                ),
+                              ),
+                            ],
                           ),
-                          context: context,
-                          builder: (_) {
-                            return AddToShoppingCartBottomSheet(
-                              productDataModel:
-                                  productProvider.productDataModel!,
+                          SizedBox(height: 16),
+                          Divider(color: Colors.grey, height: 1),
+                          SizedBox(height: 16),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('${shoppingCartProvider.buyNowQty} Quantity',
+                                  style: secondaryTextStyle()),
+                              Text(
+                                  '\$${shoppingCartProvider.totalPrice != 0 ? shoppingCartProvider.totalPrice : ''}',
+                                  style: boldTextStyle()),
+                            ],
+                          ),
+                          SizedBox(height: 16),
+                          sSAppButton(
+                            context: context,
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ChangeNotifierProvider<
+                                            ShoppingCartProvider>.value(
+                                      value: shoppingCartProvider,
+                                      child: SSBillingAddressScreen(
+                                        productId: productId,
+                                        price: shoppingCartProvider.totalPrice,
+                                        qty: shoppingCartProvider.buyNowQty,
+                                      ),
+                                    ),
+                                  ));
+                            },
+                            title: 'Checkout',
+                          ),
+                        ],
+                      ),
+                    )
+                  : Row(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: Colors.grey.withOpacity(0.5)),
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Consumer<ProductDetailsProvider>(
+                              builder: (context, productProvider, child) {
+                            return IconButton(
+                              icon: Icon(Icons.shopping_cart_outlined),
+                              onPressed: () {
+                                if (productId == null) {
+                                  GlobalSnackBar.show(
+                                    context: context,
+                                    message: 'Something went wrong',
+                                    type: SnackBarType.ERROR,
+                                  );
+
+                                  return;
+                                }
+                                showModalBottomSheet(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(16),
+                                        topRight: Radius.circular(16)),
+                                  ),
+                                  context: context,
+                                  builder: (_) {
+                                    return AddToShoppingCartBottomSheet(
+                                      productDataModel:
+                                          productProvider.productDataModel!,
+                                    );
+                                    // return AddToCartBottomSheet(
+                                    //   productDataModel: productProvider.productDataModel!,
+                                    // );
+                                  },
+                                );
+                              },
                             );
-                            // return AddToCartBottomSheet(
-                            //   productDataModel: productProvider.productDataModel!,
-                            // );
-                          },
-                        );
-                      },
+                          }),
+                        ),
+                        SizedBox(width: 8),
+                        Consumer<ProductDetailsProvider>(
+                            builder: (context, productProvider, child) {
+                          return Expanded(
+                            child: sSAppButton(
+                              context: context,
+                              title: 'Buy Now',
+                              onPressed: () {
+                                shoppingCartProvider.totalPrice =
+                                    productProvider.productDataModel?.price ??
+                                        0.0;
+                                shoppingCartProvider.buyNowQty = 1;
+                                shoppingCartProvider.isShowCheckOut = true;
+                              },
+                            ),
+                          );
+                        }),
+                      ],
                     );
-                  }),
-                ),
-                SizedBox(width: 8),
-                Expanded(
-                  child: sSAppButton(
-                    context: context,
-                    title: 'Buy Now',
-                    onPressed: () {},
-                  ),
-                ),
-              ],
-            ),
+            }),
           ),
         ));
   }

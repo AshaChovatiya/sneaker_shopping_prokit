@@ -15,6 +15,15 @@ class ShoppingCartProvider extends ChangeNotifier {
   int buyNowQty = 0;
   bool _isDeleting = false;
   bool _isShowCheckOut = false;
+  String? _shoppingCartId;
+
+  String? get shoppingCartId => _shoppingCartId;
+
+  set shoppingCartId(String? value) {
+    _shoppingCartId = value;
+    notifyListeners();
+  }
+
   CouponCodeItems? _selectedCouponCodeItem;
 
   CouponCodeItems? get selectedCouponCodeItem => _selectedCouponCodeItem;
@@ -76,7 +85,7 @@ class ShoppingCartProvider extends ChangeNotifier {
         request: GraphQLRequest<String>(
       document: GraphMutationSchema.createShoppingCartMutation(userID: userId),
     ));
-    String? shoppingCartId;
+
     final response = await request.response;
     if (response.errors.isEmpty && response.data != null) {
       shoppingCartId = jsonDecode(response.data!)['createShoppingCart']['id'];
@@ -100,7 +109,7 @@ class ShoppingCartProvider extends ChangeNotifier {
     await addProductToShoppingCart(
         productId: productId,
         quantity: quantity,
-        shoppingCartId: shoppingCartId);
+        shoppingCartId: shoppingCartId!);
     isLoading = false;
   }
 

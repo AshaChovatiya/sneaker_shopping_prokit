@@ -297,7 +297,9 @@ class SSSearchFragment extends StatelessWidget {
                                     )
                                   : Center(
                                       child: Text(
-                                        'No Result Found',
+                                        searchController.text.trim().isEmpty
+                                            ? 'Search what you want'
+                                            : 'No Result Found',
                                         style: boldTextStyle(
                                             color: appStore.isDarkModeOn
                                                 ? Color(0xffffffff)
