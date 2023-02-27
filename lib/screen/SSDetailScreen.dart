@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
@@ -14,6 +15,8 @@ import '../model/ImageModel.dart';
 import '../providers/product_details_provider.dart';
 import '../providers/product_provider.dart';
 import '../utils/SSConstants.dart';
+import 'SSAddReviewScreen.dart';
+import 'SSReviewListScreen.dart';
 
 class SSDetailScreen extends StatefulWidget {
   final String? productId;
@@ -216,12 +219,18 @@ class SSDetailScreenState extends State<SSDetailScreen> {
                                       style: boldTextStyle()),
                                 ],
                               ),
-                              SizedBox(height: 16),
-                              Text("Available Sizes",
-                                  textAlign: TextAlign.start,
-                                  overflow: TextOverflow.clip,
-                                  style: boldTextStyle(size: 14)),
                               SizedBox(height: 8),
+                              if (productDetailsProvider
+                                      .productDataModel!.size !=
+                                  null)
+                                Text("Available Sizes",
+                                    textAlign: TextAlign.start,
+                                    overflow: TextOverflow.clip,
+                                    style: boldTextStyle(size: 14)),
+                              if (productDetailsProvider
+                                      .productDataModel!.size !=
+                                  null)
+                                SizedBox(height: 8),
                               productDetailsProvider.productDataModel!.size ==
                                       null
                                   ? SizedBox()
@@ -336,17 +345,17 @@ class SSDetailScreenState extends State<SSDetailScreen> {
                                   overflow: TextOverflow.clip,
                                   style: boldTextStyle()),
                               SizedBox(height: 8),
-                              Html(
-                                data: productDetailsProvider
-                                        .productDataModel!.additionalInfo ??
-                                    '',
-                                style: {
-                                  "html": Style(
-                                    fontSize: FontSize(14),
-                                    color: Colors.black,
-                                  ),
-                                },
-                              ),
+                              // Html(
+                              //   data: productDetailsProvider
+                              //           .productDataModel!.additionalInfo ??
+                              //       '',
+                              //   style: {
+                              //     "html": Style(
+                              //       fontSize: FontSize(14),
+                              //       color: Colors.black,
+                              //     ),
+                              //   },
+                              // ),
                               Html(
                                   data: productDetailsProvider
                                           .productDataModel!.additionalInfo ??
@@ -363,6 +372,144 @@ class SSDetailScreenState extends State<SSDetailScreen> {
                                   data: productDetailsProvider
                                           .productDataModel!.longDescription ??
                                       ''),
+                              SizedBox(height: 16),
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: [
+                                  RatingBar.builder(
+                                    initialRating: 3,
+                                    glow: false,
+                                    direction: Axis.horizontal,
+                                    allowHalfRating: false,
+                                    itemCount: 5,
+                                    itemSize: 30,
+                                    ignoreGestures: true,
+                                    itemPadding:
+                                    EdgeInsets.symmetric(horizontal: 4.0),
+                                    itemBuilder: (context, _) => Icon(
+                                      Icons.star,
+                                      color: Colors.green,
+                                    ),
+                                    onRatingUpdate: (rating) {
+                                      print(rating);
+                                    },
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>ReviewListScreen()
+                                          ));
+                                    },
+                                    child: Text("Show all",
+                                        style: secondaryTextStyle()),
+                                  )
+                                ],
+                              ),
+                              SizedBox(height: 8),
+                              ListView.builder(
+                                  itemCount: 2,
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) => Container(
+                                    margin:
+                                    EdgeInsets.symmetric(vertical: 4),
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                        BorderRadius.circular(10),
+                                        border: Border.all(
+                                            color: Color(0x4d9e9e9e))),
+                                    padding: EdgeInsets.all(10),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        Text("Available Sizes",
+                                            textAlign: TextAlign.start,
+                                            overflow: TextOverflow.clip,
+                                            style: boldTextStyle(size: 14)),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text("Available Sizes",
+                                            textAlign: TextAlign.start,
+                                            overflow: TextOverflow.clip,
+                                            style: boldTextStyle(
+                                                size: 12,
+                                                color: Colors.grey)),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        RatingBar.builder(
+                                          initialRating: 4,
+                                          glow: false,
+                                          direction: Axis.horizontal,
+                                          allowHalfRating: false,
+                                          itemCount: 5,
+                                          itemSize: 20,
+                                          ignoreGestures: true,
+                                          itemPadding: EdgeInsets.symmetric(
+                                              horizontal: 4.0),
+                                          itemBuilder: (context, _) => Icon(
+                                            Icons.star,
+                                            color: Colors.green,
+                                          ),
+                                          onRatingUpdate: (rating) {
+                                            print(rating);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  )),
+                              SizedBox(height: 8),
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>AddReviewScreen()
+                                      ));
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.symmetric(horizontal: 20.w),
+                                  padding: EdgeInsets.symmetric(horizontal: 8.w),
+                                  decoration: BoxDecoration(
+                                    color: Color(0xa9ffffff),
+                                    shape: BoxShape.rectangle,
+                                    borderRadius:
+                                    BorderRadius.circular(
+                                        160.0),
+                                    border: Border.all(
+                                        color: Color(0xed000000),
+                                        width: 1),
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 4,vertical: 8),
+                                    child: Align(
+                                      alignment:
+                                      Alignment(0.0, -0.1),
+                                      child: Text(
+                                        "Add Review",
+                                        textAlign:
+                                        TextAlign.start,
+                                        overflow:
+                                        TextOverflow.clip,
+                                        style: TextStyle(
+                                            fontWeight:
+                                            FontWeight.w700,
+                                            fontStyle:
+                                            FontStyle.normal,
+                                            fontSize: 12,
+                                            color: Color(
+                                                0xff000000)),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                               /* Text(
                                 productProvider
                                         .productDataModel!.longDescription ??

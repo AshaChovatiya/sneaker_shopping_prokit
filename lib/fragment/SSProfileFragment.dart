@@ -32,15 +32,15 @@ class SSProfileFragment extends StatelessWidget {
             automaticallyImplyLeading: false,
             title: Text("My Account", style: boldTextStyle()),
           ),
-          body: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-            child: Consumer<ProfileProvider>(
-                builder: (context, profileProvider, child) {
-              if (profileProvider.isLoading) {
-                return Center(child: CircularProgressIndicator());
-              }
-              final userData = profileProvider.userData.getUser;
-              return Column(
+          body: Consumer<ProfileProvider>(
+              builder: (context, profileProvider, child) {
+            if (profileProvider.isLoading) {
+              return Center(child: CircularProgressIndicator());
+            }
+            final userData = profileProvider.userData.getUser;
+            return SingleChildScrollView(
+              padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
@@ -226,9 +226,9 @@ class SSProfileFragment extends StatelessWidget {
                   ),
                   SizedBox(height: 8, width: 16),
                 ],
-              );
-            }),
-          ),
+              ),
+            );
+          }),
         );
       }),
     );

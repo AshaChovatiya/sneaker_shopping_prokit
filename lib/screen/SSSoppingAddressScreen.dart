@@ -1,15 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/main.dart';
-import 'package:sneaker_shopping_prokit/models/ModelProvider.dart';
-import 'package:sneaker_shopping_prokit/providers/shopping_cart_provider.dart';
 import 'package:sneaker_shopping_prokit/store/AppStore.dart';
 
-import '../providers/my_order_provider.dart';
 import '../providers/my_shopping_address_provider.dart';
-import '../utils/SSConstants.dart';
 
 class SSSoppingAddressScreen extends StatelessWidget {
   const SSSoppingAddressScreen({Key? key}) : super(key: key);
@@ -38,58 +33,287 @@ class SSSoppingAddressScreen extends StatelessWidget {
           builder: (context, myShoppingAddressProvider, child) {
             return myShoppingAddressProvider.isLoading
                 ? Center(
-              child: CircularProgressIndicator(),
-            )
-                :(myShoppingAddressProvider.myAddressModel?.byuserIDUserAddress?.userAddressList?.isEmpty ??
-                true) ||
-                (myShoppingAddressProvider.myAddressModel?.byuserIDUserAddress?.userAddressList == null)
-                ? Center(
-              child: Text(
-                "No Data Found",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: appStore.isDarkModeOn
-                      ? Colors.white
-                      : Colors.black,
-                ),
-              ),
-            )
-                : Padding(
-              padding: const EdgeInsets.symmetric(
-                  vertical: 16, horizontal: 16),
-              child: ListView.builder(
-                  itemCount: myShoppingAddressProvider.myAddressModel?.byuserIDUserAddress?.userAddressList!.length,
-                  itemBuilder: (context, index) {
-                    final userAddressList = myShoppingAddressProvider.myAddressModel?.byuserIDUserAddress?.userAddressList![index];
-                    return Padding(
-                      padding: EdgeInsets.only(top: 8, bottom: 8),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.start,
-                            crossAxisAlignment:
-                            CrossAxisAlignment.start,
-                            // mainAxisSize: MainAxisSize.max,
-                            children: [
-                              SizedBox(height: 16, width: 16),
-                            ],
+                    child: CircularProgressIndicator(),
+                  )
+                : (myShoppingAddressProvider.myAddressModel?.byuserIDUserAddress
+                                ?.userAddressList?.isEmpty ??
+                            true) ||
+                        (myShoppingAddressProvider.myAddressModel
+                                ?.byuserIDUserAddress?.userAddressList ==
+                            null)
+                    ? Center(
+                        child: Text(
+                          "No Data Found",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: appStore.isDarkModeOn
+                                ? Colors.white
+                                : Colors.black,
                           ),
-                          Divider(
-                            thickness: 2,
-                            color:
-                            AppStore().backgroundSecondaryColor,
-                          )
-                        ],
-                      ),
-                    );
-                  }),
-            );
+                        ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 16, horizontal: 16),
+                        child: ListView.builder(
+                            itemCount: myShoppingAddressProvider.myAddressModel
+                                ?.byuserIDUserAddress?.userAddressList!.length,
+                            itemBuilder: (context, index) {
+                              final userAddressList = myShoppingAddressProvider
+                                  .myAddressModel
+                                  ?.byuserIDUserAddress
+                                  ?.userAddressList![index];
+                              return Padding(
+                                padding: EdgeInsets.only(top: 8, bottom: 8),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            border: Border.all(
+                                                color: Color(0x4d9e9e9e))),
+                                        padding: EdgeInsets.all(10),
+                                        width: double.infinity,
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Container(
+                                                  child: Row(
+                                                    children: [
+                                                      Text(
+                                                        'Address No:-',
+                                                        style: TextStyle(
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                      ),
+                                                      Text(
+                                                        (index + 1).toString(),
+                                                        style: TextStyle(
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                InkWell(
+                                                  onTap: () {
+                                                    myShoppingAddressProvider
+                                                        .deleteShoppingCart(
+                                                            userAddressId:
+                                                                userAddressList!
+                                                                    .id!);
+                                                  },
+                                                  child: Container(
+                                                    alignment: Alignment.center,
+                                                    margin: EdgeInsets.zero,
+                                                    padding: EdgeInsets.all(2),
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8),
+                                                      border: Border.all(
+                                                          color:
+                                                              Color(0x4d9e9e9e),
+                                                          width: 1),
+                                                    ),
+                                                    child:
+                                                        myShoppingAddressProvider
+                                                                .isDeleting
+                                                            ? Center(
+                                                                child:
+                                                                    CircularProgressIndicator(
+                                                                  color: Colors
+                                                                      .blue,
+                                                                ),
+                                                              )
+                                                            : Icon(Icons.delete,
+                                                                color:
+                                                                    Colors.grey,
+                                                                size: 18),
+                                                  ),
+                                                ),
+                                                /*Container(
+                                                  alignment: Alignment.center,
+                                                  margin: EdgeInsets.zero,
+                                                  padding: EdgeInsets.all(2),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8),
+                                                    border: Border.all(
+                                                        color:
+                                                            Color(0x4d9e9e9e),
+                                                        width: 1),
+                                                  ),
+                                                  child: Icon(Icons.edit,
+                                                      color: Colors.grey,
+                                                      size: 18),
+                                                ),*/
+                                              ],
+                                            ),
+                                            Divider(
+                                              color: AppStore()
+                                                  .backgroundSecondaryColor,
+                                              thickness: 1.2,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    'Name:-',
+                                                    style: TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  child: Text(
+                                                    userAddressList?.name ?? '',
+                                                    maxLines: 2,
+                                                    style: TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    'Address:-',
+                                                    style: TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  child: Text(
+                                                    userAddressList?.address ??
+                                                        '',
+                                                    maxLines: 2,
+                                                    style: TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    'City:-',
+                                                    style: TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  child: Text(
+                                                    userAddressList?.city ?? '',
+                                                    maxLines: 2,
+                                                    style: TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    'Country:-',
+                                                    style: TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  child: Text(
+                                                    userAddressList?.country ??
+                                                        '',
+                                                    maxLines: 2,
+                                                    style: TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    'PinCode:-',
+                                                    style: TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  child: Text(
+                                                    userAddressList?.pinCode ??
+                                                        '',
+                                                    maxLines: 2,
+                                                    style: TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              );
+                            }),
+                      );
           },
         ),
       ),
     );
   }
-
 }

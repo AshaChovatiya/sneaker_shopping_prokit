@@ -8,9 +8,9 @@ List<SneakerShoppingModel> getAccount() {
   list.add(SneakerShoppingModel(name: 'My Order'));
   list.add(SneakerShoppingModel(name: 'Vouchers'));
   list.add(SneakerShoppingModel(name: 'Shopping Address'));
-  list.add(SneakerShoppingModel(name: 'FAQ'));
-  list.add(SneakerShoppingModel(name: 'Customer Services'));
-  list.add(SneakerShoppingModel(name: 'Setting'));
+  // list.add(SneakerShoppingModel(name: 'FAQ'));
+  // list.add(SneakerShoppingModel(name: 'Customer Services'));
+  // list.add(SneakerShoppingModel(name: 'Setting'));
 
   return list;
 }

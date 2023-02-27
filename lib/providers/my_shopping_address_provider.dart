@@ -5,10 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../model/UserAddressModel.dart';
+import '../schema/graph_mutation_query.dart';
 import '../schema/graph_query.dart';
+import '../utils/common_snack_bar.dart';
 
 class MyShoppingAddressProvider extends ChangeNotifier {
   bool _isLoading = false;
+  bool _isDeleting = false;
+
+  bool get isDeleting => _isDeleting;
+
+  set isDeleting(bool value) {
+    _isDeleting = value;
+  }
 
   bool get isLoading => _isLoading;
 
@@ -49,5 +58,31 @@ class MyShoppingAddressProvider extends ChangeNotifier {
     print("response.Error: ${response.errors}");
 
     isLoading = false;
+  }
+
+  Future<void> deleteShoppingCart({required String userAddressId}) async {
+    isDeleting = true;
+    var request = Amplify.API.mutate(
+        request: GraphQLRequest<String>(
+          document: GraphMutationSchema.deleteUserAddress(
+              userAddressId: userAddressId),
+        ));
+
+    var response = await request.response;
+
+    if (response.errors.isEmpty && response.data != null) {
+      await getShoppingAddressList();
+    } else {
+      if (response.errors.isNotEmpty) {
+        errorMessage = response.errors.first.message;
+        GlobalSnackBar.show(
+            context: navigatorKey.currentContext!,
+            message: response.errors.first.message,
+            type: SnackBarType.ERROR);
+        print("response.errors: ${response.errors}");
+      }
+    }
+
+    isDeleting = false;
   }
 }

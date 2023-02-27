@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/model/SneakerShoppingModel.dart';
@@ -212,35 +213,39 @@ class SSCartFragmentState extends State<SSCartFragment> {
                                                               true;
                                                         },
                                                         child: Container(
-                                                          padding: EdgeInsets
-                                                              .symmetric(
-                                                                  vertical: 4,
-                                                                  horizontal:
-                                                                      12),
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: Colors.black
-                                                                .withOpacity(
-                                                                    0.7),
+                                                          margin: EdgeInsets.zero,
+                                                          padding: EdgeInsets.symmetric(horizontal: 8.w),
+                                                          decoration: BoxDecoration(
+                                                            color: Color(0xa9ffffff),
+                                                            shape: BoxShape.rectangle,
                                                             borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        15),
+                                                            BorderRadius.circular(
+                                                                160.0),
                                                             border: Border.all(
-                                                                color: Colors
-                                                                    .green
-                                                                    .withOpacity(
-                                                                        0.5),
-                                                                width: 2),
+                                                                color: Color(0xed000000),
+                                                                width: 1),
                                                           ),
-                                                          child: Text(
-                                                            'Buy Now',
-                                                            style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                color: Colors
-                                                                    .white),
+                                                          child: Padding(
+                                                            padding: EdgeInsets.all(4),
+                                                            child: Align(
+                                                              alignment:
+                                                              Alignment(0.0, -0.1),
+                                                              child: Text(
+                                                                "Buy Now",
+                                                                textAlign:
+                                                                TextAlign.start,
+                                                                overflow:
+                                                                TextOverflow.clip,
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                    FontWeight.w700,
+                                                                    fontStyle:
+                                                                    FontStyle.normal,
+                                                                    fontSize: 12,
+                                                                    color: Color(
+                                                                        0xff000000)),
+                                                              ),
+                                                            ),
                                                           ),
                                                         ),
                                                       ),

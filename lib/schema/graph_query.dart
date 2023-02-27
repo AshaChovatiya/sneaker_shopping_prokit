@@ -626,4 +626,21 @@ class GraphQuerySchema {
   }
 }''';
   }
+
+  static String getProductReview({required String productId}) {
+    return '''query MyQuery {
+  byProductidcreatedAtReview(productId: "$productId") {
+    items {
+      comment
+      id
+      productId
+      rating
+      reviewer {
+        email
+        name
+      }
+    }
+  }
+}''';
+  }
 }

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/model/ProductListModel.dart';
-import 'package:sneaker_shopping_prokit/providers/product_provider.dart';
 import 'package:sneaker_shopping_prokit/utils/SSConstants.dart';
 import 'package:sneaker_shopping_prokit/utils/SSWidgets.dart';
 
@@ -190,7 +189,7 @@ class AddToCartBottomSheetState extends State<AddToCartBottomSheet> {
             SizedBox(height: 8),
             Divider(color: Colors.grey),*/
             SizedBox(height: 8),
-            Row(
+            /*Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.max,
@@ -243,7 +242,7 @@ class AddToCartBottomSheetState extends State<AddToCartBottomSheet> {
                   ),
                 ),
               ],
-            ),
+            ),*/
             SizedBox(height: 16),
             Consumer<AddCartProvider>(
                 builder: (context, addCartProvider, child) {
