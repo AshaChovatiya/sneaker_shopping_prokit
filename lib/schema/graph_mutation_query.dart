@@ -122,4 +122,18 @@ class GraphMutationSchema {
   }
 }''';
   }
+
+  static createReviewMutation(
+      {required String images,
+      required bool email,
+      required String name,
+      required String comment,
+      required String title,
+      required String userId,
+      required String productId,
+      required int rating}) {
+    return '''mutation MyMutation {
+  createReview(input: {images: "$images", reviewer: {email: "$email", name: "$name"}, comment: "$comment", title: "$title", userId: "$userId", productId: "$productId", rating: $rating})
+}''';
+  }
 }

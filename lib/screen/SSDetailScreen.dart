@@ -11,9 +11,12 @@ import 'package:sneaker_shopping_prokit/utils/common_snack_bar.dart';
 import '../../../main.dart';
 import '../component/AddToShoppingCart.dart';
 import '../providers/product_details_provider.dart';
+import '../providers/shopping_cart_provider.dart';
 import '../utils/SSConstants.dart';
 import 'SSAddReviewScreen.dart';
+import 'SSBillingAddressScreen.dart';
 import 'SSReviewListScreen.dart';
+import 'SSSelectCouponCodeScreen.dart';
 
 class SSDetailScreen extends StatefulWidget {
   final String? productId;
@@ -379,7 +382,7 @@ class SSDetailScreenState extends State<SSDetailScreen> {
                               SizedBox(height: 16),
                               Row(
                                 mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   RatingBar.builder(
                                     initialRating: 3,
@@ -390,7 +393,7 @@ class SSDetailScreenState extends State<SSDetailScreen> {
                                     itemSize: 30,
                                     ignoreGestures: true,
                                     itemPadding:
-                                    EdgeInsets.symmetric(horizontal: 4.0),
+                                        EdgeInsets.symmetric(horizontal: 4.0),
                                     itemBuilder: (context, _) => Icon(
                                       Icons.star,
                                       color: Colors.green,
@@ -404,8 +407,8 @@ class SSDetailScreenState extends State<SSDetailScreen> {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) =>ReviewListScreen()
-                                          ));
+                                              builder: (context) =>
+                                                  ReviewListScreen()));
                                     },
                                     child: Text("Show all",
                                         style: secondaryTextStyle()),
@@ -417,98 +420,95 @@ class SSDetailScreenState extends State<SSDetailScreen> {
                                   itemCount: 2,
                                   shrinkWrap: true,
                                   itemBuilder: (context, index) => Container(
-                                    margin:
-                                    EdgeInsets.symmetric(vertical: 4),
-                                    decoration: BoxDecoration(
-                                        borderRadius:
-                                        BorderRadius.circular(10),
-                                        border: Border.all(
-                                            color: Color(0x4d9e9e9e))),
-                                    padding: EdgeInsets.all(10),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: [
-                                        Text("Available Sizes",
-                                            textAlign: TextAlign.start,
-                                            overflow: TextOverflow.clip,
-                                            style: boldTextStyle(size: 14)),
-                                        SizedBox(
-                                          height: 5,
+                                        margin:
+                                            EdgeInsets.symmetric(vertical: 4),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            border: Border.all(
+                                                color: Color(0x4d9e9e9e))),
+                                        padding: EdgeInsets.all(10),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text("Available Sizes",
+                                                textAlign: TextAlign.start,
+                                                overflow: TextOverflow.clip,
+                                                style: boldTextStyle(size: 14)),
+                                            SizedBox(
+                                              height: 5,
+                                            ),
+                                            Text("Available Sizes",
+                                                textAlign: TextAlign.start,
+                                                overflow: TextOverflow.clip,
+                                                style: boldTextStyle(
+                                                    size: 12,
+                                                    color: Colors.grey)),
+                                            SizedBox(
+                                              height: 5,
+                                            ),
+                                            RatingBar.builder(
+                                              initialRating: 4,
+                                              glow: false,
+                                              direction: Axis.horizontal,
+                                              allowHalfRating: false,
+                                              itemCount: 5,
+                                              itemSize: 20,
+                                              ignoreGestures: true,
+                                              itemPadding: EdgeInsets.symmetric(
+                                                  horizontal: 4.0),
+                                              itemBuilder: (context, _) => Icon(
+                                                Icons.star,
+                                                color: Colors.green,
+                                              ),
+                                              onRatingUpdate: (rating) {
+                                                print(rating);
+                                              },
+                                            ),
+                                          ],
                                         ),
-                                        Text("Available Sizes",
-                                            textAlign: TextAlign.start,
-                                            overflow: TextOverflow.clip,
-                                            style: boldTextStyle(
-                                                size: 12,
-                                                color: Colors.grey)),
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                        RatingBar.builder(
-                                          initialRating: 4,
-                                          glow: false,
-                                          direction: Axis.horizontal,
-                                          allowHalfRating: false,
-                                          itemCount: 5,
-                                          itemSize: 20,
-                                          ignoreGestures: true,
-                                          itemPadding: EdgeInsets.symmetric(
-                                              horizontal: 4.0),
-                                          itemBuilder: (context, _) => Icon(
-                                            Icons.star,
-                                            color: Colors.green,
-                                          ),
-                                          onRatingUpdate: (rating) {
-                                            print(rating);
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  )),
+                                      )),
                               SizedBox(height: 8),
                               InkWell(
                                 onTap: () {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) =>AddReviewScreen()
-                                      ));
+                                          builder: (context) => AddReviewScreen(
+                                                productId:
+                                                    productDetailsProvider
+                                                        .productDataModel!.id!,
+                                              )));
                                 },
                                 child: Container(
-                                  margin: EdgeInsets.symmetric(horizontal: 20.w),
-                                  padding: EdgeInsets.symmetric(horizontal: 8.w),
+                                  margin:
+                                      EdgeInsets.symmetric(horizontal: 20.w),
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 8.w),
                                   decoration: BoxDecoration(
                                     color: Color(0xa9ffffff),
                                     shape: BoxShape.rectangle,
-                                    borderRadius:
-                                    BorderRadius.circular(
-                                        160.0),
+                                    borderRadius: BorderRadius.circular(160.0),
                                     border: Border.all(
-                                        color: Color(0xed000000),
-                                        width: 1),
+                                        color: Color(0xed000000), width: 1),
                                   ),
                                   child: Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 4,vertical: 8),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 4, vertical: 8),
                                     child: Align(
-                                      alignment:
-                                      Alignment(0.0, -0.1),
+                                      alignment: Alignment(0.0, -0.1),
                                       child: Text(
                                         "Add Review",
-                                        textAlign:
-                                        TextAlign.start,
-                                        overflow:
-                                        TextOverflow.clip,
+                                        textAlign: TextAlign.start,
+                                        overflow: TextOverflow.clip,
                                         style: TextStyle(
-                                            fontWeight:
-                                            FontWeight.w700,
-                                            fontStyle:
-                                            FontStyle.normal,
+                                            fontWeight: FontWeight.w700,
+                                            fontStyle: FontStyle.normal,
                                             fontSize: 12,
-                                            color: Color(
-                                                0xff000000)),
+                                            color: Color(0xff000000)),
                                       ),
                                     ),
                                   ),

@@ -24,6 +24,8 @@ dependencies:
   flutter_html: ^2.2.1
   flutter_screenutil: ^5.6.1
   flutter_rating_bar: ^4.0.1
+  image_picker: ^0.8.6+3
+  amplify_storage_s3: ^0.6.12
 
 
   # Sneaker Shopping App
