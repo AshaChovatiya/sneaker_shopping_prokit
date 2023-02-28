@@ -5,15 +5,12 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
-import 'package:sneaker_shopping_prokit/component/AddToCartBottomSheet.dart';
 import 'package:sneaker_shopping_prokit/utils/SSWidgets.dart';
 import 'package:sneaker_shopping_prokit/utils/common_snack_bar.dart';
 
 import '../../../main.dart';
 import '../component/AddToShoppingCart.dart';
-import '../model/ImageModel.dart';
 import '../providers/product_details_provider.dart';
-import '../providers/product_provider.dart';
 import '../utils/SSConstants.dart';
 import 'SSAddReviewScreen.dart';
 import 'SSReviewListScreen.dart';
