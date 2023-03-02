@@ -1,6 +1,7 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/widgets.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:sneaker_shopping_prokit/models/ModelProvider.dart';
 import 'package:sneaker_shopping_prokit/schema/graph_mutation_query.dart';
 import 'package:sneaker_shopping_prokit/schema/graph_query.dart';
 
@@ -14,7 +15,6 @@ class PaymentProvider extends ChangeNotifier {
   bool _isPaymentLoading = false;
   bool _isError = false;
 
-  final String? shoppingCartId;
   bool get isError => _isError;
 
   set isError(bool value) {
@@ -31,7 +31,9 @@ class PaymentProvider extends ChangeNotifier {
 
   final OrderResponseData orderResponseData;
 
-  PaymentProvider({required this.orderResponseData, this.shoppingCartId});
+  PaymentProvider({
+    required this.orderResponseData,
+  });
 
   PaymentMethods get paymentMethod => _paymentMethod;
 
@@ -56,9 +58,7 @@ class PaymentProvider extends ChangeNotifier {
     var response = await request.response;
 
     if (response.errors.isEmpty && response.data != null) {
-      if (shoppingCartId != null) {
-        await deleteShoppingCart();
-      }
+      await updateOrderStatus(orderId: orderResponseData.createOrder!.id!);
     } else {
       if (response.errors.isNotEmpty) {
         print(response.errors);
@@ -70,22 +70,22 @@ class PaymentProvider extends ChangeNotifier {
     isPaymentLoading = false;
   }
 
-  Future<void> deleteShoppingCart() async {
-    var request = Amplify.API.mutate(
+  Future<void> updateOrderStatus({
+    required String orderId,
+  }) async {
+    final request = Amplify.API.mutate(
         request: GraphQLRequest<String>(
-      document: GraphMutationSchema.deleteShoppingCartItem(
-          shoppingCartId: shoppingCartId!),
+      document: GraphMutationSchema.updateOrderMutation(
+          orderId: orderId, status: OrderStatus.PROCESSING.name),
     ));
 
-    var response = await request.response;
-
+    final response = await request.response;
     if (response.errors.isEmpty && response.data != null) {
       isError = false;
     } else {
       isError = true;
-
       if (response.errors.isNotEmpty) {
-        final String errorMessage = response.errors.first.message;
+        errorMessage = response.errors.first.message;
         GlobalSnackBar.show(
             context: navigatorKey.currentContext!,
             message: errorMessage,

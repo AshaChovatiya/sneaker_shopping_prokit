@@ -3,18 +3,21 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/main.dart';
 import 'package:sneaker_shopping_prokit/model/SneakerShoppingModel.dart';
-import 'package:sneaker_shopping_prokit/models/ModelProvider.dart';
 import 'package:sneaker_shopping_prokit/providers/checkout_provider.dart';
 import 'package:sneaker_shopping_prokit/providers/payment_provider.dart';
-import 'package:sneaker_shopping_prokit/providers/product_provider.dart';
 import 'package:sneaker_shopping_prokit/screen/SSOrderScreen.dart';
 import 'package:sneaker_shopping_prokit/utils/SSDataGenerator.dart';
 import 'package:sneaker_shopping_prokit/utils/SSWidgets.dart';
 
-class SSPaymentScreen extends StatefulWidget {
-  final String? shoppingCartId;
+import '../model/order_response_model.dart';
 
-  SSPaymentScreen({Key? key, this.shoppingCartId}) : super(key: key);
+class SSPaymentScreen extends StatefulWidget {
+  SSPaymentScreen(
+      {Key? key, required this.isOrderScreen, this.orderResponseData,this.currency})
+      : super(key: key);
+  final bool isOrderScreen;
+  final String? currency;
+  final OrderResponseData? orderResponseData;
 
   @override
   State<SSPaymentScreen> createState() => _SSPaymentScreenState();
@@ -23,13 +26,21 @@ class SSPaymentScreen extends StatefulWidget {
 class _SSPaymentScreenState extends State<SSPaymentScreen> {
   List<SneakerShoppingModel> payment = paymentList();
   int mCount = 0;
+
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => PaymentProvider(
-        orderResponseData: context.read<CheckOutProvider>().orderResponseData!,
-        shoppingCartId: widget.shoppingCartId,
-      ),
+    return MultiProvider(
+      providers: [
+        if (!widget.isOrderScreen)
+          ChangeNotifierProvider(
+              create: (_) => PaymentProvider(
+                  orderResponseData:
+                      context.read<CheckOutProvider>().orderResponseData!))
+        else
+          ChangeNotifierProvider(
+              create: (_) =>
+                  PaymentProvider(orderResponseData: widget.orderResponseData!))
+      ],
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,
@@ -268,7 +279,65 @@ class _SSPaymentScreenState extends State<SSPaymentScreen> {
               topRight: Radius.circular(16),
             ),
           ),
-          child: Consumer<CheckOutProvider>(
+          child: widget.isOrderScreen ?Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text('Sub - total', style: secondaryTextStyle()),
+                  ),
+                  Text(
+                      '${widget.currency ?? ''} ${widget.orderResponseData?.createOrder?.totalAmount ?? 0}',
+                      style: boldTextStyle()),
+                ],
+              ),
+              SizedBox(height: 16),
+              Divider(color: Colors.grey, height: 1),
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Shipping fee', style: secondaryTextStyle()),
+                  Text(
+                      '${widget.currency ?? ''} ${widget.orderResponseData?.createOrder?.totalShippingCharges ?? 0}',
+                      style: boldTextStyle()),
+                ],
+              ),
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Total Payment', style: primaryTextStyle()),
+                  Text(
+                      '${widget.currency ?? ''} ${(widget.orderResponseData?.createOrder?.totalShippingCharges ?? 0) + (widget.orderResponseData?.createOrder?.totalAmount ?? 0)}',
+                      style: boldTextStyle()),
+                ],
+              ),
+              SizedBox(height: 16),
+              Consumer<PaymentProvider>(
+                  builder: (context, paymentProvider, child) {
+                    return paymentProvider.isPaymentLoading
+                        ? Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                            context.iconColor),
+                      ),
+                    )
+                        : sSAppButton(
+                      context: context,
+                      title: 'Place Order',
+                      onPressed: () async {
+                        await paymentProvider.pay();
+                        if (!paymentProvider.isError) {
+                          SSOrderScreen().launch(context);
+                        }
+
+                        //SSOrderScreen().launch(context);
+                      },
+                    );
+                  }),
+            ],
+          ):Consumer<CheckOutProvider>(
               builder: (context, checkoutProvider, child) {
             return Column(
               children: [

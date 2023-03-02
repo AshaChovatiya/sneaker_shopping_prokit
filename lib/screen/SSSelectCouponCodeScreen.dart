@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/main.dart';
 import 'package:sneaker_shopping_prokit/models/ModelProvider.dart';
@@ -10,7 +11,22 @@ class SSSelectCouponCodeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+    /*  appBar: AppBar(
+        backgroundColor: appStore.appBarColor,
+        title: Text(
+          'Select Coupon Code',
+          style: TextStyle(
+            color: appStore.textPrimaryColor,
+          ),
+        ),
+      ),*/
       appBar: AppBar(
+        leading: InkWell(
+          onTap: () {
+            finish(context);
+          },
+          child: Icon(Icons.arrow_back_ios, color: context.iconColor, size: 20),
+        ),
         backgroundColor: appStore.appBarColor,
         title: Text(
           'Select Coupon Code',

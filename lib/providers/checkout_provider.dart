@@ -72,6 +72,7 @@ class CheckOutProvider extends ChangeNotifier {
   late TextEditingController shippingStateController;
   late TextEditingController shippingPhoneController;
   late TextEditingController shippingEmailController;
+
   UserData? get userData => _userData;
 
   set userData(UserData? value) {
@@ -155,6 +156,9 @@ class CheckOutProvider extends ChangeNotifier {
       {required Map<dynamic, dynamic> data,
       required double productPrice,
       required int quantity,
+      required String sku,
+      required String title,
+      required String shoppingCartId,
       required String productId}) async {
     isError = false;
     isOrdering = true;
@@ -202,13 +206,47 @@ class CheckOutProvider extends ChangeNotifier {
         orderId: createOrderId,
         price: productPrice,
         productId: productId,
-        quantity: quantity);
+        quantity: quantity,
+        sku: sku,
+        title: title);
+    if(shoppingCartId != '')
+    await deleteShoppingCart(shoppingCartId: shoppingCartId);
   }
 
+  Future<void> deleteShoppingCart({required String shoppingCartId}) async {
+    var request = Amplify.API.mutate(
+        request: GraphQLRequest<String>(
+          document: GraphMutationSchema.deleteShoppingCartItem(
+              shoppingCartId: shoppingCartId),
+        ));
+
+    var response = await request.response;
+
+    if (response.errors.isEmpty && response.data != null) {
+      isError = false;
+    } else {
+      isError = true;
+
+      if (response.errors.isNotEmpty) {
+        final String errorMessage = response.errors.first.message;
+        GlobalSnackBar.show(
+            context: navigatorKey.currentContext!,
+            message: errorMessage,
+            type: SnackBarType.ERROR);
+        print(response.errors);
+      }
+      GlobalSnackBar.show(
+          context: navigatorKey.currentContext!,
+          message: 'Something went wrong!',
+          type: SnackBarType.ERROR);
+    }
+  }
   Future<void> createOrderProduct({
     required String orderId,
     required double price,
     required String productId,
+    required String sku,
+    required String title,
     required int quantity,
   }) async {
     final request = Amplify.API.mutate(
@@ -217,7 +255,9 @@ class CheckOutProvider extends ChangeNotifier {
           productId: productId,
           price: price,
           orderId: orderId,
-          quantity: quantity),
+          quantity: quantity,
+          sku: sku,
+          title: title),
     ));
 
     final response = await request.response;

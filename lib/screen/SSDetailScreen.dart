@@ -82,10 +82,10 @@ class SSDetailScreenState extends State<SSDetailScreen> {
               child: Icon(Icons.arrow_back_ios,
                   color: context.iconColor, size: 20),
             ),
-            actions: [
-              Icon(Icons.favorite_border, color: context.iconColor, size: 20)
-                  .paddingOnly(right: 16),
-            ],
+            // actions: [
+            //   Icon(Icons.favorite_border, color: context.iconColor, size: 20)
+            //       .paddingOnly(right: 16),
+            // ],
           ),
           body: Consumer<ProductDetailsProvider>(
               builder: (context, productDetailsProvider, _) {
@@ -530,8 +530,8 @@ class SSDetailScreenState extends State<SSDetailScreen> {
           }),
           bottomNavigationBar: Padding(
             padding: EdgeInsets.all(16),
-            child: Consumer<ShoppingCartProvider>(
-                builder: (context, shoppingCartProvider, child) {
+            child: Consumer2<ShoppingCartProvider,ProductDetailsProvider>(
+                builder: (context, shoppingCartProvider,productDetailsProvider, child) {
               return shoppingCartProvider.isShowCheckOut
                   ? Container(
                       padding: EdgeInsets.only(
@@ -637,8 +637,13 @@ class SSDetailScreenState extends State<SSDetailScreen> {
                                       value: shoppingCartProvider,
                                       child: SSBillingAddressScreen(
                                         productId: productId,
+                                        shoppingCartId: shoppingCartProvider.shoppingCartId,
                                         price: shoppingCartProvider.totalPrice,
                                         qty: shoppingCartProvider.buyNowQty,
+                                        sku:  productDetailsProvider
+                                            .productDataModel?.sku,
+                                        title:  productDetailsProvider
+                                            .productDataModel?.title,
                                       ),
                                     ),
                                   ));

@@ -8,18 +8,23 @@ import 'package:sneaker_shopping_prokit/providers/checkout_provider.dart';
 import 'package:sneaker_shopping_prokit/providers/shopping_cart_provider.dart';
 import 'package:sneaker_shopping_prokit/screen/SSPaymentScreen.dart';
 import 'package:sneaker_shopping_prokit/utils/SSWidgets.dart';
-import 'package:sneaker_shopping_prokit/utils/common_snack_bar.dart';
-
-import '../model/shoppingCartList_model.dart';
 
 class SSBillingAddressScreen extends StatelessWidget {
   final String? shoppingCartId;
   final String? productId;
   final int? qty;
+  final String? sku;
+  final String? title;
   final double? price;
 
   SSBillingAddressScreen(
-      {Key? key, this.shoppingCartId, this.price, this.productId, this.qty})
+      {Key? key,
+      this.shoppingCartId,
+      this.price,
+      this.productId,
+      this.qty,
+      this.title,
+      this.sku})
       : super(key: key);
 
   @override
@@ -1017,7 +1022,7 @@ class SSBillingAddressScreen extends StatelessWidget {
                       final userId = await Amplify.Auth.getCurrentUser()
                           .then((value) => value.userId);
                       var createOrderData = {
-                        'status': OrderStatus.PROCESSING.name,
+                        'status': OrderStatus.ONHOLD.name,
                         'currency': "inr",
                         'userId': userId,
                         'totalStoreCredit': 0.0,
@@ -1025,7 +1030,7 @@ class SSBillingAddressScreen extends StatelessWidget {
                         'totalAmount': price,
                         'totalCashOnDeliveryCharges': 0.0,
                         'orderDate': '${TemporalDateTime.now()}',
-                        'CouponCodeId': context
+                        'couponCodeId': context
                                     .read<ShoppingCartProvider>()
                                     .selectedCouponCodeItem !=
                                 null
@@ -1034,7 +1039,7 @@ class SSBillingAddressScreen extends StatelessWidget {
                                 .selectedCouponCodeItem!
                                 .id
                             : '',
-                        'BillingAddress': {
+                        'billingAddress': {
                           'name':
                               checkOutProvider.billingFullNameController.text,
                           'address':
@@ -1082,7 +1087,10 @@ class SSBillingAddressScreen extends StatelessWidget {
                           data: createOrderData,
                           productId: productId!,
                           productPrice: price!,
-                          quantity: qty!);
+                          quantity: qty!,
+                          sku: sku!,
+                          title: title!,
+                          shoppingCartId: shoppingCartId?? '');
                       if (!checkOutProvider.isError) {
                         Navigator.push(
                             context,
@@ -1090,7 +1098,7 @@ class SSBillingAddressScreen extends StatelessWidget {
                               builder: (_) => ChangeNotifierProvider.value(
                                 value: checkOutProvider,
                                 child: SSPaymentScreen(
-                                  shoppingCartId: shoppingCartId,
+                                  isOrderScreen: false,
                                 ),
                               ),
                             ));

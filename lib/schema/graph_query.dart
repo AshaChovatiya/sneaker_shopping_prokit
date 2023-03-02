@@ -595,7 +595,7 @@ class GraphQuerySchema {
       totalPrepaidAmount
       totalShippingCharges
       totalStoreCredit
-      CouponCodeId
+      couponCodeId
       status
     }
   }

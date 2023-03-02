@@ -4,11 +4,12 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/main.dart';
 import 'package:sneaker_shopping_prokit/models/ModelProvider.dart';
-import 'package:sneaker_shopping_prokit/providers/shopping_cart_provider.dart';
 import 'package:sneaker_shopping_prokit/store/AppStore.dart';
 
+import '../model/order_response_model.dart';
 import '../providers/my_order_provider.dart';
 import '../utils/SSConstants.dart';
+import 'SSPaymentScreen.dart';
 
 class SSMyOrderListScreen extends StatelessWidget {
   const SSMyOrderListScreen({Key? key}) : super(key: key);
@@ -39,9 +40,10 @@ class SSMyOrderListScreen extends StatelessWidget {
                 ? Center(
                     child: CircularProgressIndicator(),
                   )
-                : (myOrderProvider.myOrderModel!.listOrders!.items?.isEmpty ??
+                : (myOrderProvider.myOrderModel?.listOrders!.items?.isEmpty ??
                             true) ||
-                        (myOrderProvider.myOrderModel!.listOrders == null)
+                        (myOrderProvider.myOrderModel?.listOrders == null) ||
+                        (myOrderProvider.myOrderModel == null)
                     ? Center(
                         child: Text(
                           "No Data Found",
@@ -65,145 +67,178 @@ class SSMyOrderListScreen extends StatelessWidget {
                                   .myOrderModel!.listOrders!.items?[index];
                               return Padding(
                                 padding: EdgeInsets.only(top: 8, bottom: 8),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      // mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        Container(
-                                          padding: EdgeInsets.all(4),
-                                          width: 90,
-                                          height: 90,
-                                          decoration: BoxDecoration(
-                                            color: Colors.grey.withOpacity(0.2),
-                                            shape: BoxShape.rectangle,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            border: Border.all(
-                                                color: Colors.white12,
-                                                width: 1),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (orderItemList?.status == 'ONHOLD') {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => SSPaymentScreen(
+                                              isOrderScreen: true,
+                                              currency:
+                                                  orderItemList?.currency ?? '',
+                                              orderResponseData:
+                                                  OrderResponseData(
+                                                      createOrder: CreateOrder(
+                                                totalShippingCharges:
+                                                    orderItemList
+                                                        ?.totalShippingCharges,
+                                                totalAmount:
+                                                    orderItemList?.totalAmount,
+                                                id: orderItemList?.id,
+                                              )),
+                                            ),
+                                          ));
+                                    }
+                                  },
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        // mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Container(
+                                            padding: EdgeInsets.all(4),
+                                            width: 90,
+                                            height: 90,
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  Colors.grey.withOpacity(0.2),
+                                              shape: BoxShape.rectangle,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              border: Border.all(
+                                                  color: Colors.white12,
+                                                  width: 1),
+                                            ),
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              child: CachedNetworkImage(
+                                                imageUrl: orderItemList!
+                                                            .products!
+                                                            .productsItems![0]
+                                                            .product
+                                                            ?.thumbImages !=
+                                                        null
+                                                    ? imageBaseApi +
+                                                        orderItemList
+                                                            .products!
+                                                            .productsItems![0]
+                                                            .product!
+                                                            .thumbImages!
+                                                    : imagePlaceHolder,
+                                                placeholder: (context, url) =>
+                                                    Center(
+                                                        child:
+                                                            CircularProgressIndicator()),
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        Icon(Icons.error),
+                                              ),
+                                            ),
                                           ),
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                            child: CachedNetworkImage(
-                                              imageUrl: orderItemList!
-                                                          .products!
-                                                          .productsItems![0]
-                                                          .product
-                                                          ?.thumbImages !=
-                                                      null
-                                                  ? imageBaseApi +
+                                          SizedBox(height: 16, width: 16),
+                                          Expanded(
+                                            child: Container(
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: [
+                                                  Text(
                                                       orderItemList
                                                           .products!
                                                           .productsItems![0]
                                                           .product!
-                                                          .thumbImages!
-                                                  : imagePlaceHolder,
-                                              placeholder: (context, url) => Center(
-                                                  child:
-                                                      CircularProgressIndicator()),
-                                              errorWidget:
-                                                  (context, url, error) =>
-                                                      Icon(Icons.error),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(height: 16, width: 16),
-                                        Expanded(
-                                          child: Container(
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: [
-                                                Text(
-                                                    orderItemList
-                                                        .products!
-                                                        .productsItems![0]
-                                                        .product!
-                                                        .title
-                                                        .toString(),
-                                                    textAlign: TextAlign.start,
-                                                    maxLines: 2,
-                                                    overflow: TextOverflow.clip,
-                                                    style: boldTextStyle()),
-                                                SizedBox(height: 4),
-                                                Text(
-                                                    orderItemList
-                                                            .products!
-                                                            .productsItems![0]
-                                                            .product!
-                                                            .additionalInfo ??
-                                                        '',
-                                                    textAlign: TextAlign.start,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style:
-                                                        secondaryTextStyle()),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      "${orderItemList.currency ?? ''}  ${orderItemList.products!.productsItems![0].product!.price.toString()}",
+                                                          .title
+                                                          .toString(),
+                                                      textAlign:
+                                                          TextAlign.start,
+                                                      maxLines: 2,
+                                                      overflow:
+                                                          TextOverflow.clip,
+                                                      style: boldTextStyle()),
+                                                  SizedBox(height: 4),
+                                                  Text(
+                                                      orderItemList
+                                                              .products!
+                                                              .productsItems![0]
+                                                              .product!
+                                                              .additionalInfo ??
+                                                          '',
                                                       textAlign:
                                                           TextAlign.start,
                                                       overflow:
-                                                          TextOverflow.clip,
-                                                      style: boldTextStyle(
-                                                          size: 14),
-                                                    ),
-                                                    SizedBox(width: 32),
-                                                    Text(
-                                                        'x ${orderItemList.products!.productsItems![0].quantity}',
-                                                        style:
-                                                            secondaryTextStyle(
-                                                                size: 14)),
-                                                    SizedBox(width: 5),
-                                                    Container(
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              vertical: 5,
-                                                              horizontal: 10),
-                                                      decoration: BoxDecoration(
-                                                          color: getOrderStatusColor(
-                                                                  orderItemList
-                                                                      .status) ??
-                                                              Colors.deepPurple,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(5)),
-                                                      child: Text(
-                                                        orderItemList.status ??
-                                                            '',
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w600),
+                                                          TextOverflow.ellipsis,
+                                                      style:
+                                                          secondaryTextStyle()),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        "${orderItemList.currency ?? ''}  ${orderItemList.products!.productsItems![0].product!.price.toString()}",
+                                                        textAlign:
+                                                            TextAlign.start,
+                                                        overflow:
+                                                            TextOverflow.clip,
+                                                        style: boldTextStyle(
+                                                            size: 14),
                                                       ),
-                                                    )
-                                                  ],
-                                                ),
-                                              ],
+                                                      SizedBox(width: 32),
+                                                      Text(
+                                                          'x ${orderItemList.products!.productsItems![0].quantity}',
+                                                          style:
+                                                              secondaryTextStyle(
+                                                                  size: 14)),
+                                                      SizedBox(width: 5),
+                                                      Container(
+                                                        padding: EdgeInsets
+                                                            .symmetric(
+                                                                vertical: 5,
+                                                                horizontal: 10),
+                                                        decoration: BoxDecoration(
+                                                            color: getOrderStatusColor(
+                                                                    orderItemList
+                                                                        .status) ??
+                                                                Colors
+                                                                    .deepPurple,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        5)),
+                                                        child: Text(
+                                                          orderItemList
+                                                                  .status ??
+                                                              '',
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    Divider(
-                                      thickness: 2,
-                                      color:
-                                          AppStore().backgroundSecondaryColor,
-                                    )
-                                  ],
+                                        ],
+                                      ),
+                                      Divider(
+                                        thickness: 2,
+                                        color:
+                                            AppStore().backgroundSecondaryColor,
+                                      )
+                                    ],
+                                  ),
                                 ),
                               );
                             }),
@@ -227,6 +262,12 @@ class SSMyOrderListScreen extends StatelessWidget {
       return const Color(0xbb087500);
     } else if (orderStatus == OrderStatus.PENDING.name) {
       return const Color(0xc7a23500);
+    } else if (orderStatus == OrderStatus.IN_TRANSIT.name) {
+      return const Color(0xff2f84cc);
+    } else if (orderStatus == OrderStatus.SHIPPED.name) {
+      return const Color(0xff81a239);
+    } else if (orderStatus == OrderStatus.REFUNDED.name) {
+      return const Color(0xffd3a922);
     }
     return const Color(0xc9f6e1df);
   }

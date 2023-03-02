@@ -455,6 +455,12 @@ class SSCartFragmentState extends State<SSCartFragment> {
                                                       .buyNowQty,
                                                   price: shoppingCartProvider
                                                       .totalPrice,
+                                                  sku: shoppingCartProvider
+                                                      .shoppingCartProductItems!
+                                                      .product?.sku,
+                                                  title: shoppingCartProvider
+                                                      .shoppingCartProductItems!
+                                                      .product?.title,
                                                 ),
                                               ),
                                             ));

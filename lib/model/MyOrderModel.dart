@@ -87,7 +87,7 @@ class Items {
     totalPrepaidAmount = json['totalPrepaidAmount'];
     totalShippingCharges = json['totalShippingCharges'];
     totalStoreCredit = json['totalStoreCredit'];
-    couponCodeId = json['CouponCodeId'];
+    couponCodeId = json['couponCodeId'];
     status = json['status'];
 
   }
@@ -107,7 +107,7 @@ class Items {
     data['totalPrepaidAmount'] = this.totalPrepaidAmount;
     data['totalShippingCharges'] = this.totalShippingCharges;
     data['totalStoreCredit'] = this.totalStoreCredit;
-    data['CouponCodeId'] = this.couponCodeId;
+    data['couponCodeId'] = this.couponCodeId;
     return data;
   }
 }
