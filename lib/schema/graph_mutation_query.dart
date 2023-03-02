@@ -9,12 +9,8 @@ class GraphMutationSchema {
 }''';
   }
 
-  static createWishlistMutation({required String userId}) {
-    return '''mutation MyMutation {
-  createWishlist(input: {userId: "$userId"}) {
-    id
-  }
-}''';
+  static String createWishlistMutation({required String userId}) {
+    return '''mutation MyMutation { createWishlist(input: {userId:"${userId}"}) {  id   } }''';
   }
 
   static createWishListProductMutation(
@@ -76,7 +72,7 @@ class GraphMutationSchema {
 
   static createOrderMutation({required Map<dynamic, dynamic> data}) {
     return '''mutation MyMutation {
-  createOrder(input: {status: ${data['status']}, currency: "${data['currency']}", userId: "${data['userId']}", totalStoreCredit: ${data['totalStoreCredit']}, totalShippingCharges: ${data['totalShippingCharges']}, totalAmount: ${data['totalAmount']}, totalDiscount:  ${data['totalDiscount']}, totalCashOnDeliveryCharges: ${data['totalCashOnDeliveryCharges']}, orderDate: "${data['orderDate']}", CouponCodeId: "${data['CouponCodeId']}", BillingAddress: {address: "${data['BillingAddress']['address']}", city: "${data['BillingAddress']['city']}", country: "${data['BillingAddress']['country']}", state: "${data['BillingAddress']['state']}", pinCode: "${data['BillingAddress']['pinCode']}", name: "${data['BillingAddress']['name']}", phone:"${data['BillingAddress']['phone']}", email: "${data['BillingAddress']['email']}"}, shippingAddress: {address: "${data['shippingAddress']['address']}", city: "${data['shippingAddress']['city']}", country: "${data['shippingAddress']['country']}", state: "${data['shippingAddress']['state']}", pinCode: "${data['shippingAddress']['pinCode']}", name: "${data['shippingAddress']['name']}", phone:"${data['shippingAddress']['phone']}", email:"${data['shippingAddress']['email']}"}}){
+  createOrder(input: {paymentType: ${data['paymentType']}, status: ${data['status']}, currency: ${data['currency']}, sla:"${data['sla']}" userId: "${data['userId']}", totalStoreCredit: ${data['totalStoreCredit']}, totalShippingCharges: ${data['totalShippingCharges']}, totalAmount: ${data['totalAmount']}, totalDiscount:  ${data['totalDiscount']}, totalCashOnDeliveryCharges: ${data['totalCashOnDeliveryCharges']}, orderDate: "${data['orderDate']}", couponCodeId: "${data['CouponCodeId']}", billingAddress: {address: "${data['BillingAddress']['address']}", city: "${data['BillingAddress']['city']}", country: ${data['BillingAddress']['country']}, state: ${data['BillingAddress']['state']}, pinCode: "${data['BillingAddress']['pinCode']}", name: "${data['BillingAddress']['name']}", phone:"${data['BillingAddress']['phone']}", email: "${data['BillingAddress']['email']}"}, shippingAddress: {address: "${data['shippingAddress']['address']}", city: "${data['shippingAddress']['city']}", country: ${data['shippingAddress']['country']}, state: ${data['shippingAddress']['state']}, pinCode: "${data['shippingAddress']['pinCode']}", name: "${data['shippingAddress']['name']}", phone:"${data['shippingAddress']['phone']}", email:"${data['shippingAddress']['email']}"}}){
   id
   totalAmount
   totalCashOnDeliveryCharges
@@ -87,14 +83,16 @@ class GraphMutationSchema {
 }''';
   }
 
-  static createOrderProductMutation({
-    required String orderId,
-    required double price,
-    required String productId,
-    required int quantity,
-  }) {
+  static createOrderProductMutation(
+      {required String orderId,
+      required double price,
+      required String productId,
+      required int quantity,
+      required String sku,
+      required String title,
+      required double totalPrice}) {
     return '''mutation MyMutation {
-  createOrderProduct(input: {orderId: "$orderId", price: $price, productId: "$productId", quantity: $quantity}) {
+  createOrderProduct(input: {orderId: "$orderId", price: $price, totalPrice: $totalPrice productId: "$productId", quantity: $quantity, sku: "$sku",title:"$title"}) {
     orderId
     discount
     cashOnDeliveryCharges
@@ -125,7 +123,7 @@ class GraphMutationSchema {
 
   static createReviewMutation(
       {required String images,
-      required bool email,
+      required String email,
       required String name,
       required String comment,
       required String title,
@@ -134,6 +132,17 @@ class GraphMutationSchema {
       required int rating}) {
     return '''mutation MyMutation {
   createReview(input: {images: "$images", reviewer: {email: "$email", name: "$name"}, comment: "$comment", title: "$title", userId: "$userId", productId: "$productId", rating: $rating})
+  {
+  id
+  }
+}''';
+  }
+
+  static String deleteReviewMutation({required String reviewId}) {
+    return '''mutation MyMutation {
+  deleteReview(input: {id: "$reviewId"}) {
+    id
+  }
 }''';
   }
 }

@@ -1,4 +1,3 @@
-import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -6,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/main.dart';
 import 'package:sneaker_shopping_prokit/model/SneakerShoppingModel.dart';
 import 'package:sneaker_shopping_prokit/providers/profile_provider.dart';
-import 'package:sneaker_shopping_prokit/screen/SSSelectCouponCodeScreen.dart';
 import 'package:sneaker_shopping_prokit/utils/SSColors.dart';
 import 'package:sneaker_shopping_prokit/utils/SSDataGenerator.dart';
 import 'package:sneaker_shopping_prokit/utils/SSWidgets.dart';
@@ -122,17 +120,20 @@ class SSProfileFragment extends StatelessWidget {
                               return Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => SSMyOrderListScreen()));
+                                      builder: (context) =>
+                                          SSMyOrderListScreen()));
                             } else if (index == 1) {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => SSMyVoucherScreen()));
+                                      builder: (context) =>
+                                          SSMyVoucherScreen()));
                             } else if (index == 2) {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => SSSoppingAddressScreen()));
+                                      builder: (context) =>
+                                          SSSoppingAddressScreen()));
                             } else if (index == 3) {
                               Navigator.push(
                                   context,

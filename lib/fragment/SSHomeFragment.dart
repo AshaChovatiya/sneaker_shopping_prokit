@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/component/SSBestODWidget.dart';
 import 'package:sneaker_shopping_prokit/model/ProductListModel.dart';
 import 'package:sneaker_shopping_prokit/model/SneakerShoppingModel.dart';
+import 'package:sneaker_shopping_prokit/model/order_response_model.dart';
+import 'package:sneaker_shopping_prokit/providers/payment_provider.dart';
 import 'package:sneaker_shopping_prokit/screen/SSDetailScreen.dart';
 import 'package:sneaker_shopping_prokit/screen/SSViewAllScreen.dart';
 import 'package:sneaker_shopping_prokit/utils/SSDataGenerator.dart';
@@ -39,6 +41,16 @@ class _SSHomeFragmentState extends State<SSHomeFragment> {
     return ChangeNotifierProvider(
       create: (context) => ProductProvider()..getData(),
       child: Scaffold(
+        /*floatingActionButton: ChangeNotifierProvider(
+            create: (_) =>
+                PaymentProvider(orderResponseData: OrderResponseData())
+                  ..initPayment(),
+            child: Consumer<PaymentProvider>(
+                builder: (context, paymentProvider, _) {
+              return FloatingActionButton(onPressed: () {
+                paymentProvider.openCheckout();
+              });
+            })),*/
         appBar: AppBar(
           automaticallyImplyLeading: false,
           title: Image(
@@ -141,13 +153,9 @@ class _SSHomeFragmentState extends State<SSHomeFragment> {
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) =>
-                                                    ChangeNotifierProvider<
-                                                        ProductProvider>.value(
-                                                  value: productProvider,
-                                                  child: SSDetailScreen(
-                                                    productId:
-                                                        items.items![index].id,
-                                                  ),
+                                                    SSDetailScreen(
+                                                  productId:
+                                                      items.items![index].id,
                                                 ),
                                               ));
                                           /*SSDetailScreen(

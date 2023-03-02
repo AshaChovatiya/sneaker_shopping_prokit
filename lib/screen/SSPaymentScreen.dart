@@ -1,9 +1,9 @@
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/main.dart';
 import 'package:sneaker_shopping_prokit/model/SneakerShoppingModel.dart';
-import 'package:sneaker_shopping_prokit/models/ModelProvider.dart';
 import 'package:sneaker_shopping_prokit/providers/checkout_provider.dart';
 import 'package:sneaker_shopping_prokit/providers/payment_provider.dart';
 import 'package:sneaker_shopping_prokit/providers/product_provider.dart';
@@ -13,8 +13,28 @@ import 'package:sneaker_shopping_prokit/utils/SSWidgets.dart';
 
 class SSPaymentScreen extends StatefulWidget {
   final String? shoppingCartId;
+  final String? productId;
+  final int? qty;
+  final double? price;
+  final String? title;
+  final String? sku;
 
-  SSPaymentScreen({Key? key, this.shoppingCartId}) : super(key: key);
+  final String? couponCodeItemId;
+  final double? totalAmount;
+  final double? shippingAmount;
+
+  SSPaymentScreen(
+      {Key? key,
+      this.shoppingCartId,
+      this.productId,
+      this.price,
+      this.qty,
+      this.couponCodeItemId,
+      this.totalAmount,
+      this.shippingAmount,
+      this.title,
+      this.sku})
+      : super(key: key);
 
   @override
   State<SSPaymentScreen> createState() => _SSPaymentScreenState();
@@ -25,11 +45,13 @@ class _SSPaymentScreenState extends State<SSPaymentScreen> {
   int mCount = 0;
   @override
   Widget build(BuildContext context) {
+    final checkOutProvider = context.watch<CheckOutProvider>();
     return ChangeNotifierProvider(
       create: (context) => PaymentProvider(
-        orderResponseData: context.read<CheckOutProvider>().orderResponseData!,
-        shoppingCartId: widget.shoppingCartId,
-      ),
+          shoppingCartId: widget.shoppingCartId,
+          userData: context.read<CheckOutProvider>().userData,
+          context: context)
+        ..initPayment(),
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,
@@ -193,7 +215,8 @@ class _SSPaymentScreenState extends State<SSPaymentScreen> {
                         if (index == 2) {
                           paymentProvider.paymentMethod = PaymentMethods.COD;
                         } else {
-                          paymentProvider.paymentMethod = PaymentMethods.ONLINE;
+                          paymentProvider.paymentMethod =
+                              PaymentMethods.PREPAID;
                         }
                         setState(() {
                           mCount = index;
@@ -278,7 +301,7 @@ class _SSPaymentScreenState extends State<SSPaymentScreen> {
                       child: Text('Sub - total', style: secondaryTextStyle()),
                     ),
                     Text(
-                        '${checkoutProvider.currencySymbol} ${checkoutProvider.orderResponseData?.createOrder?.totalAmount ?? 0}',
+                        '${checkoutProvider.currencySymbol} ${widget.totalAmount ?? 0}',
                         style: boldTextStyle()),
                   ],
                 ),
@@ -290,7 +313,7 @@ class _SSPaymentScreenState extends State<SSPaymentScreen> {
                   children: [
                     Text('Shipping fee', style: secondaryTextStyle()),
                     Text(
-                        '${checkoutProvider.currencySymbol} ${checkoutProvider.orderResponseData?.createOrder?.totalShippingCharges ?? 0}',
+                        '${checkoutProvider.currencySymbol} ${widget.shippingAmount ?? 0}',
                         style: boldTextStyle()),
                   ],
                 ),
@@ -300,7 +323,7 @@ class _SSPaymentScreenState extends State<SSPaymentScreen> {
                   children: [
                     Text('Total Payment', style: primaryTextStyle()),
                     Text(
-                        '${checkoutProvider.currencySymbol} ${(checkoutProvider.orderResponseData?.createOrder?.totalShippingCharges ?? 0) + (checkoutProvider.orderResponseData?.createOrder?.totalAmount ?? 0)}',
+                        '${checkoutProvider.currencySymbol} ${(widget.shippingAmount ?? 0) + (widget.totalAmount ?? 0)}',
                         style: boldTextStyle()),
                   ],
                 ),
@@ -318,10 +341,105 @@ class _SSPaymentScreenState extends State<SSPaymentScreen> {
                           context: context,
                           title: 'Place Order',
                           onPressed: () async {
+                            final userId = await Amplify.Auth.getCurrentUser()
+                                .then((value) => value.userId);
+                            var createOrderData = {
+                              'paymentType': paymentProvider.paymentMethod.name,
+                              'status': OrderStatus.CONFIRMED.name,
+                              'currency': 'INR',
+                              'sku': '${widget.sku}',
+                              'title': '${widget.title}',
+                              'sla': '${TemporalDateTime.now()}',
+                              'userId': userId,
+                              'totalStoreCredit': 0.0,
+                              'totalDiscount': 0.0,
+                              'totalAmount': widget.price,
+                              'totalCashOnDeliveryCharges': 0.0,
+                              'orderDate': '${TemporalDateTime.now()}',
+                              'CouponCodeId': widget.couponCodeItemId ?? '',
+                              'BillingAddress': {
+                                'name': checkOutProvider
+                                    .billingFullNameController.text,
+                                'address': checkOutProvider
+                                    .billingAddressController.text,
+                                'country': checkOutProvider
+                                    .billingCountryController.text,
+                                'city':
+                                    checkOutProvider.billingCityController.text,
+                                'pinCode': checkOutProvider
+                                    .billingPostCodeController.text,
+                                'state': checkOutProvider
+                                    .billingStateController.text,
+                                'phone': '+91' +
+                                    checkOutProvider
+                                        .billingPhoneController.text,
+                                'email': checkOutProvider
+                                    .billingEmailController.text,
+                              },
+                              'shippingAddress': {
+                                'address':
+                                    checkOutProvider.setAsDefaultBillingAddress
+                                        ? checkOutProvider
+                                            .billingStateController.text
+                                        : checkOutProvider
+                                            .shippingAddressController.text,
+                                'city':
+                                    checkOutProvider.setAsDefaultBillingAddress
+                                        ? checkOutProvider
+                                            .billingCityController.text
+                                        : checkOutProvider
+                                            .shippingCityController.text,
+                                'country':
+                                    checkOutProvider.setAsDefaultBillingAddress
+                                        ? checkOutProvider
+                                            .billingCountryController.text
+                                        : checkOutProvider
+                                            .shippingCountryController.text,
+                                'name':
+                                    checkOutProvider.setAsDefaultBillingAddress
+                                        ? checkOutProvider
+                                            .billingFullNameController.text
+                                        : checkOutProvider
+                                            .shippingFullNameController.text,
+                                'pinCode':
+                                    checkOutProvider.setAsDefaultBillingAddress
+                                        ? checkOutProvider
+                                            .billingPostCodeController.text
+                                        : checkOutProvider
+                                            .shippingPostCodeController.text,
+                                'state':
+                                    checkOutProvider.setAsDefaultBillingAddress
+                                        ? checkOutProvider
+                                            .billingStateController.text
+                                        : checkOutProvider
+                                            .shippingStateController.text,
+                                'phone':
+                                    checkOutProvider.setAsDefaultBillingAddress
+                                        ? '+91' +
+                                            checkOutProvider
+                                                .billingPhoneController.text
+                                        : '+91' +
+                                            checkOutProvider
+                                                .shippingPhoneController.text,
+                                'email':
+                                    checkOutProvider.setAsDefaultBillingAddress
+                                        ? checkOutProvider
+                                            .billingEmailController.text
+                                        : checkOutProvider
+                                            .shippingEmailController.text,
+                              },
+                              'totalShippingCharges': 0.0
+                            };
+                            await checkOutProvider.createOrderCart(
+                                data: createOrderData,
+                                productId: widget.productId!,
+                                productPrice: widget.price!,
+                                quantity: widget.qty!);
+
+                            paymentProvider.orderResponseData =
+                                checkOutProvider.orderResponseData;
+
                             await paymentProvider.pay();
-                            if (!paymentProvider.isError) {
-                              SSOrderScreen().launch(context);
-                            }
 
                             //SSOrderScreen().launch(context);
                           },

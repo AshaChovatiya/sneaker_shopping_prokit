@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/widgets.dart';
-import 'package:sneaker_shopping_prokit/models/ModelProvider.dart';
 import 'package:sneaker_shopping_prokit/schema/graph_query.dart';
 
 import '../model/search_product_model.dart';
@@ -21,7 +20,6 @@ class SearchScreenProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<ProductCategory?> searchProductCategoriesList = [];
   SearchProduct searchProduct = SearchProduct();
   List<SearchProductItems>? _searchProductItems = [];
 

@@ -595,7 +595,7 @@ class GraphQuerySchema {
       totalPrepaidAmount
       totalShippingCharges
       totalStoreCredit
-      CouponCodeId
+      couponCodeId
       status
     }
   }
@@ -639,6 +639,41 @@ class GraphQuerySchema {
         email
         name
       }
+    }
+  }
+}''';
+  }
+
+  static String getProductReviews({required String productId, int? limit}) {
+    if (limit != null) {
+      return '''query MyQuery {
+  listReviews(filter: {productId: {eq: "$productId"}}) {
+    items {
+      images
+      comment
+      rating
+      reviewer {
+        name
+      }
+      updatedAt
+      id
+      userId
+    }
+  }
+}''';
+    }
+    return '''query MyQuery {
+  listReviews(filter: {productId: {eq: "$productId"}}) {
+    items {
+      images
+      comment
+      rating
+      reviewer {
+        name
+      }
+      updatedAt
+      id
+      userId
     }
   }
 }''';

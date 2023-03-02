@@ -54,8 +54,9 @@ class SSDetailScreenState extends State<SSDetailScreen> {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(
-            create: (context) =>
-                ProductDetailsProvider()..getProductItemData(widget.productId),
+            create: (context) => ProductDetailsProvider()
+              ..getProductItemData(widget.productId)
+              ..getReviewData(widget.productId),
           ),
           ChangeNotifierProvider(
             create: (context) => ShoppingCartProvider()..getCouponCodes(),
@@ -82,10 +83,10 @@ class SSDetailScreenState extends State<SSDetailScreen> {
               child: Icon(Icons.arrow_back_ios,
                   color: context.iconColor, size: 20),
             ),
-            actions: [
+            /*actions: [
               Icon(Icons.favorite_border, color: context.iconColor, size: 20)
                   .paddingOnly(right: 16),
-            ],
+            ],*/
           ),
           body: Consumer<ProductDetailsProvider>(
               builder: (context, productDetailsProvider, _) {
@@ -380,46 +381,37 @@ class SSDetailScreenState extends State<SSDetailScreen> {
                                           .productDataModel!.longDescription ??
                                       ''),
                               SizedBox(height: 16),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  RatingBar.builder(
-                                    initialRating: 3,
-                                    glow: false,
-                                    direction: Axis.horizontal,
-                                    allowHalfRating: false,
-                                    itemCount: 5,
-                                    itemSize: 30,
-                                    ignoreGestures: true,
-                                    itemPadding:
-                                        EdgeInsets.symmetric(horizontal: 4.0),
-                                    itemBuilder: (context, _) => Icon(
-                                      Icons.star,
-                                      color: Colors.green,
-                                    ),
-                                    onRatingUpdate: (rating) {
-                                      print(rating);
-                                    },
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ReviewListScreen()));
-                                    },
-                                    child: Text("Show all",
-                                        style: secondaryTextStyle()),
-                                  )
-                                ],
-                              ),
-                              SizedBox(height: 8),
-                              ListView.builder(
-                                  itemCount: 2,
-                                  shrinkWrap: true,
-                                  itemBuilder: (context, index) => Container(
+                              Text("Reviews",
+                                  textAlign: TextAlign.start,
+                                  overflow: TextOverflow.clip,
+                                  style: boldTextStyle()),
+                              SizedBox(height: 6),
+                              if (productDetailsProvider.reviewData?.listReviews
+                                      ?.reviewItems?.isNotEmpty ??
+                                  false)
+                                ListView.builder(
+                                    itemCount: (productDetailsProvider
+                                                    .reviewData
+                                                    ?.listReviews
+                                                    ?.reviewItems
+                                                    ?.length ??
+                                                0) <
+                                            2
+                                        ? (productDetailsProvider
+                                                .reviewData
+                                                ?.listReviews
+                                                ?.reviewItems
+                                                ?.length ??
+                                            0)
+                                        : 2,
+                                    shrinkWrap: true,
+                                    itemBuilder: (context, index) {
+                                      final review = productDetailsProvider
+                                          .reviewData
+                                          ?.listReviews
+                                          ?.reviewItems?[index];
+
+                                      return Container(
                                         margin:
                                             EdgeInsets.symmetric(vertical: 4),
                                         decoration: BoxDecoration(
@@ -434,85 +426,146 @@ class SSDetailScreenState extends State<SSDetailScreen> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Text("Available Sizes",
-                                                textAlign: TextAlign.start,
-                                                overflow: TextOverflow.clip,
-                                                style: boldTextStyle(size: 14)),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                RatingBar.builder(
+                                                  initialRating: double.parse(
+                                                      "${review?.rating}"),
+                                                  glow: false,
+                                                  direction: Axis.horizontal,
+                                                  allowHalfRating: false,
+                                                  itemCount: 5,
+                                                  itemSize: 20,
+                                                  ignoreGestures: true,
+                                                  itemPadding:
+                                                      EdgeInsets.symmetric(
+                                                          horizontal: 4.0),
+                                                  itemBuilder: (context, _) =>
+                                                      Icon(
+                                                    Icons.star,
+                                                    color: Colors.green,
+                                                  ),
+                                                  onRatingUpdate: (rating) {
+                                                    print(rating);
+                                                  },
+                                                ),
+                                                Text(
+                                                    "${review?.reviewer?.name}",
+                                                    textAlign: TextAlign.start,
+                                                    overflow: TextOverflow.clip,
+                                                    style: boldTextStyle(
+                                                        size: 12,
+                                                        color: Colors.grey)),
+                                              ],
+                                            ),
                                             SizedBox(
                                               height: 5,
                                             ),
-                                            Text("Available Sizes",
+                                            Text("${review?.comment}",
                                                 textAlign: TextAlign.start,
                                                 overflow: TextOverflow.clip,
                                                 style: boldTextStyle(
                                                     size: 12,
-                                                    color: Colors.grey)),
+                                                    color: Colors.black)),
                                             SizedBox(
                                               height: 5,
                                             ),
-                                            RatingBar.builder(
-                                              initialRating: 4,
-                                              glow: false,
-                                              direction: Axis.horizontal,
-                                              allowHalfRating: false,
-                                              itemCount: 5,
-                                              itemSize: 20,
-                                              ignoreGestures: true,
-                                              itemPadding: EdgeInsets.symmetric(
-                                                  horizontal: 4.0),
-                                              itemBuilder: (context, _) => Icon(
-                                                Icons.star,
-                                                color: Colors.green,
-                                              ),
-                                              onRatingUpdate: (rating) {
-                                                print(rating);
-                                              },
-                                            ),
                                           ],
                                         ),
-                                      )),
+                                      );
+                                    })
+                              else
+                                Center(
+                                  child: Text("No Reviews",
+                                      textAlign: TextAlign.start,
+                                      overflow: TextOverflow.clip,
+                                      style: boldTextStyle(size: 12)),
+                                ),
                               SizedBox(height: 8),
-                              InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => AddReviewScreen(
-                                                productId:
-                                                    productDetailsProvider
-                                                        .productDataModel!.id!,
-                                              )));
-                                },
-                                child: Container(
-                                  margin:
-                                      EdgeInsets.symmetric(horizontal: 20.w),
-                                  padding:
-                                      EdgeInsets.symmetric(horizontal: 8.w),
-                                  decoration: BoxDecoration(
-                                    color: Color(0xa9ffffff),
-                                    shape: BoxShape.rectangle,
-                                    borderRadius: BorderRadius.circular(160.0),
-                                    border: Border.all(
-                                        color: Color(0xed000000), width: 1),
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 4, vertical: 8),
-                                    child: Align(
-                                      alignment: Alignment(0.0, -0.1),
-                                      child: Text(
-                                        "Add Review",
-                                        textAlign: TextAlign.start,
-                                        overflow: TextOverflow.clip,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w700,
-                                            fontStyle: FontStyle.normal,
-                                            fontSize: 12,
-                                            color: Color(0xff000000)),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  InkWell(
+                                    onTap: () async {
+                                      await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  AddReviewScreen(
+                                                    productId:
+                                                        productDetailsProvider
+                                                            .productDataModel!
+                                                            .id!,
+                                                  )));
+                                      print("Add Review after pop");
+                                      context
+                                          .read<ProductDetailsProvider>()
+                                          .getReviewData(widget.productId);
+                                    },
+                                    child: Container(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 8.w),
+                                      decoration: BoxDecoration(
+                                        color: Color(0xa9ffffff),
+                                        shape: BoxShape.rectangle,
+                                        borderRadius:
+                                            BorderRadius.circular(160.0),
+                                        border: Border.all(
+                                            color: Color(0xed000000), width: 1),
+                                      ),
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 4, vertical: 8),
+                                        child: Align(
+                                          alignment: Alignment(0.0, -0.1),
+                                          child: Text(
+                                            "Add Review",
+                                            textAlign: TextAlign.start,
+                                            overflow: TextOverflow.clip,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w700,
+                                                fontStyle: FontStyle.normal,
+                                                fontSize: 12,
+                                                color: Color(0xff000000)),
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
+                                  if (productDetailsProvider
+                                          .reviewData
+                                          ?.listReviews
+                                          ?.reviewItems
+                                          ?.isNotEmpty ??
+                                      false)
+                                    TextButton(
+                                      onPressed: () async {
+                                        await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ReviewListScreen(
+                                                      reviewData:
+                                                          productDetailsProvider
+                                                              .reviewData!,
+                                                      productId:
+                                                          productDetailsProvider
+                                                              .productDataModel!
+                                                              .id!,
+                                                    )));
+
+                                        context
+                                            .read<ProductDetailsProvider>()
+                                            .getReviewData(widget.productId);
+                                      },
+                                      child: Text("Show all",
+                                          style: secondaryTextStyle()),
+                                    )
+                                ],
                               ),
                               /* Text(
                                 productProvider

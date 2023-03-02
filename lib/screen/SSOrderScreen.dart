@@ -3,7 +3,6 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:sneaker_shopping_prokit/screen/SSDashBoardScreen.dart';
 import 'package:sneaker_shopping_prokit/utils/SSWidgets.dart';
 
-
 import '../../../main.dart';
 
 class SSOrderScreen extends StatelessWidget {
@@ -17,7 +16,7 @@ class SSOrderScreen extends StatelessWidget {
         title: Text("Checkout", style: boldTextStyle()),
         leading: InkWell(
           onTap: () {
-            Navigator.pop(context);
+            SSDashBoardScreen().launch(context, isNewTask: true);
           },
           child: Icon(Icons.arrow_back_ios, color: context.iconColor, size: 20),
         ),
@@ -40,9 +39,15 @@ class SSOrderScreen extends StatelessWidget {
                   width: 5,
                   height: 5,
                   decoration: BoxDecoration(
-                    color: appStore.isDarkModeOn ? context.iconColor : Color(0xff000000),
+                    color: appStore.isDarkModeOn
+                        ? context.iconColor
+                        : Color(0xff000000),
                     shape: BoxShape.circle,
-                    border: Border.all(color: appStore.isDarkModeOn ? context.iconColor : Color(0xff000000), width: 1),
+                    border: Border.all(
+                        color: appStore.isDarkModeOn
+                            ? context.iconColor
+                            : Color(0xff000000),
+                        width: 1),
                   ),
                 ),
                 Container(
@@ -51,9 +56,15 @@ class SSOrderScreen extends StatelessWidget {
                   width: 5,
                   height: 5,
                   decoration: BoxDecoration(
-                    color: appStore.isDarkModeOn ? context.iconColor : Color(0xff000000),
+                    color: appStore.isDarkModeOn
+                        ? context.iconColor
+                        : Color(0xff000000),
                     shape: BoxShape.circle,
-                    border: Border.all(color: appStore.isDarkModeOn ? context.iconColor : Color(0xff000000), width: 1),
+                    border: Border.all(
+                        color: appStore.isDarkModeOn
+                            ? context.iconColor
+                            : Color(0xff000000),
+                        width: 1),
                   ),
                 ),
                 Container(
@@ -62,9 +73,15 @@ class SSOrderScreen extends StatelessWidget {
                   width: 5,
                   height: 5,
                   decoration: BoxDecoration(
-                    color: appStore.isDarkModeOn ? context.iconColor : Color(0xff000000),
+                    color: appStore.isDarkModeOn
+                        ? context.iconColor
+                        : Color(0xff000000),
                     shape: BoxShape.circle,
-                    border: Border.all(color: appStore.isDarkModeOn ? context.iconColor : Color(0xff000000), width: 1),
+                    border: Border.all(
+                        color: appStore.isDarkModeOn
+                            ? context.iconColor
+                            : Color(0xff000000),
+                        width: 1),
                   ),
                 ),
                 Container(
@@ -73,9 +90,15 @@ class SSOrderScreen extends StatelessWidget {
                   width: 5,
                   height: 5,
                   decoration: BoxDecoration(
-                    color: appStore.isDarkModeOn ? context.iconColor : Color(0xff000000),
+                    color: appStore.isDarkModeOn
+                        ? context.iconColor
+                        : Color(0xff000000),
                     shape: BoxShape.circle,
-                    border: Border.all(color: appStore.isDarkModeOn ? context.iconColor : Color(0xff000000), width: 1),
+                    border: Border.all(
+                        color: appStore.isDarkModeOn
+                            ? context.iconColor
+                            : Color(0xff000000),
+                        width: 1),
                   ),
                 ),
                 Icon(Icons.credit_card, color: Color(0xff808080), size: 24),
@@ -85,7 +108,9 @@ class SSOrderScreen extends StatelessWidget {
                   width: 5,
                   height: 5,
                   decoration: BoxDecoration(
-                    color: appStore.isDarkModeOn ? context.iconColor : Color(0xff000000),
+                    color: appStore.isDarkModeOn
+                        ? context.iconColor
+                        : Color(0xff000000),
                     shape: BoxShape.circle,
                     border: Border.all(color: Color(0x4d9e9e9e), width: 1),
                   ),
@@ -96,7 +121,9 @@ class SSOrderScreen extends StatelessWidget {
                   width: 5,
                   height: 5,
                   decoration: BoxDecoration(
-                    color: appStore.isDarkModeOn ? context.iconColor : Color(0xff000000),
+                    color: appStore.isDarkModeOn
+                        ? context.iconColor
+                        : Color(0xff000000),
                     shape: BoxShape.circle,
                     border: Border.all(color: Color(0x4d9e9e9e), width: 1),
                   ),
@@ -107,7 +134,9 @@ class SSOrderScreen extends StatelessWidget {
                   width: 5,
                   height: 5,
                   decoration: BoxDecoration(
-                    color: appStore.isDarkModeOn ? context.iconColor : Color(0xff000000),
+                    color: appStore.isDarkModeOn
+                        ? context.iconColor
+                        : Color(0xff000000),
                     shape: BoxShape.circle,
                     border: Border.all(color: Color(0x4d9e9e9e), width: 1),
                   ),
@@ -118,7 +147,9 @@ class SSOrderScreen extends StatelessWidget {
                   width: 5,
                   height: 5,
                   decoration: BoxDecoration(
-                    color: appStore.isDarkModeOn ? context.iconColor : Color(0xff000000),
+                    color: appStore.isDarkModeOn
+                        ? context.iconColor
+                        : Color(0xff000000),
                     shape: BoxShape.circle,
                     border: Border.all(color: Color(0x4d9e9e9e), width: 1),
                   ),
@@ -130,18 +161,30 @@ class SSOrderScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image(image: AssetImage("images/sneakerShopping/ic_shopping.png"), height: 150, width: 150, color: appStore.isDarkModeOn ? Colors.white : Colors.black, fit: BoxFit.cover),
+                Image(
+                    image: AssetImage("images/sneakerShopping/ic_shopping.png"),
+                    height: 150,
+                    width: 150,
+                    color: appStore.isDarkModeOn ? Colors.white : Colors.black,
+                    fit: BoxFit.cover),
                 SizedBox(height: 16),
-                Text("Order Success", textAlign: TextAlign.start, overflow: TextOverflow.clip, style: boldTextStyle(size: 18)),
+                Text("Order Success",
+                    textAlign: TextAlign.start,
+                    overflow: TextOverflow.clip,
+                    style: boldTextStyle(size: 18)),
                 SizedBox(height: 16),
-                Text("Thank you for purchasing. Your order\n will be shipped in 2-3 working days", textAlign: TextAlign.start, overflow: TextOverflow.clip, style: secondaryTextStyle()),
+                Text(
+                    "Thank you for purchasing. Your order\n will be shipped in 2-3 working days",
+                    textAlign: TextAlign.start,
+                    overflow: TextOverflow.clip,
+                    style: secondaryTextStyle()),
               ],
             ),
             sSAppButton(
               context: context,
               title: 'Continue shopping',
               onPressed: () {
-                SSDashBoardScreen().launch(context);
+                SSDashBoardScreen().launch(context, isNewTask: true);
               },
             ),
           ],

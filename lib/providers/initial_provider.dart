@@ -4,7 +4,6 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 import 'package:flutter/widgets.dart';
 import '../amplifyconfiguration.dart';
-import '../models/ModelProvider.dart';
 
 class InitialProvider extends ChangeNotifier {
   bool isUserLoggedIn = false;
@@ -36,9 +35,9 @@ class InitialProvider extends ChangeNotifier {
   Future<void> _configureAmplify() async {
     final auth = AmplifyAuthCognito();
     final storage = AmplifyStorageS3();
-    final api = AmplifyAPI(modelProvider: ModelProvider.instance);
+    final api = AmplifyAPI();
 
-    await Amplify.addPlugins([api, auth,storage]);
+    await Amplify.addPlugins([api, auth, storage]);
     // await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
 
     try {

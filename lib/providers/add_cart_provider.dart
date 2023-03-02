@@ -40,11 +40,11 @@ class AddCartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addToCart(
+  Future<String?> addToCart(
       {required String productId, required int quantity}) async {
     isError = false;
     isLoading = true;
-    final userId =
+    final String userId =
         await Amplify.Auth.getCurrentUser().then((value) => value.userId);
 
     final request = Amplify.API.mutate(
@@ -72,13 +72,13 @@ class AddCartProvider extends ChangeNotifier {
           context: navigatorKey.currentContext!,
           message: 'Something went wrong!',
           type: SnackBarType.ERROR);
-      return;
+      return null;
     }
-    if (wishlistId == null) return;
+    if (wishlistId == null) return null;
     await addProductToCart(
         productId: productId, quantity: quantity, wishlistId: wishlistId);
-
     isLoading = false;
+    return wishlistId;
   }
 
   Future<void> addProductToCart(

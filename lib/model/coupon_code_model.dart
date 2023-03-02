@@ -19,17 +19,17 @@ class CouponCodeData {
 }
 
 class ListCouponCodes {
-  String? nextToken;
-  List<CouponCodeItems>? couponCodeItems;
+  Null? nextToken;
+  List<CouponCodeItems>? items;
 
-  ListCouponCodes({this.nextToken, this.couponCodeItems});
+  ListCouponCodes({this.nextToken, this.items});
 
   ListCouponCodes.fromJson(Map<String, dynamic> json) {
     nextToken = json['nextToken'];
     if (json['items'] != null) {
-      couponCodeItems = <CouponCodeItems>[];
+      items = <CouponCodeItems>[];
       json['items'].forEach((v) {
-        couponCodeItems!.add(new CouponCodeItems.fromJson(v));
+        items!.add(new CouponCodeItems.fromJson(v));
       });
     }
   }
@@ -37,8 +37,8 @@ class ListCouponCodes {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['nextToken'] = this.nextToken;
-    if (this.couponCodeItems != null) {
-      data['items'] = this.couponCodeItems!.map((v) => v.toJson()).toList();
+    if (this.items != null) {
+      data['items'] = this.items!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -54,7 +54,7 @@ class CouponCodeItems {
   String? id;
   bool? isActive;
   bool? isFeatured;
-  double? maxDiscount;
+  String? maxDiscount;
   int? maxUse;
   int? minOrderValue;
   String? paymentMethod;

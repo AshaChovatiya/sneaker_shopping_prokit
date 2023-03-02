@@ -155,7 +155,7 @@ class SSSignInScreen extends StatelessWidget {
                       Text("Register", style: boldTextStyle(color: Colors.red)),
                 ),
                 SizedBox(height: 16),
-                Align(
+                /*Align(
                   alignment: Alignment(0.2, 0.4),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -189,7 +189,7 @@ class SSSignInScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                ),
+                ),*/
               ],
             ),
           ),

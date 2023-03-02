@@ -4,7 +4,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/widgets.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sneaker_shopping_prokit/model/shoppingCartList_model.dart';
-import 'package:sneaker_shopping_prokit/models/coupon_code_model.dart';
+import '../model/coupon_code_model.dart';
 import '../schema/graph_mutation_query.dart';
 import '../schema/graph_query.dart';
 import '../utils/common_snack_bar.dart';
@@ -189,8 +189,7 @@ class ShoppingCartProvider extends ChangeNotifier {
     if (response.errors.isEmpty && response.data != null) {
       couponCodeData = CouponCodeData.fromJson(jsonDecode(response.data!));
 
-      selectedCouponCodeItem =
-          couponCodeData!.listCouponCodes?.couponCodeItems?.first;
+      selectedCouponCodeItem = couponCodeData!.listCouponCodes?.items?.first;
     } else {
       if (response.errors.isNotEmpty) {
         errorMessage = response.errors.first.message;

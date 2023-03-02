@@ -7,6 +7,7 @@ import 'package:sneaker_shopping_prokit/utils/SSConstants.dart';
 import 'package:sneaker_shopping_prokit/utils/SSWidgets.dart';
 
 import '../providers/add_cart_provider.dart';
+import '../providers/product_provider.dart';
 
 class AddToCartBottomSheet extends StatefulWidget {
   AddToCartBottomSheet({
@@ -256,9 +257,16 @@ class AddToCartBottomSheetState extends State<AddToCartBottomSheet> {
                       context: context,
                       title: 'Add to WishList',
                       onPressed: () async {
-                        await addCartProvider.addToCart(
+                        String? wishListId = await addCartProvider.addToCart(
                             productId: widget.productDataModel.id!,
                             quantity: increment);
+                        if (wishListId == null) return;
+                        context
+                            .read<ProductProvider>()
+                            .addWishListedProducts(widget.productDataModel.id!);
+                        context
+                            .read<ProductProvider>()
+                            .addWishListedIds(wishListId);
 
                         finish(context);
                       },

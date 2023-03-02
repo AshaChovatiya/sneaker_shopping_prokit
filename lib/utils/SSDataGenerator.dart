@@ -19,8 +19,6 @@ List<SneakerShoppingModel> paymentList() {
       name: 'Credit/Debit Card',
       img: 'images/sneakerShopping/ic_MasterCard.png'));
   list.add(SneakerShoppingModel(
-      name: 'Paypal', img: 'images/sneakerShopping/ic_paypal.png'));
-  list.add(SneakerShoppingModel(
       name: 'Cash on delivery',
       img: 'images/sneakerShopping/cash_on_delivery.png'));
 

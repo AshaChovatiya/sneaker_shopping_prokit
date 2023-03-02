@@ -7,7 +7,6 @@ import 'package:flutter/foundation.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sneaker_shopping_prokit/model/ImageModel.dart';
 import 'package:sneaker_shopping_prokit/model/ListProductCategoryModel.dart';
-import 'package:sneaker_shopping_prokit/models/ModelProvider.dart';
 import 'package:sneaker_shopping_prokit/schema/graph_mutation_query.dart';
 
 import '../model/ProductListModel.dart';
@@ -25,6 +24,16 @@ class ProductProvider extends ChangeNotifier {
 
   set wishListedIds(List<String> value) {
     _wishListedIds = value;
+    notifyListeners();
+  }
+
+  addWishListedIds(String value) {
+    _wishListedIds.add(value);
+    notifyListeners();
+  }
+
+  addWishListedProducts(String value) {
+    _wishListedProducts.add(value);
     notifyListeners();
   }
 
@@ -148,31 +157,33 @@ class ProductProvider extends ChangeNotifier {
   Future<void> deleteWishList({required String wishListId}) async {
     int wishList =
         wishListedProducts.indexWhere((element) => wishListId == element);
+    print("Length of wishListedProducts:- ${wishListedProducts.length}");
+    print("Length of wishListed:- ${wishListedIds.length}");
+    print("wishListed:- ${wishList}");
 
     if (wishList != -1) {
-      wishListedProducts.removeAt(wishList);
-      wishListedIds.removeAt(wishList);
-      notifyListeners();
-    }
+      var request = Amplify.API.mutate(
+          request: GraphQLRequest<String>(
+        document: GraphMutationSchema.deleteWishList(
+            wishListId: _wishListedIds[wishList]),
+      ));
 
-    var request = Amplify.API.mutate(
-        request: GraphQLRequest<String>(
-      document: GraphMutationSchema.deleteWishList(
-          wishListId: wishListedIds[wishList]),
-    ));
+      var response = await request.response;
 
-    var response = await request.response;
-
-    if (response.errors.isEmpty && response.data != null) {
-      // getData();
-    } else {
-      if (response.errors.isNotEmpty) {
-        GlobalSnackBar.show(
-            context: navigatorKey.currentContext!,
-            message: response.errors.first.message,
-            type: SnackBarType.ERROR);
-        print("response.errors: ${response.errors}");
+      if (response.errors.isEmpty && response.data != null) {
+        // getData();
+      } else {
+        if (response.errors.isNotEmpty) {
+          GlobalSnackBar.show(
+              context: navigatorKey.currentContext!,
+              message: response.errors.first.message,
+              type: SnackBarType.ERROR);
+          print("response.errors: ${response.errors}");
+        }
       }
+      _wishListedProducts.removeAt(wishList);
+      _wishListedIds.removeAt(wishList);
+      notifyListeners();
     }
   }
 

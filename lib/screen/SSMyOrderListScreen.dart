@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/main.dart';
-import 'package:sneaker_shopping_prokit/models/ModelProvider.dart';
 import 'package:sneaker_shopping_prokit/providers/shopping_cart_provider.dart';
 import 'package:sneaker_shopping_prokit/store/AppStore.dart';
 
+import '../providers/checkout_provider.dart';
 import '../providers/my_order_provider.dart';
 import '../utils/SSConstants.dart';
 
@@ -39,7 +39,7 @@ class SSMyOrderListScreen extends StatelessWidget {
                 ? Center(
                     child: CircularProgressIndicator(),
                   )
-                : (myOrderProvider.myOrderModel!.listOrders!.items?.isEmpty ??
+                : (myOrderProvider.myOrderModel?.listOrders?.items?.isEmpty ??
                             true) ||
                         (myOrderProvider.myOrderModel!.listOrders == null)
                     ? Center(
@@ -90,27 +90,37 @@ class SSMyOrderListScreen extends StatelessWidget {
                                           child: ClipRRect(
                                             borderRadius:
                                                 BorderRadius.circular(8),
-                                            child: CachedNetworkImage(
-                                              imageUrl: orderItemList!
-                                                          .products!
-                                                          .productsItems![0]
-                                                          .product
-                                                          ?.thumbImages !=
-                                                      null
-                                                  ? imageBaseApi +
-                                                      orderItemList
-                                                          .products!
-                                                          .productsItems![0]
-                                                          .product!
-                                                          .thumbImages!
-                                                  : imagePlaceHolder,
-                                              placeholder: (context, url) => Center(
-                                                  child:
-                                                      CircularProgressIndicator()),
-                                              errorWidget:
-                                                  (context, url, error) =>
-                                                      Icon(Icons.error),
-                                            ),
+                                            child: (orderItemList!
+                                                        .products!
+                                                        .productsItems
+                                                        ?.isEmpty ??
+                                                    true)
+                                                ? SizedBox()
+                                                : CachedNetworkImage(
+                                                    imageUrl: orderItemList
+                                                                .products!
+                                                                .productsItems![
+                                                                    0]
+                                                                .product
+                                                                ?.thumbImages !=
+                                                            null
+                                                        ? imageBaseApi +
+                                                            orderItemList
+                                                                .products!
+                                                                .productsItems![
+                                                                    0]
+                                                                .product!
+                                                                .thumbImages!
+                                                        : imagePlaceHolder,
+                                                    placeholder: (context,
+                                                            url) =>
+                                                        Center(
+                                                            child:
+                                                                CircularProgressIndicator()),
+                                                    errorWidget:
+                                                        (context, url, error) =>
+                                                            Icon(Icons.error),
+                                                  ),
                                           ),
                                         ),
                                         SizedBox(height: 16, width: 16),
@@ -123,50 +133,73 @@ class SSMyOrderListScreen extends StatelessWidget {
                                                   CrossAxisAlignment.start,
                                               mainAxisSize: MainAxisSize.max,
                                               children: [
-                                                Text(
-                                                    orderItemList
+                                                if (orderItemList
                                                         .products!
-                                                        .productsItems![0]
-                                                        .product!
-                                                        .title
-                                                        .toString(),
-                                                    textAlign: TextAlign.start,
-                                                    maxLines: 2,
-                                                    overflow: TextOverflow.clip,
-                                                    style: boldTextStyle()),
+                                                        .productsItems
+                                                        ?.isNotEmpty ??
+                                                    false)
+                                                  Text(
+                                                      orderItemList
+                                                          .products!
+                                                          .productsItems![0]
+                                                          .product!
+                                                          .title
+                                                          .toString(),
+                                                      textAlign:
+                                                          TextAlign.start,
+                                                      maxLines: 2,
+                                                      overflow:
+                                                          TextOverflow.clip,
+                                                      style: boldTextStyle()),
                                                 SizedBox(height: 4),
-                                                Text(
-                                                    orderItemList
-                                                            .products!
-                                                            .productsItems![0]
-                                                            .product!
-                                                            .additionalInfo ??
-                                                        '',
-                                                    textAlign: TextAlign.start,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style:
-                                                        secondaryTextStyle()),
+                                                if (orderItemList
+                                                        .products!
+                                                        .productsItems
+                                                        ?.isNotEmpty ??
+                                                    false)
+                                                  Text(
+                                                      orderItemList
+                                                              .products!
+                                                              .productsItems![0]
+                                                              .product!
+                                                              .additionalInfo ??
+                                                          '',
+                                                      textAlign:
+                                                          TextAlign.start,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style:
+                                                          secondaryTextStyle()),
                                                 Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment
                                                           .spaceBetween,
                                                   children: [
-                                                    Text(
-                                                      "${orderItemList.currency ?? ''}  ${orderItemList.products!.productsItems![0].product!.price.toString()}",
-                                                      textAlign:
-                                                          TextAlign.start,
-                                                      overflow:
-                                                          TextOverflow.clip,
-                                                      style: boldTextStyle(
-                                                          size: 14),
-                                                    ),
+                                                    if (orderItemList
+                                                            .products!
+                                                            .productsItems
+                                                            ?.isNotEmpty ??
+                                                        false)
+                                                      Text(
+                                                        "${orderItemList.currency ?? ''}  ${orderItemList.products!.productsItems![0].product!.price.toString()}",
+                                                        textAlign:
+                                                            TextAlign.start,
+                                                        overflow:
+                                                            TextOverflow.clip,
+                                                        style: boldTextStyle(
+                                                            size: 14),
+                                                      ),
                                                     SizedBox(width: 32),
-                                                    Text(
-                                                        'x ${orderItemList.products!.productsItems![0].quantity}',
-                                                        style:
-                                                            secondaryTextStyle(
-                                                                size: 14)),
+                                                    if (orderItemList
+                                                            .products!
+                                                            .productsItems
+                                                            ?.isNotEmpty ??
+                                                        false)
+                                                      Text(
+                                                          'x ${orderItemList.products!.productsItems![0].quantity}',
+                                                          style:
+                                                              secondaryTextStyle(
+                                                                  size: 14)),
                                                     SizedBox(width: 5),
                                                     Container(
                                                       padding:

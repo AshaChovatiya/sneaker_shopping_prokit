@@ -61,17 +61,18 @@ class Items {
 
   Items(
       {this.id,
-        this.products,
-        this.currency,
-        this.orderDate,
-        this.totalAmount,
-        this.totalCashOnDeliveryCharges,
-        this.totalDiscount,
-        this.totalGiftCharges,
-        this.totalPrepaidAmount,
-        this.totalShippingCharges,
-        this.totalStoreCredit,
-        this.couponCodeId,this.status});
+      this.products,
+      this.currency,
+      this.orderDate,
+      this.totalAmount,
+      this.totalCashOnDeliveryCharges,
+      this.totalDiscount,
+      this.totalGiftCharges,
+      this.totalPrepaidAmount,
+      this.totalShippingCharges,
+      this.totalStoreCredit,
+      this.couponCodeId,
+      this.status});
 
   Items.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -89,7 +90,6 @@ class Items {
     totalStoreCredit = json['totalStoreCredit'];
     couponCodeId = json['CouponCodeId'];
     status = json['status'];
-
   }
 
   Map<String, dynamic> toJson() {
@@ -129,8 +129,7 @@ class Products {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.productsItems != null) {
-      data['items'] =
-          this.productsItems!.map((v) => v.toJson()).toList();
+      data['items'] = this.productsItems!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -138,12 +137,12 @@ class Products {
 
 class ProductsItems {
   String? additionalInfo;
-  int? cashOnDeliveryCharges;
-  dynamic centralGstPercentage;
-  dynamic compensationCessPercentage;
+  double? cashOnDeliveryCharges;
+  double? centralGstPercentage;
+  double? compensationCessPercentage;
   String? currency;
   String? deliveryPartner;
-  dynamic discount;
+  double? discount;
   String? dispatchDate;
   String? id;
   String? orderId;
@@ -155,30 +154,30 @@ class ProductsItems {
   Product? product;
   double? price;
   String? invoiceDate;
-  dynamic invoiceNumber;
+  String? invoiceNumber;
   dynamic onHold;
 
   ProductsItems(
       {this.additionalInfo,
-        this.cashOnDeliveryCharges,
-        this.centralGstPercentage,
-        this.compensationCessPercentage,
-        this.currency,
-        this.deliveryPartner,
-        this.discount,
-        this.dispatchDate,
-        this.id,
-        this.orderId,
-        this.quantity,
-        this.title,
-        this.totalPrice,
-        this.status,
-        this.productId,
-        this.product,
-        this.price,
-        this.invoiceDate,
-        this.invoiceNumber,
-        this.onHold});
+      this.cashOnDeliveryCharges,
+      this.centralGstPercentage,
+      this.compensationCessPercentage,
+      this.currency,
+      this.deliveryPartner,
+      this.discount,
+      this.dispatchDate,
+      this.id,
+      this.orderId,
+      this.quantity,
+      this.title,
+      this.totalPrice,
+      this.status,
+      this.productId,
+      this.product,
+      this.price,
+      this.invoiceDate,
+      this.invoiceNumber,
+      this.onHold});
 
   ProductsItems.fromJson(Map<String, dynamic> json) {
     additionalInfo = json['additionalInfo'];
@@ -197,7 +196,7 @@ class ProductsItems {
     status = json['status'];
     productId = json['productId'];
     product =
-    json['product'] != null ? new Product.fromJson(json['product']) : null;
+        json['product'] != null ? new Product.fromJson(json['product']) : null;
     price = json['price'];
     invoiceDate = json['invoiceDate'];
     invoiceNumber = json['invoiceNumber'];
@@ -250,19 +249,19 @@ class Product {
 
   Product(
       {this.additionalInfo,
-        this.brand,
-        this.color,
-        this.currency,
-        this.id,
-        this.price,
-        this.productType,
-        this.longDescription,
-        this.isFeatured,
-        this.status,
-        this.title,
-        this.thumbImages,
-        this.listingPrice,
-        this.totalOrders});
+      this.brand,
+      this.color,
+      this.currency,
+      this.id,
+      this.price,
+      this.productType,
+      this.longDescription,
+      this.isFeatured,
+      this.status,
+      this.title,
+      this.thumbImages,
+      this.listingPrice,
+      this.totalOrders});
 
   Product.fromJson(Map<String, dynamic> json) {
     additionalInfo = json['additionalInfo'];

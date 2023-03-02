@@ -5,13 +5,12 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:sneaker_shopping_prokit/model/order_response_model.dart';
+import 'package:sneaker_shopping_prokit/model/state_model.dart';
 import 'package:sneaker_shopping_prokit/model/user_data.dart';
 import 'package:sneaker_shopping_prokit/schema/graph_mutation_query.dart';
 import 'package:sneaker_shopping_prokit/schema/graph_query.dart';
+import 'package:sneaker_shopping_prokit/utils/SSConstants.dart';
 import 'package:sneaker_shopping_prokit/utils/common_snack_bar.dart';
-
-import '../model/shoppingCartList_model.dart';
-import '../screen/SSPaymentScreen.dart';
 
 enum OrderStatus {
   ONHOLD,
@@ -30,6 +29,23 @@ class CheckOutProvider extends ChangeNotifier {
   bool _isError = false;
   bool _isOrdering = false;
   String _currencySymbol = '\$';
+  List<LocationData> _states = [];
+
+  List<LocationData> get states => _states;
+
+  set states(List<LocationData> value) {
+    _states = value;
+    notifyListeners();
+  }
+
+  List<LocationData> _countries = [];
+
+  List<LocationData> get countries => _countries;
+
+  set countries(List<LocationData> value) {
+    _countries = value;
+    notifyListeners();
+  }
 
   String get currencySymbol => _currencySymbol;
 
@@ -44,7 +60,6 @@ class CheckOutProvider extends ChangeNotifier {
 
   set orderResponseData(OrderResponseData? value) {
     _orderResponseData = value;
-    notifyListeners();
   }
 
   bool get isOrdering => _isOrdering;
@@ -102,6 +117,16 @@ class CheckOutProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setLocationData() {
+    jsonDecode(COUNTRIES).forEach((element) {
+      countries.add(LocationData.fromJson(element));
+    });
+
+    jsonDecode(STATES).forEach((element) {
+      states.add(LocationData.fromJson(element));
+    });
+  }
+
   Future<void> getUserData() async {
     isLoading = true;
     final userId =
@@ -128,9 +153,9 @@ class CheckOutProvider extends ChangeNotifier {
       billingPostCodeController =
           TextEditingController(text: userData?.getUser?.pinCode ?? '');
       billingCountryController =
-          TextEditingController(text: userData?.getUser?.country ?? '');
+          TextEditingController(text: userData?.getUser?.country ?? 'IN');
       billingStateController =
-          TextEditingController(text: userData?.getUser?.state ?? '');
+          TextEditingController(text: userData?.getUser?.state ?? 'GJ');
       billingPhoneController =
           TextEditingController(text: userData?.getUser?.phone ?? '');
 
@@ -202,7 +227,10 @@ class CheckOutProvider extends ChangeNotifier {
         orderId: createOrderId,
         price: productPrice,
         productId: productId,
-        quantity: quantity);
+        quantity: quantity,
+        totalPrice: data['totalAmount'],
+        title: data['title'],
+        sku: data['sku']);
   }
 
   Future<void> createOrderProduct({
@@ -210,14 +238,21 @@ class CheckOutProvider extends ChangeNotifier {
     required double price,
     required String productId,
     required int quantity,
+    required String title,
+    required String sku,
+    required double totalPrice,
   }) async {
     final request = Amplify.API.mutate(
         request: GraphQLRequest<String>(
       document: GraphMutationSchema.createOrderProductMutation(
-          productId: productId,
-          price: price,
-          orderId: orderId,
-          quantity: quantity),
+        productId: productId,
+        price: price,
+        orderId: orderId,
+        quantity: quantity,
+        sku: sku,
+        title: title,
+        totalPrice: totalPrice,
+      ),
     ));
 
     final response = await request.response;

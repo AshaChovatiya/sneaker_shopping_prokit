@@ -19,6 +19,7 @@ class SSSearchFragment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("Rebuild");
     return ChangeNotifierProvider(
       create: (context) => SearchScreenProvider(),
       child: Scaffold(

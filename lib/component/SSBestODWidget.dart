@@ -2,14 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/component/AddToCartBottomSheet.dart';
-import 'package:sneaker_shopping_prokit/models/Product.dart';
-import 'package:sneaker_shopping_prokit/providers/initial_provider.dart';
 import 'package:sneaker_shopping_prokit/providers/product_provider.dart';
-import 'package:sneaker_shopping_prokit/service/mutations.dart';
 import 'package:sneaker_shopping_prokit/utils/common_snack_bar.dart';
 
 import '../model/ProductListModel.dart';
-import '../models/WishlistProduct.dart';
 
 class SSBestODWidget extends StatelessWidget {
   final String? img;
@@ -101,12 +97,14 @@ class SSBestODWidget extends StatelessWidget {
                         ),
                         context: context,
                         builder: (_) {
-                          return AddToCartBottomSheet(
-                            productDataModel: product!,
-                          );
+                          return ChangeNotifierProvider.value(
+                              value: context.read<ProductProvider>(),
+                              child: AddToCartBottomSheet(
+                                productDataModel: product!,
+                              ));
                         },
                       );
-                      context.read<ProductProvider>().getData();
+                      //context.read<ProductProvider>().getData();
                     },
                     child: Container(
                       margin: EdgeInsets.only(right: 8, top: 8),

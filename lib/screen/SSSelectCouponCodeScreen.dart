@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/main.dart';
-import 'package:sneaker_shopping_prokit/models/ModelProvider.dart';
 import 'package:sneaker_shopping_prokit/providers/shopping_cart_provider.dart';
 
 class SSSelectCouponCodeScreen extends StatelessWidget {
@@ -23,10 +22,10 @@ class SSSelectCouponCodeScreen extends StatelessWidget {
           builder: (context, shoppingCartProvider, child) {
         return ListView.builder(
             itemCount: shoppingCartProvider
-                .couponCodeData!.listCouponCodes?.couponCodeItems!.length,
+                .couponCodeData!.listCouponCodes?.items!.length,
             itemBuilder: (context, index) {
               final couponCodeItem = shoppingCartProvider
-                  .couponCodeData!.listCouponCodes!.couponCodeItems![index];
+                  .couponCodeData!.listCouponCodes!.items![index];
               return InkWell(
                 onTap: () {
                   shoppingCartProvider.selectedCouponCodeItem = couponCodeItem;

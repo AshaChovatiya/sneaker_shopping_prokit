@@ -25,7 +25,9 @@ class SSBillingAddressScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => CheckOutProvider()..getUserData(),
+      create: (_) => CheckOutProvider()
+        ..getUserData()
+        ..setLocationData(),
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,
@@ -380,41 +382,18 @@ class SSBillingAddressScreen extends StatelessWidget {
                         overflow: TextOverflow.clip,
                         style: secondaryTextStyle(),
                       ),
-                      TextField(
-                        controller: checkOutProvider.billingStateController,
-                        obscureText: false,
-                        textAlign: TextAlign.start,
-                        maxLines: 1,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontStyle: FontStyle.normal,
-                          fontSize: 14,
-                          color: Color(0xff000000),
-                        ),
-                        decoration: InputDecoration(
-                          disabledBorder: UnderlineInputBorder(
-                            borderRadius: BorderRadius.circular(4.0),
-                            borderSide:
-                                BorderSide(color: Color(0xff000000), width: 1),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderRadius: BorderRadius.circular(4.0),
-                            borderSide:
-                                BorderSide(color: Color(0xff000000), width: 1),
-                          ),
-                          enabledBorder: UnderlineInputBorder(
-                            borderRadius: BorderRadius.circular(4.0),
-                            borderSide:
-                                BorderSide(color: Color(0xff000000), width: 1),
-                          ),
-                          hintText: "Gujarat",
-                          hintStyle: boldTextStyle(
-                              size: 14, color: Colors.grey.withOpacity(0.5)),
-                          filled: true,
-                          fillColor: Color(0x00f2f2f3),
-                          isDense: false,
-                          contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
-                        ),
+                      DropdownButtonFormField(
+                        value: checkOutProvider.billingStateController.text,
+                        hint: Text('Select State'),
+                        items: checkOutProvider.states
+                            .map((e) => DropdownMenuItem<String>(
+                                  child: Text(e.name ?? ''),
+                                  value: e.value,
+                                ))
+                            .toList(),
+                        onChanged: (String? value) {
+                          checkOutProvider.billingStateController.text = value!;
+                        },
                       ),
                       SizedBox(height: 16),
                       Text(
@@ -423,41 +402,19 @@ class SSBillingAddressScreen extends StatelessWidget {
                         overflow: TextOverflow.clip,
                         style: secondaryTextStyle(),
                       ),
-                      TextField(
-                        controller: checkOutProvider.billingCountryController,
-                        obscureText: false,
-                        textAlign: TextAlign.start,
-                        maxLines: 1,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontStyle: FontStyle.normal,
-                          fontSize: 14,
-                          color: Color(0xff000000),
-                        ),
-                        decoration: InputDecoration(
-                          disabledBorder: UnderlineInputBorder(
-                            borderRadius: BorderRadius.circular(4.0),
-                            borderSide:
-                                BorderSide(color: Color(0xff000000), width: 1),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderRadius: BorderRadius.circular(4.0),
-                            borderSide:
-                                BorderSide(color: Color(0xff000000), width: 1),
-                          ),
-                          enabledBorder: UnderlineInputBorder(
-                            borderRadius: BorderRadius.circular(4.0),
-                            borderSide:
-                                BorderSide(color: Color(0xff000000), width: 1),
-                          ),
-                          hintText: "India",
-                          hintStyle: boldTextStyle(
-                              size: 14, color: Colors.grey.withOpacity(0.5)),
-                          filled: true,
-                          fillColor: Color(0x00f2f2f3),
-                          isDense: false,
-                          contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
-                        ),
+                      DropdownButtonFormField(
+                        value: checkOutProvider.billingCountryController.text,
+                        hint: Text('Select Country'),
+                        items: checkOutProvider.countries
+                            .map((e) => DropdownMenuItem<String>(
+                                  child: Text(e.name ?? ''),
+                                  value: e.value,
+                                ))
+                            .toList(),
+                        onChanged: (String? value) {
+                          checkOutProvider.billingCountryController.text =
+                              value ?? '';
+                        },
                       ),
                       SizedBox(height: 16),
                       Text(
@@ -469,7 +426,9 @@ class SSBillingAddressScreen extends StatelessWidget {
                       TextField(
                         controller: checkOutProvider.billingPhoneController,
                         obscureText: false,
+                        maxLength: 10,
                         textAlign: TextAlign.start,
+                        keyboardType: TextInputType.number,
                         maxLines: 1,
                         style: TextStyle(
                           fontWeight: FontWeight.w400,
@@ -887,6 +846,8 @@ class SSBillingAddressScreen extends StatelessWidget {
                               controller:
                                   checkOutProvider.shippingPhoneController,
                               obscureText: false,
+                              maxLength: 10,
+                              keyboardType: TextInputType.number,
                               textAlign: TextAlign.start,
                               maxLines: 1,
                               style: TextStyle(
@@ -1014,86 +975,91 @@ class SSBillingAddressScreen extends StatelessWidget {
                     context: context,
                     title: 'Continue to payment',
                     onPressed: () async {
-                      final userId = await Amplify.Auth.getCurrentUser()
-                          .then((value) => value.userId);
-                      var createOrderData = {
-                        'status': OrderStatus.PROCESSING.name,
-                        'currency': "inr",
-                        'userId': userId,
-                        'totalStoreCredit': 0.0,
-                        'totalDiscount': 0.0,
-                        'totalAmount': price,
-                        'totalCashOnDeliveryCharges': 0.0,
-                        'orderDate': '${TemporalDateTime.now()}',
-                        'CouponCodeId': context
-                                    .read<ShoppingCartProvider>()
-                                    .selectedCouponCodeItem !=
-                                null
-                            ? context
-                                .read<ShoppingCartProvider>()
-                                .selectedCouponCodeItem!
-                                .id
-                            : '',
-                        'BillingAddress': {
-                          'name':
-                              checkOutProvider.billingFullNameController.text,
-                          'address':
-                              checkOutProvider.billingAddressController.text,
-                          'country':
-                              checkOutProvider.billingCountryController.text,
-                          'city': checkOutProvider.billingCityController.text,
-                          'pinCode':
-                              checkOutProvider.billingPostCodeController.text,
-                          'state': checkOutProvider.billingStateController.text,
-                          'phone': checkOutProvider.billingPhoneController.text,
-                          'email': checkOutProvider.billingEmailController.text,
-                        },
-                        'shippingAddress': {
-                          'address': checkOutProvider.setAsDefaultBillingAddress
-                              ? checkOutProvider.billingStateController.text
-                              : checkOutProvider.shippingAddressController.text,
-                          'city': checkOutProvider.setAsDefaultBillingAddress
-                              ? checkOutProvider.billingCityController.text
-                              : checkOutProvider.shippingCityController.text,
-                          'country': checkOutProvider.setAsDefaultBillingAddress
-                              ? checkOutProvider.billingCountryController.text
-                              : checkOutProvider.shippingCountryController.text,
-                          'name': checkOutProvider.setAsDefaultBillingAddress
-                              ? checkOutProvider.billingFullNameController.text
-                              : checkOutProvider
-                                  .shippingFullNameController.text,
-                          'pinCode': checkOutProvider.setAsDefaultBillingAddress
-                              ? checkOutProvider.billingPostCodeController.text
-                              : checkOutProvider
-                                  .shippingPostCodeController.text,
-                          'state': checkOutProvider.setAsDefaultBillingAddress
-                              ? checkOutProvider.billingStateController.text
-                              : checkOutProvider.shippingStateController.text,
-                          'phone': checkOutProvider.setAsDefaultBillingAddress
-                              ? checkOutProvider.billingPhoneController.text
-                              : checkOutProvider.shippingPhoneController.text,
-                          'email': checkOutProvider.setAsDefaultBillingAddress
-                              ? checkOutProvider.billingEmailController.text
-                              : checkOutProvider.shippingEmailController.text,
-                        },
-                        'totalShippingCharges': 0.0
-                      };
-                      await checkOutProvider.createOrderCart(
-                          data: createOrderData,
-                          productId: productId!,
-                          productPrice: price!,
-                          quantity: qty!);
-                      if (!checkOutProvider.isError) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => ChangeNotifierProvider.value(
-                                value: checkOutProvider,
-                                child: SSPaymentScreen(
-                                  shoppingCartId: shoppingCartId,
+                      if (checkOutProvider.billingFullNameController.text.isNotEmpty &&
+                          checkOutProvider
+                              .billingAddressController.text.isNotEmpty &&
+                          checkOutProvider
+                              .billingCityController.text.isNotEmpty &&
+                          checkOutProvider
+                              .billingStateController.text.isNotEmpty &&
+                          checkOutProvider
+                              .billingPostCodeController.text.isNotEmpty &&
+                          checkOutProvider
+                              .billingCountryController.text.isNotEmpty &&
+                          checkOutProvider
+                              .billingPhoneController.text.isNotEmpty &&
+                          checkOutProvider
+                              .billingEmailController.text.isNotEmpty) {
+                        if (!checkOutProvider.setAsDefaultBillingAddress) {
+                          if (!checkOutProvider
+                                  .shippingFullNameController.text.isNotEmpty &&
+                              checkOutProvider
+                                  .shippingEmailController.text.isNotEmpty &&
+                              checkOutProvider
+                                  .shippingPhoneController.text.isNotEmpty &&
+                              checkOutProvider
+                                  .shippingAddressController.text.isNotEmpty &&
+                              checkOutProvider
+                                  .shippingCityController.text.isNotEmpty &&
+                              checkOutProvider
+                                  .shippingCountryController.text.isNotEmpty &&
+                              checkOutProvider
+                                  .shippingStateController.text.isNotEmpty &&
+                              checkOutProvider
+                                  .shippingPostCodeController.text.isNotEmpty) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => ChangeNotifierProvider.value(
+                                    value: checkOutProvider,
+                                    child: SSPaymentScreen(
+                                      shoppingCartId: shoppingCartId,
+                                      price: price,
+                                      productId: productId,
+                                      qty: qty,
+                                      couponCodeItemId: context
+                                          .read<ShoppingCartProvider>()
+                                          .selectedCouponCodeItem
+                                          ?.id,
+                                      shippingAmount: 0,
+                                      totalAmount: context
+                                          .read<ShoppingCartProvider>()
+                                          .totalPrice,
+                                    ),
+                                  ),
+                                ));
+                          } else {
+                            GlobalSnackBar.show(
+                                context: context,
+                                message: 'Please fill shipping address');
+                          }
+                        } else {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => ChangeNotifierProvider.value(
+                                  value: checkOutProvider,
+                                  child: SSPaymentScreen(
+                                    shoppingCartId: shoppingCartId,
+                                    price: price,
+                                    productId: productId,
+                                    qty: qty,
+                                    couponCodeItemId: context
+                                        .read<ShoppingCartProvider>()
+                                        .selectedCouponCodeItem
+                                        ?.id,
+                                    shippingAmount: 0,
+                                    totalAmount: context
+                                        .read<ShoppingCartProvider>()
+                                        .totalPrice,
+                                  ),
                                 ),
-                              ),
-                            ));
+                              ));
+                        }
+                      } else {
+                        GlobalSnackBar.show(
+                            context: context,
+                            message: 'Please fill billing address');
                       }
                     },
                   ),

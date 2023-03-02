@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
 
+import '../model/review_model.dart';
 import '../model/user_data.dart';
 import '../schema/graph_mutation_query.dart';
 import '../schema/graph_query.dart';
@@ -16,6 +17,25 @@ class ReviewProvider extends ChangeNotifier {
   bool _isLoading = false;
   String imageString = '';
   late UserData _userData;
+  final String? productId;
+  List<ReviewItems> _reviewItems = [];
+
+  List<ReviewItems> get reviewItems => _reviewItems;
+
+  set reviewItems(List<ReviewItems> value) {
+    _reviewItems = value;
+    notifyListeners();
+  }
+
+  ReviewProvider({this.productId});
+  ReviewData? _reviewData;
+
+  ReviewData? get reviewData => _reviewData;
+
+  set reviewData(ReviewData? value) {
+    _reviewData = value;
+    notifyListeners();
+  }
 
   UserData get userData => _userData;
 
@@ -44,7 +64,6 @@ class ReviewProvider extends ChangeNotifier {
   }
 
   Future<void> getUserData() async {
-    isLoading = true;
     final userId =
         await Amplify.Auth.getCurrentUser().then((value) => value.userId);
 
@@ -59,20 +78,21 @@ class ReviewProvider extends ChangeNotifier {
     } else {
       print(response.errors);
     }
-    isLoading = false;
   }
 
-  Future<void> createAndUploadFile() async {
+  Future<void> createAndUploadFile({required String productId}) async {
     final exampleFile = File(image!.path);
     try {
       final UploadFileResult result = await Amplify.Storage.uploadFile(
           local: exampleFile,
-          key: 'healthstaticbucket210034-dev',
+          key:
+              'customer_review/${productId}_${DateTime.now().millisecondsSinceEpoch}.jpg',
           onProgress: (progress) {
             safePrint('Fraction completed: ${progress.getFractionCompleted()}');
           });
       safePrint('Successfully uploaded file: ${result.key}');
-      imageString = result.key;
+      imageString = await Amplify.Storage.getUrl(key: result.key)
+          .then((value) => value.url.split('?')[0]);
     } on StorageException catch (e) {
       safePrint('Error uploading file: $e');
     }
@@ -86,17 +106,19 @@ class ReviewProvider extends ChangeNotifier {
       required int rating}) async {
     isLoading = true;
     await getUserData();
-    await createAndUploadFile();
+    if (image != null) {
+      await createAndUploadFile(productId: productId);
+    }
     final userId =
         await Amplify.Auth.getCurrentUser().then((value) => value.userId);
     // Todo Set Email ----
-    final bool email = true;
     final userName = userData.getUser?.firstName;
+    final email = userData.getUser?.email;
     final request = Amplify.API.mutate(
         request: GraphQLRequest<String>(
       document: GraphMutationSchema.createReviewMutation(
           images: imageString,
-          email: email,
+          email: email ?? 'notfound@gmail.com',
           name: userName!,
           comment: comment,
           title: title,
@@ -122,6 +144,54 @@ class ReviewProvider extends ChangeNotifier {
           message: 'Something went wrong!',
           type: SnackBarType.ERROR);
       isLoading = false;
+    }
+  }
+
+  Future<void> getReviews(String productId) async {
+    var getReview = GraphQuerySchema.getProductReviews(productId: productId!);
+
+    try {
+      var operation = Amplify.API.query(
+          request: GraphQLRequest<String>(
+        document: getReview,
+      ));
+      var response = await operation.response;
+      print(response.errors);
+      if (response.data != null && response.errors.isEmpty) {
+        reviewData = ReviewData.fromJson(jsonDecode(response.data!));
+        reviewItems = reviewData!.listReviews!.reviewItems!;
+        print(
+            "ReviewData:------- ${reviewData!.listReviews?.reviewItems?.length}");
+      } else {
+        print(response.errors);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> deleteReview(String reviewId) async {
+    var getReview =
+        GraphMutationSchema.deleteReviewMutation(reviewId: reviewId);
+
+    var operation = Amplify.API.query(
+        request: GraphQLRequest<String>(
+      document: getReview,
+    ));
+    var response = await operation.response;
+
+    if (response.data != null && response.errors.isEmpty) {
+      _reviewItems.removeWhere((element) => element.id == reviewId);
+      notifyListeners();
+    } else {
+      if (response.errors.isNotEmpty) {
+        print(response.errors);
+      } else {
+        GlobalSnackBar.show(
+            context: navigatorKey.currentContext!,
+            message: 'Somethig went wrong!',
+            type: SnackBarType.ERROR);
+      }
     }
   }
 }
