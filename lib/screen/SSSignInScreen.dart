@@ -26,13 +26,13 @@ class SSSignInScreen extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.zero,
           ),
-          leading: InkWell(
+          /* leading: InkWell(
             onTap: () {
               Navigator.pop(context);
             },
             child:
                 Icon(Icons.arrow_back_ios, color: context.iconColor, size: 20),
-          ),
+          ),*/
         ),
         body: SingleChildScrollView(
           padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
@@ -68,7 +68,7 @@ class SSSignInScreen extends StatelessWidget {
                       fontSize: 14),
                   decoration: sSInputDecoration(
                     context: context,
-                    icon: Icon(Icons.email,
+                    icon: Icon(Icons.call,
                         color: Colors.grey.withOpacity(0.4), size: 24),
                     name: 'Mobile Number',
                   ),

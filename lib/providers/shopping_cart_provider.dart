@@ -189,7 +189,9 @@ class ShoppingCartProvider extends ChangeNotifier {
     if (response.errors.isEmpty && response.data != null) {
       couponCodeData = CouponCodeData.fromJson(jsonDecode(response.data!));
 
-      selectedCouponCodeItem = couponCodeData!.listCouponCodes?.items?.first;
+      if (couponCodeData!.listCouponCodes!.items!.isNotEmpty) {
+        selectedCouponCodeItem = couponCodeData!.listCouponCodes?.items?.first;
+      }
     } else {
       if (response.errors.isNotEmpty) {
         errorMessage = response.errors.first.message;

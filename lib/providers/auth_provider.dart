@@ -33,9 +33,10 @@ class AuthenticationProvider extends ChangeNotifier {
 
       if (result.isSignedIn) {
         finish(context!);
-        SSDashBoardScreen().launch(context);
+        SSDashBoardScreen().launch(context, isNewTask: true);
       } else {
         SSVerifyNumberScreen(
+          phoneNumber: '+91' + phoneNumber,
           isSignIn: true,
           destination: result.nextStep?.codeDeliveryDetails?.destination,
         ).launch(context!);
@@ -58,6 +59,7 @@ class AuthenticationProvider extends ChangeNotifier {
             await Amplify.Auth.resendSignUpCode(username: '+91' + phoneNumber!);
         print("resendSignUpCode result: $result");
         SSVerifyNumberScreen(
+          phoneNumber: '+91' + phoneNumber,
           isSignIn: true,
           destination: result.codeDeliveryDetails.destination,
         ).launch(context!);

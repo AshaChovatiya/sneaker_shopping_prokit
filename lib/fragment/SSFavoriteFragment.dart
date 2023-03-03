@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/main.dart';
@@ -159,14 +160,23 @@ class SSFavoriteFragment extends StatelessWidget {
                                             mainAxisSize: MainAxisSize.max,
                                             children: [
                                               Text(
-                                                  item
-                                                          .wishlistProducts
-                                                          ?.wishlistProductItems?[
-                                                              0]
-                                                          .product
-                                                          ?.price
-                                                          .toString() ??
-                                                      'Not Found Price',
+                                                  NumberFormat.simpleCurrency(
+                                                              name: item
+                                                                      .wishlistProducts
+                                                                      ?.wishlistProductItems?[
+                                                                          0]
+                                                                      .product
+                                                                      ?.currency ??
+                                                                  'INR')
+                                                          .currencySymbol +
+                                                      (item
+                                                              .wishlistProducts
+                                                              ?.wishlistProductItems?[
+                                                                  0]
+                                                              .product
+                                                              ?.price
+                                                              .toString() ??
+                                                          'Not Found Price'),
                                                   textAlign: TextAlign.start,
                                                   overflow: TextOverflow.clip,
                                                   style:
@@ -219,15 +229,24 @@ class SSFavoriteFragment extends StatelessWidget {
                                                           title: Text(
                                                               "Are you sure?"),
                                                           content: Text(
-                                                              "Do you want to remove this item from the cart?"),
+                                                              "Do you want to remove this item from the wishlist?"),
                                                           actions: [
                                                             TextButton(
                                                                 onPressed: () {
                                                                   Navigator.pop(
                                                                       dialogContext);
                                                                 },
-                                                                child:
-                                                                    Text("No")),
+                                                                child: Text(
+                                                                  "No",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: appStore.isDarkModeOn
+                                                                        ? Colors
+                                                                            .white
+                                                                        : Colors
+                                                                            .black,
+                                                                  ),
+                                                                )),
                                                             ChangeNotifierProvider(
                                                               create: (context) =>
                                                                   WishListProvider(),
@@ -253,8 +272,16 @@ class SSFavoriteFragment extends StatelessWidget {
                                                                           await wishListProvider.deleteWishList(
                                                                               wishListId: item.id!);
                                                                         },
-                                                                        child: Text(
-                                                                            "Yes"));
+                                                                        child:
+                                                                            Text(
+                                                                          "Yes",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            color: appStore.isDarkModeOn
+                                                                                ? Colors.white
+                                                                                : Colors.black,
+                                                                          ),
+                                                                        ));
                                                               }),
                                                             ),
                                                           ],

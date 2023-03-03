@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/model/SneakerShoppingModel.dart';
@@ -9,6 +10,7 @@ import 'package:sneaker_shopping_prokit/screen/SSSelectCouponCodeScreen.dart';
 import 'package:sneaker_shopping_prokit/utils/SSConstants.dart';
 import 'package:sneaker_shopping_prokit/utils/SSDataGenerator.dart';
 import 'package:sneaker_shopping_prokit/utils/SSWidgets.dart';
+import '../main.dart';
 import '../providers/shopping_cart_provider.dart';
 
 class SSCartFragment extends StatefulWidget {
@@ -184,7 +186,7 @@ class SSCartFragmentState extends State<SSCartFragment> {
                                                             .spaceBetween,
                                                     children: [
                                                       Text(
-                                                        "${shoppingCartItem.shoppingcartProducts!.shoppingcartProductsitems![0].product!.currency ?? '' + shoppingCartItem.shoppingcartProducts!.shoppingcartProductsitems![0].product!.price.toString()}",
+                                                        "${NumberFormat.simpleCurrency(name: shoppingCartItem.shoppingcartProducts!.shoppingcartProductsitems![0].product!.currency ?? 'INR').currencySymbol + shoppingCartItem.shoppingcartProducts!.shoppingcartProductsitems![0].product!.price.toString()}",
                                                         textAlign:
                                                             TextAlign.start,
                                                         overflow:
@@ -217,35 +219,52 @@ class SSCartFragmentState extends State<SSCartFragment> {
                                                               true;
                                                         },
                                                         child: Container(
-                                                          margin: EdgeInsets.zero,
-                                                          padding: EdgeInsets.symmetric(horizontal: 8.w),
-                                                          decoration: BoxDecoration(
-                                                            color: Color(0xa9ffffff),
-                                                            shape: BoxShape.rectangle,
+                                                          margin:
+                                                              EdgeInsets.zero,
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      8.w),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: Color(
+                                                                0xa9ffffff),
+                                                            shape: BoxShape
+                                                                .rectangle,
                                                             borderRadius:
-                                                            BorderRadius.circular(
-                                                                160.0),
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        160.0),
                                                             border: Border.all(
-                                                                color: Color(0xed000000),
+                                                                color: Color(
+                                                                    0xed000000),
                                                                 width: 1),
                                                           ),
                                                           child: Padding(
-                                                            padding: EdgeInsets.all(4),
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    4),
                                                             child: Align(
                                                               alignment:
-                                                              Alignment(0.0, -0.1),
+                                                                  Alignment(0.0,
+                                                                      -0.1),
                                                               child: Text(
                                                                 "Buy Now",
                                                                 textAlign:
-                                                                TextAlign.start,
+                                                                    TextAlign
+                                                                        .start,
                                                                 overflow:
-                                                                TextOverflow.clip,
+                                                                    TextOverflow
+                                                                        .clip,
                                                                 style: TextStyle(
                                                                     fontWeight:
-                                                                    FontWeight.w700,
+                                                                        FontWeight
+                                                                            .w700,
                                                                     fontStyle:
-                                                                    FontStyle.normal,
-                                                                    fontSize: 12,
+                                                                        FontStyle
+                                                                            .normal,
+                                                                    fontSize:
+                                                                        12,
                                                                     color: Color(
                                                                         0xff000000)),
                                                               ),
@@ -272,8 +291,16 @@ class SSCartFragmentState extends State<SSCartFragment> {
                                                                           Navigator.pop(
                                                                               dialogContext);
                                                                         },
-                                                                        child: Text(
-                                                                            "No")),
+                                                                        child:
+                                                                            Text(
+                                                                          "No",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            color: appStore.isDarkModeOn
+                                                                                ? Colors.white
+                                                                                : Colors.black,
+                                                                          ),
+                                                                        )),
                                                                     ChangeNotifierProvider(
                                                                       create: (context) =>
                                                                           ShoppingCartProvider(),
@@ -291,7 +318,12 @@ class SSCartFragmentState extends State<SSCartFragment> {
                                                                                   Navigator.pop(dialogContext);
                                                                                   await shoppingCartProvider.deleteShoppingCart(shoppingCartId: shoppingCartItem.id!);
                                                                                 },
-                                                                                child: Text("Yes"));
+                                                                                child: Text(
+                                                                                  "Yes",
+                                                                                  style: TextStyle(
+                                                                                    color: appStore.isDarkModeOn ? Colors.white : Colors.black,
+                                                                                  ),
+                                                                                ));
                                                                       }),
                                                                     ),
                                                                   ],
@@ -429,7 +461,7 @@ class SSCartFragmentState extends State<SSCartFragment> {
                                             '${shoppingCartProvider.buyNowQty} Quantity',
                                             style: secondaryTextStyle()),
                                         Text(
-                                            '\$${shoppingCartProvider.totalPrice != 0 ? shoppingCartProvider.totalPrice : ''}',
+                                            '${NumberFormat.simpleCurrency(name: shoppingCartProvider.shoppingCart?.listShoppingCarts?.listShoppingCartsitems?.first.shoppingcartProducts?.shoppingcartProductsitems?.first.product?.currency ?? 'INR').currencySymbol} ${shoppingCartProvider.totalPrice != 0 ? shoppingCartProvider.totalPrice : ''}',
                                             style: boldTextStyle()),
                                       ],
                                     ),

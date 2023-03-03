@@ -3,6 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
+import 'package:sneaker_shopping_prokit/providers/connectivity_provider.dart';
 import 'package:sneaker_shopping_prokit/providers/initial_provider.dart';
 import 'package:sneaker_shopping_prokit/screen/SSDashBoardScreen.dart';
 import 'package:sneaker_shopping_prokit/screen/SSSplashScreen.dart';
@@ -46,35 +47,77 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(
           create: (_) => InitialProvider()..checkSignInStatus(),
         ),
+        ChangeNotifierProvider(
+          create: (BuildContext context) =>
+              ConnectivityNotifier()..checkInternetConnectivity(),
+        ),
       ],
       child: ScreenUtilInit(
           designSize: const Size(360, 690),
           builder: (context, child) {
-            return Consumer<InitialProvider>(
-                builder: (context, initialProvider, child) {
-              return Observer(builder: (context) {
-                return MaterialApp(
-                  debugShowCheckedModeBanner: false,
-                  title:
-                      'Sneaker Shopping${!isMobile ? ' ${platformName()}' : ''}',
-                  home: initialProvider.isLoading
-                      ? Scaffold(
-                          body: Center(
+            return Consumer<ConnectivityNotifier>(
+                builder: (context, connectivityNotifier, child) {
+              return Consumer<InitialProvider>(
+                  builder: (context, initialProvider, child) {
+                return Observer(builder: (context) {
+                  return MaterialApp(
+                    debugShowCheckedModeBanner: false,
+                    title:
+                        'Sneaker Shopping${!isMobile ? ' ${platformName()}' : ''}',
+                    home: connectivityNotifier.connectionState ==
+                            ConnectionState.waiting
+                        ? Center(
                             child: CircularProgressIndicator(),
-                          ),
-                        )
-                      : initialProvider.isUserLoggedIn
-                          ? SSDashBoardScreen()
-                          : SSSplashScreen(),
-                  theme: !appStore.isDarkModeOn
-                      ? AppThemeData.lightTheme
-                      : AppThemeData.darkTheme,
-                  navigatorKey: navigatorKey,
-                  scrollBehavior: SBehavior(),
-                  supportedLocales: LanguageDataModel.languageLocales(),
-                  localeResolutionCallback: (locale, supportedLocales) =>
-                      locale,
-                );
+                          )
+                        : connectivityNotifier.connectionState ==
+                                ConnectionState.none
+                            ? Scaffold(
+                                body: Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.wifi_off,
+                                          size: 72, color: Colors.grey),
+                                      SizedBox(height: 16),
+                                      Text(
+                                        "No Internet Connection",
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      SizedBox(height: 8),
+                                      Text(
+                                        "Please check your internet connection and try again.",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : initialProvider.isLoading
+                                ? Scaffold(
+                                    body: Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  )
+                                : initialProvider.isUserLoggedIn
+                                    ? SSDashBoardScreen()
+                                    : SSSplashScreen(),
+                    theme: !appStore.isDarkModeOn
+                        ? AppThemeData.lightTheme
+                        : AppThemeData.darkTheme,
+                    navigatorKey: navigatorKey,
+                    scrollBehavior: SBehavior(),
+                    supportedLocales: LanguageDataModel.languageLocales(),
+                    localeResolutionCallback: (locale, supportedLocales) =>
+                        locale,
+                  );
+                });
               });
             });
           }),

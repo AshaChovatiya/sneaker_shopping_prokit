@@ -150,11 +150,14 @@ class ReviewListScreen extends StatelessWidget {
                         SizedBox(
                           height: 5,
                         ),
-                        Text("${review?.comment}",
+                        Text("${review.comment}",
                             textAlign: TextAlign.start,
                             overflow: TextOverflow.clip,
-                            style:
-                                boldTextStyle(size: 12, color: Colors.black)),
+                            style: boldTextStyle(
+                                size: 12,
+                                color: appStore.isDarkModeOn
+                                    ? Colors.white
+                                    : Colors.black)),
                         SizedBox(
                           height: 5,
                         ),

@@ -10,6 +10,7 @@ import 'package:sneaker_shopping_prokit/providers/product_provider.dart';
 import 'package:sneaker_shopping_prokit/screen/SSOrderScreen.dart';
 import 'package:sneaker_shopping_prokit/utils/SSDataGenerator.dart';
 import 'package:sneaker_shopping_prokit/utils/SSWidgets.dart';
+import 'package:sneaker_shopping_prokit/utils/common_snack_bar.dart';
 
 class SSPaymentScreen extends StatefulWidget {
   final String? shoppingCartId;
@@ -438,6 +439,14 @@ class _SSPaymentScreenState extends State<SSPaymentScreen> {
 
                             paymentProvider.orderResponseData =
                                 checkOutProvider.orderResponseData;
+
+                            if (paymentProvider.orderResponseData == null) {
+                              GlobalSnackBar.show(
+                                  context: context,
+                                  message:
+                                      'Something went wrong with your order');
+                              return;
+                            }
 
                             await paymentProvider.pay();
 

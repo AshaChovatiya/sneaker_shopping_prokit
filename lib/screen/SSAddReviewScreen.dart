@@ -83,7 +83,9 @@ class AddReviewScreen extends StatelessWidget {
                             fontWeight: FontWeight.w400,
                             fontStyle: FontStyle.normal,
                             fontSize: 14,
-                            color: Color(0xff000000),
+                            color: appStore.isDarkModeOn
+                                ? Colors.white
+                                : Colors.black,
                           ),
                           validator: RequiredValidator(
                               errorText: 'Please Enter Comment'),
@@ -276,7 +278,7 @@ class AddReviewScreen extends StatelessWidget {
             fontWeight: FontWeight.w400,
             fontStyle: FontStyle.normal,
             fontSize: 14,
-            color: Color(0xff000000),
+            color: appStore.isDarkModeOn ? Colors.white : Colors.black,
           ),
           decoration: InputDecoration(
             disabledBorder: UnderlineInputBorder(

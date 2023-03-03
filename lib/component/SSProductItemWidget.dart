@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/component/SSBestODWidget.dart';
+import 'package:sneaker_shopping_prokit/main.dart';
 import 'package:sneaker_shopping_prokit/providers/product_provider.dart';
 import 'package:sneaker_shopping_prokit/screen/SSDetailScreen.dart';
 
@@ -41,8 +42,8 @@ class _SSProductItemWidgetState extends State<SSProductItemWidget> {
               ),
             )
           : Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
-            child: CustomScrollView(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: CustomScrollView(
                 controller: scrollController,
                 slivers: [
                   SliverGrid(
@@ -73,23 +74,27 @@ class _SSProductItemWidgetState extends State<SSProductItemWidget> {
                       },
                       childCount: _productProvider.productDetail?.length,
                     ),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 10,
-                        crossAxisSpacing: 10,
-                        childAspectRatio: 0.6),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 10,
+                            crossAxisSpacing: 10,
+                            childAspectRatio: 0.6),
                   ),
                   if (_productProvider.isPagination)
                     SliverToBoxAdapter(
                       child: Center(
                         child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              appStore.isDarkModeOn
+                                  ? Colors.white
+                                  : Colors.black),
                         ),
                       ),
                     ),
                 ],
               ),
-          );
+            );
     });
     /* SingleChildScrollView(
       controller: scrollController,

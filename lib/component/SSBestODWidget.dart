@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/component/AddToCartBottomSheet.dart';
 import 'package:sneaker_shopping_prokit/providers/product_provider.dart';
 import 'package:sneaker_shopping_prokit/utils/common_snack_bar.dart';
 
+import '../main.dart';
 import '../model/ProductListModel.dart';
 
 class SSBestODWidget extends StatelessWidget {
@@ -73,7 +75,14 @@ class SSBestODWidget extends StatelessWidget {
                                       onPressed: () {
                                         Navigator.pop(context);
                                       },
-                                      child: Text('Cancel')),
+                                      child: Text(
+                                        'Cancel',
+                                        style: TextStyle(
+                                          color: appStore.isDarkModeOn
+                                              ? Colors.white
+                                              : Colors.black,
+                                        ),
+                                      )),
                                   TextButton(
                                       onPressed: () async {
                                         Navigator.pop(context);
@@ -82,7 +91,14 @@ class SSBestODWidget extends StatelessWidget {
                                           ..deleteWishList(
                                               wishListId: product!.id!);
                                       },
-                                      child: Text('Remove')),
+                                      child: Text(
+                                        'Remove',
+                                        style: TextStyle(
+                                          color: appStore.isDarkModeOn
+                                              ? Colors.white
+                                              : Colors.black,
+                                        ),
+                                      )),
                                 ],
                               );
                             });
@@ -134,7 +150,8 @@ class SSBestODWidget extends StatelessWidget {
                 Text(title ?? '', maxLines: 2, style: boldTextStyle(size: 14)),
           ),
           SizedBox(height: 4),
-          Text('${amountType ?? '' + ' ' + amount.toString()}',
+          Text(
+              '${NumberFormat.simpleCurrency(name: amountType ?? 'INR').currencySymbol + ' ' + amount.toString()}',
               style: secondaryTextStyle(size: 12)),
         ],
       ),

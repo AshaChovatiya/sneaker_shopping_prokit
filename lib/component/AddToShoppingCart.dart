@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/model/ProductListModel.dart';
@@ -104,7 +105,7 @@ class AddToShoppingCartBottomSheetState
                           style: secondaryTextStyle()),
                       SizedBox(height: 4),
                       Text(
-                          "\$${widget.productDataModel.price ?? "not available"}",
+                          "${NumberFormat.simpleCurrency(name: widget.productDataModel.currency ?? 'INR').currencySymbol} ${widget.productDataModel.price ?? "not available"}",
                           textAlign: TextAlign.start,
                           overflow: TextOverflow.clip,
                           style: primaryTextStyle()),

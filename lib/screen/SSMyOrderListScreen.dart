@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/main.dart';
@@ -181,7 +182,7 @@ class SSMyOrderListScreen extends StatelessWidget {
                                                             ?.isNotEmpty ??
                                                         false)
                                                       Text(
-                                                        "${orderItemList.currency ?? ''}  ${orderItemList.products!.productsItems![0].product!.price.toString()}",
+                                                        "${NumberFormat.simpleCurrency(name: orderItemList.currency ?? 'INR').currencySymbol}  ${orderItemList.products!.productsItems![0].product!.price.toString()}",
                                                         textAlign:
                                                             TextAlign.start,
                                                         overflow:

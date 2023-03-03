@@ -5,10 +5,12 @@ import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/main.dart';
 import 'package:sneaker_shopping_prokit/model/SneakerShoppingModel.dart';
 import 'package:sneaker_shopping_prokit/providers/profile_provider.dart';
+import 'package:sneaker_shopping_prokit/screen/SSSelectCouponCodeScreen.dart';
 import 'package:sneaker_shopping_prokit/utils/SSColors.dart';
 import 'package:sneaker_shopping_prokit/utils/SSDataGenerator.dart';
 import 'package:sneaker_shopping_prokit/utils/SSWidgets.dart';
 
+import '../providers/my_order_provider.dart';
 import '../screen/SSMyOrderListScreen.dart';
 import '../screen/SSMyVoucherScreen.dart';
 import '../screen/SSSignInScreen.dart';
@@ -19,10 +21,17 @@ class SSProfileFragment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => ProfileProvider()..getUserData(),
-      child:
-          Consumer<ProfileProvider>(builder: (context, profileProvider, child) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => ProfileProvider()..getUserData(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => MyOrderProvider()..getShoppingCartList(),
+        ),
+      ],
+      child: Consumer2<ProfileProvider, MyOrderProvider>(
+          builder: (context, profileProvider, myOrderProvider, child) {
         return Scaffold(
           appBar: AppBar(
             elevation: 0,
@@ -89,20 +98,26 @@ class SSProfileFragment extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      settingWidget(title: '0', subtitle: 'Processing'),
+                      settingWidget(
+                          title: myOrderProvider.confirmOrder.toString(),
+                          subtitle: 'Confirmed'),
                       Container(
                           height: 30,
                           width: 1,
                           color: Colors.grey,
                           margin: EdgeInsets.only(bottom: 16)),
-                      settingWidget(title: '1', subtitle: 'Shipped'),
+                      settingWidget(
+                          title: myOrderProvider.shippedOrder.toString(),
+                          subtitle: 'Shipped'),
                       Container(
                         height: 30,
                         width: 1,
                         color: Colors.grey,
                         margin: EdgeInsets.only(bottom: 16),
                       ),
-                      settingWidget(title: '0', subtitle: 'Pickup'),
+                      settingWidget(
+                          title: myOrderProvider.onHoldOrder.toString(),
+                          subtitle: 'Hold'),
                     ],
                   ),
                   SizedBox(height: 16),
@@ -193,20 +208,31 @@ class SSProfileFragment extends StatelessWidget {
                                     onPressed: () {
                                       Navigator.pop(dialogContext);
                                     },
-                                    child: Text("Cancel")),
+                                    child: Text(
+                                      "Cancel",
+                                      style: TextStyle(
+                                          color: appStore.isDarkModeOn
+                                              ? Colors.white
+                                              : Colors.black),
+                                    )),
                                 TextButton(
                                     onPressed: () async {
                                       try {
                                         await Amplify.Auth.signOut();
                                         Navigator.pop(dialogContext);
-                                        finish(context);
                                         SSSignInScreen()
                                             .launch(context, isNewTask: true);
                                       } on AuthException catch (e) {
                                         print(e);
                                       }
                                     },
-                                    child: Text("Logout")),
+                                    child: Text(
+                                      "Logout",
+                                      style: TextStyle(
+                                          color: appStore.isDarkModeOn
+                                              ? Colors.white
+                                              : Colors.black),
+                                    )),
                               ],
                             );
                           });

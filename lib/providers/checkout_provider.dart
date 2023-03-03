@@ -28,7 +28,7 @@ class CheckOutProvider extends ChangeNotifier {
   bool _isLoading = false;
   bool _isError = false;
   bool _isOrdering = false;
-  String _currencySymbol = '\$';
+  String _currencySymbol = '₹';
   List<LocationData> _states = [];
 
   List<LocationData> get states => _states;
@@ -196,10 +196,6 @@ class CheckOutProvider extends ChangeNotifier {
       createOrderId = jsonDecode(response.data!)['createOrder']['id'];
       orderResponseData =
           OrderResponseData.fromJson(jsonDecode(response.data!));
-      currencySymbol = NumberFormat.simpleCurrency(
-              name: orderResponseData?.createOrder?.currency?.toUpperCase() ??
-                  'INR')
-          .currencySymbol;
     } else {
       isError = true;
       isOrdering = false;
@@ -263,6 +259,37 @@ class CheckOutProvider extends ChangeNotifier {
     } else {
       isError = true;
       isOrdering = false;
+      deleteOrder(orderId);
+      if (response.errors.isNotEmpty) {
+        errorMessage = response.errors.first.message;
+        GlobalSnackBar.show(
+            context: navigatorKey.currentContext!,
+            message: errorMessage,
+            type: SnackBarType.ERROR);
+        print(response.errors);
+      }
+      GlobalSnackBar.show(
+          context: navigatorKey.currentContext!,
+          message: 'Something went wrong!',
+          type: SnackBarType.ERROR);
+    }
+  }
+
+  Future<void> deleteOrder(String orderId) async {
+    final request = Amplify.API.mutate(
+        request: GraphQLRequest<String>(
+      document: GraphMutationSchema.deleteOrder(orderId: orderId),
+    ));
+
+    final response = await request.response;
+
+    if (response.errors.isEmpty && response.data != null) {
+      isError = false;
+      isOrdering = false;
+    } else {
+      isError = true;
+      isOrdering = false;
+
       if (response.errors.isNotEmpty) {
         errorMessage = response.errors.first.message;
         GlobalSnackBar.show(

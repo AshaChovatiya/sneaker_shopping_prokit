@@ -3,7 +3,6 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:sneaker_shopping_prokit/screen/SSBuildScreen.dart';
 import 'package:sneaker_shopping_prokit/utils/SSWidgets.dart';
 
-
 import '../../../main.dart';
 
 class SSSplashScreen extends StatefulWidget {
@@ -53,10 +52,12 @@ class _SSSplashScreenState extends State<SSSplashScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Image(
-                        image: AssetImage('images/sneakerShopping/ic_sneaker_logo.png'),
+                        image: AssetImage(
+                            'images/sneakerShopping/ic_sneaker_logo.png'),
                         height: 100,
                         width: 100,
-                        color: appStore.isDarkModeOn ? Colors.white : Colors.black,
+                        color:
+                            appStore.isDarkModeOn ? Colors.white : Colors.black,
                         fit: BoxFit.cover,
                       ),
                       Padding(
@@ -88,7 +89,7 @@ class _SSSplashScreenState extends State<SSSplashScreen> {
               context: context,
               title: 'Start Shopping',
               onPressed: () {
-                //
+                SSBuildScreen().launch(context);
               },
             ),
           )

@@ -145,4 +145,12 @@ class GraphMutationSchema {
   }
 }''';
   }
+
+  static String deleteOrder({required String orderId}) {
+    return '''mutation MyMutation {
+  deleteOrder(input: {id: "$orderId"}) {
+    id
+  }
+}''';
+  }
 }

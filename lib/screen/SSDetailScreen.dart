@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/utils/SSWidgets.dart';
@@ -221,7 +222,7 @@ class SSDetailScreenState extends State<SSDetailScreen> {
                                         style: boldTextStyle()),
                                   ),
                                   Text(
-                                      "${productDetailsProvider.productDataModel?.currency ?? '' + productDetailsProvider.productDataModel!.price.toString()}",
+                                      "${NumberFormat.simpleCurrency(name: productDetailsProvider.productDataModel?.currency ?? 'INR').currencySymbol + productDetailsProvider.productDataModel!.price.toString()}",
                                       textAlign: TextAlign.start,
                                       overflow: TextOverflow.clip,
                                       style: boldTextStyle()),
@@ -469,7 +470,9 @@ class SSDetailScreenState extends State<SSDetailScreen> {
                                                 overflow: TextOverflow.clip,
                                                 style: boldTextStyle(
                                                     size: 12,
-                                                    color: Colors.black)),
+                                                    color: appStore.isDarkModeOn
+                                                        ? Colors.white
+                                                        : Colors.black)),
                                             SizedBox(
                                               height: 5,
                                             ),
@@ -673,7 +676,7 @@ class SSDetailScreenState extends State<SSDetailScreen> {
                               Text('${shoppingCartProvider.buyNowQty} Quantity',
                                   style: secondaryTextStyle()),
                               Text(
-                                  '\$${shoppingCartProvider.totalPrice != 0 ? shoppingCartProvider.totalPrice : ''}',
+                                  ' ${NumberFormat.simpleCurrency(name: shoppingCartProvider.shoppingCartProductItems?.product?.currency ?? 'INR').currencySymbol} ${shoppingCartProvider.totalPrice != 0 ? shoppingCartProvider.totalPrice : ''}',
                                   style: boldTextStyle()),
                             ],
                           ),
