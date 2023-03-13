@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/widgets.dart';
 
 class ConnectivityNotifier extends ChangeNotifier {
   ConnectionState _connectionState = ConnectionState.waiting;
+  final StreamController<ConnectivityResult> streamController =
+      StreamController();
 
   ConnectionState get connectionState => _connectionState;
 
@@ -11,24 +15,10 @@ class ConnectivityNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  checkInternetConnectivity() {
-    Connectivity().checkConnectivity().then((value) {
-      if (ConnectivityResult.none == value) {
-        connectionState = ConnectionState.none;
-      } else {
-        connectionState = ConnectionState.active;
-      }
-    });
-
-    /// I will come for half daya and you can cut my salary rest half day
-
+  checkInternetConnectivity() async {
     Connectivity().onConnectivityChanged.listen((event) {
       print("Connection state: $event");
-      if (ConnectivityResult.none == event) {
-        connectionState = ConnectionState.none;
-      } else {
-        connectionState = ConnectionState.active;
-      }
+      streamController.add(event);
     });
   }
 }

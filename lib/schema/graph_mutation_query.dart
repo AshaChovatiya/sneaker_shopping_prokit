@@ -164,21 +164,20 @@ class GraphMutationSchema {
 }''';
   }
 
-  static String validTransaction({required String rzrOrderId,required rzrPaymentId}) {
+  static String validTransaction(
+      {required String rzrOrderId, required rzrPaymentId}) {
     return '''mutation MyMutation {
-  validateTransaction(orderId: "0cefe0de-4b3b-46bd-ba7e-b9d4d36f9f7b", razorpayPaymentId: "pay_LPHwZ9PoqIyhCn") {
+  validateTransaction(orderId: "$rzrOrderId", razorpayPaymentId: "$rzrPaymentId") {
     success
   }
 }''';
   }
 
-  static updateOrderMutation({required String? orderId, required String status}) {
+  static updateOrderMutation(
+      {required String? orderId, required String status}) {
     return '''mutation MyMutation {updateOrder(input: {id: "$orderId", status: $status}) {
     id
     }
   }''';
   }
 }
-
-
-

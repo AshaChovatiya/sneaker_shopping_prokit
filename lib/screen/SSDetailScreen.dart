@@ -681,28 +681,35 @@ class SSDetailScreenState extends State<SSDetailScreen> {
                             ],
                           ),
                           SizedBox(height: 16),
-                          sSAppButton(
-                            context: context,
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        ChangeNotifierProvider<
-                                            ShoppingCartProvider>.value(
-                                      value: shoppingCartProvider,
-                                      child: SSBillingAddressScreen(
-                                        sku: shoppingCartProvider.shoppingCartProductItems?.product?.sku,
-                                        title: shoppingCartProvider.shoppingCartProductItems?.product?.title,
-                                        productId: productId,
-                                        price: shoppingCartProvider.totalPrice,
-                                        qty: shoppingCartProvider.buyNowQty,
-                                      ),
-                                    ),
-                                  ));
+                          Consumer<ProductDetailsProvider>(
+                            builder: (context, productProvider, child) {
+                              return sSAppButton(
+                                context: context,
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            ChangeNotifierProvider<
+                                                ShoppingCartProvider>.value(
+                                          value: shoppingCartProvider,
+                                          child: SSBillingAddressScreen(
+                                            sku: productProvider
+                                                .productDataModel?.sku,
+                                            title: productProvider
+                                                .productDataModel?.title,
+                                            productId: productId,
+                                            price:
+                                                shoppingCartProvider.totalPrice,
+                                            qty: shoppingCartProvider.buyNowQty,
+                                          ),
+                                        ),
+                                      ));
+                                },
+                                title: 'Checkout',
+                              );
                             },
-                            title: 'Checkout',
-                          ),
+                          )
                         ],
                       ),
                     )

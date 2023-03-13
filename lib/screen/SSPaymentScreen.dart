@@ -341,6 +341,7 @@ class _SSPaymentScreenState extends State<SSPaymentScreen> {
                           context: context,
                           title: 'Place Order',
                           onPressed: () async {
+                            paymentProvider.isPaymentLoading = true;
                             final userId = await Amplify.Auth.getCurrentUser()
                                 .then((value) => value.userId);
                             var createOrderData = {

@@ -58,7 +58,7 @@ class SSSignInScreen extends StatelessWidget {
                   controller: phoneNumberController,
                   obscureText: false,
                   textAlign: TextAlign.start,
-                  keyboardType: TextInputType.number,
+                  keyboardType: TextInputType.phone,
                   maxLines: 1,
                   validator: RequiredValidator(
                       errorText: 'Please Enter Mobile Number'),

@@ -107,7 +107,7 @@ class SSRegisterScreen extends StatelessWidget {
                     obscureText: false,
                     textAlign: TextAlign.start,
                     maxLines: 1,
-                    keyboardType: TextInputType.number,
+                    keyboardType: TextInputType.phone,
                     validator:
                         RequiredValidator(errorText: 'mobile is required'),
                     style: TextStyle(

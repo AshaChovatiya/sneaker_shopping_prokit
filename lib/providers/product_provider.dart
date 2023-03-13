@@ -97,7 +97,15 @@ class ProductProvider extends ChangeNotifier {
           request: GraphQLRequest<String>(
         document: GraphQuerySchema.getWishlistProductId(userId: userId),
       ));
-      var response = await request.response;
+      var response;
+      try {
+        response = await request.response;
+      } catch (e) {
+        homeLoading = false;
+        notifyListeners();
+
+        return;
+      }
 
       if (response.data != null) {
         try {

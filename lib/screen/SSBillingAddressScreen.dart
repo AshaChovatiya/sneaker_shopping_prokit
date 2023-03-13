@@ -9,7 +9,6 @@ import 'package:sneaker_shopping_prokit/screen/SSPaymentScreen.dart';
 import 'package:sneaker_shopping_prokit/utils/SSWidgets.dart';
 import 'package:sneaker_shopping_prokit/utils/common_snack_bar.dart';
 
-
 class SSBillingAddressScreen extends StatelessWidget {
   final String? shoppingCartId;
   final String? productId;
@@ -19,7 +18,13 @@ class SSBillingAddressScreen extends StatelessWidget {
   final double? price;
 
   SSBillingAddressScreen(
-      {Key? key, this.shoppingCartId, this.price, this.productId, this.qty,this.sku,this.title})
+      {Key? key,
+      this.shoppingCartId,
+      this.price,
+      this.productId,
+      this.qty,
+      this.sku,
+      this.title})
       : super(key: key);
 
   @override
@@ -426,9 +431,8 @@ class SSBillingAddressScreen extends StatelessWidget {
                       TextField(
                         controller: checkOutProvider.billingPhoneController,
                         obscureText: false,
-                        maxLength: 10,
                         textAlign: TextAlign.start,
-                        keyboardType: TextInputType.number,
+                        keyboardType: TextInputType.phone,
                         maxLines: 1,
                         style: TextStyle(
                           fontWeight: FontWeight.w400,
@@ -452,7 +456,7 @@ class SSBillingAddressScreen extends StatelessWidget {
                             borderSide:
                                 BorderSide(color: Color(0xff000000), width: 1),
                           ),
-                          hintText: "India",
+                          hintText: "+91xxxxxxxxxx",
                           hintStyle: boldTextStyle(
                               size: 14, color: Colors.grey.withOpacity(0.5)),
                           filled: true,
@@ -496,7 +500,7 @@ class SSBillingAddressScreen extends StatelessWidget {
                             borderSide:
                                 BorderSide(color: Color(0xff000000), width: 1),
                           ),
-                          hintText: "India",
+                          hintText: "xyz@example.com",
                           hintStyle: boldTextStyle(
                               size: 14, color: Colors.grey.withOpacity(0.5)),
                           filled: true,
@@ -846,8 +850,7 @@ class SSBillingAddressScreen extends StatelessWidget {
                               controller:
                                   checkOutProvider.shippingPhoneController,
                               obscureText: false,
-                              maxLength: 10,
-                              keyboardType: TextInputType.number,
+                              keyboardType: TextInputType.phone,
                               textAlign: TextAlign.start,
                               maxLines: 1,
                               style: TextStyle(
@@ -872,7 +875,7 @@ class SSBillingAddressScreen extends StatelessWidget {
                                   borderSide: BorderSide(
                                       color: Color(0xff000000), width: 1),
                                 ),
-                                hintText: "India",
+                                hintText: "+91xxxxxxxxxx",
                                 hintStyle: boldTextStyle(
                                     size: 14,
                                     color: Colors.grey.withOpacity(0.5)),
@@ -919,7 +922,7 @@ class SSBillingAddressScreen extends StatelessWidget {
                                   borderSide: BorderSide(
                                       color: Color(0xff000000), width: 1),
                                 ),
-                                hintText: "India",
+                                hintText: "xyz@example.com",
                                 hintStyle: boldTextStyle(
                                     size: 14,
                                     color: Colors.grey.withOpacity(0.5)),
@@ -1013,7 +1016,8 @@ class SSBillingAddressScreen extends StatelessWidget {
                                   builder: (_) => ChangeNotifierProvider.value(
                                     value: checkOutProvider,
                                     child: SSPaymentScreen(
-                                      sku: sku,title: title,
+                                      sku: sku,
+                                      title: title,
                                       shoppingCartId: shoppingCartId,
                                       price: price,
                                       productId: productId,
@@ -1041,7 +1045,8 @@ class SSBillingAddressScreen extends StatelessWidget {
                                 builder: (_) => ChangeNotifierProvider.value(
                                   value: checkOutProvider,
                                   child: SSPaymentScreen(
-                                    sku: sku,title: title,
+                                    sku: sku,
+                                    title: title,
                                     shoppingCartId: shoppingCartId,
                                     price: price,
                                     productId: productId,

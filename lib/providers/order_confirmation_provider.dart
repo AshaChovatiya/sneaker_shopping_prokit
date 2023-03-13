@@ -11,20 +11,28 @@ import '../utils/common_snack_bar.dart';
 class OrderConfirmationProvider extends ChangeNotifier {
   bool _isError = false;
   bool _isValidTransaction = false;
-  bool _isLoading = false;
+  bool _isLoading = true;
+  String _errorMessage = '';
+
+  String get errorMessage => _errorMessage;
+
+  set errorMessage(String value) {
+    _errorMessage = value;
+    notifyListeners();
+  }
 
   bool get isLoading => _isLoading;
 
   set isLoading(bool value) {
     _isLoading = value;
-    // notifyListeners();
+    notifyListeners();
   }
 
   bool get isValidTransaction => _isValidTransaction;
 
   set isValidTransaction(bool value) {
     _isValidTransaction = value;
-    // notifyListeners();
+    notifyListeners();
   }
 
   bool get isError => _isError;
@@ -35,7 +43,7 @@ class OrderConfirmationProvider extends ChangeNotifier {
   }
 
   validTransaction({required rzrPaymentId, required orderId}) async {
-    isLoading = true;
+    // isLoading = true;
     Future.delayed(const Duration(seconds: 5), () async {
       var request = Amplify.API.mutate(
           request: GraphQLRequest<String>(
@@ -59,13 +67,15 @@ class OrderConfirmationProvider extends ChangeNotifier {
         isError = true;
         isLoading = false;
         if (response.errors.isNotEmpty) {
-          final String errorMessage = response.errors.first.message;
+          final String errorMessages = response.errors.first.message;
+          errorMessage = errorMessages;
           GlobalSnackBar.show(
               context: navigatorKey.currentContext!,
               message: errorMessage,
               type: SnackBarType.ERROR);
           print(response.errors);
         }
+        errorMessage = 'Something went wrong!';
         GlobalSnackBar.show(
             context: navigatorKey.currentContext!,
             message: 'Something went wrong!',

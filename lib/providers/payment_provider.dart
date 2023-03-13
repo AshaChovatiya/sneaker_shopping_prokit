@@ -136,7 +136,7 @@ class PaymentProvider extends ChangeNotifier {
 
     if (paymentMethod == PaymentMethods.PREPAID) {
       createPayment().then((value) => openCheckout());
-    }else{
+    } else {
       createPayment();
     }
 
@@ -196,7 +196,6 @@ class PaymentProvider extends ChangeNotifier {
   }
 
   /// Start Order Process ----
-  ///
   Future<void> createOrderProduct({
     required String orderId,
     required double price,
@@ -442,7 +441,7 @@ class PaymentProvider extends ChangeNotifier {
           'email': userData?.getUser?.email ?? '',
           'name': userData?.getUser?.firstName ?? ''
         },
-       /* 'notes': [
+        /* 'notes': [
           storeID,
           orderResponseData?.createOrder?.id ?? '',
           createPaymentId
