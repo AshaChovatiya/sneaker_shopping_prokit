@@ -1,5 +1,7 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 
+const storeID = '781eb409-d01a-4ae4-a275-576af6953162';
+
 class GraphMutationSchema {
   static updateUserMutation(Map<String, dynamic> data) {
     return '''mutation MyMutation {
@@ -10,7 +12,7 @@ class GraphMutationSchema {
   }
 
   static String createWishlistMutation({required String userId}) {
-    return '''mutation MyMutation { createWishlist(input: {userId:"${userId}"}) {  id   } }''';
+    return '''mutation MyMutation { createWishlist(input: {storeId:"$storeID",userId:"${userId}"}) {  id   } }''';
   }
 
   static createWishListProductMutation(
@@ -36,7 +38,7 @@ class GraphMutationSchema {
 
   static createShoppingCartMutation({required String userID}) {
     return '''mutation MyMutation {
-  createShoppingCart(input: {userId: "$userID"}) {
+  createShoppingCart(input: {storeId: "$storeID",userId: "$userID"}) {
     id
   }
 }
@@ -72,7 +74,7 @@ class GraphMutationSchema {
 
   static createOrderMutation({required Map<dynamic, dynamic> data}) {
     return '''mutation MyMutation {
-  createOrder(input: {paymentType: ${data['paymentType']}, status: ${data['status']}, currency: ${data['currency']}, sla:"${data['sla']}" userId: "${data['userId']}", totalStoreCredit: ${data['totalStoreCredit']}, totalShippingCharges: ${data['totalShippingCharges']}, totalAmount: ${data['totalAmount']}, totalDiscount:  ${data['totalDiscount']}, totalCashOnDeliveryCharges: ${data['totalCashOnDeliveryCharges']}, orderDate: "${data['orderDate']}", couponCodeId: "${data['CouponCodeId']}", billingAddress: {address: "${data['BillingAddress']['address']}", city: "${data['BillingAddress']['city']}", country: ${data['BillingAddress']['country']}, state: ${data['BillingAddress']['state']}, pinCode: "${data['BillingAddress']['pinCode']}", name: "${data['BillingAddress']['name']}", phone:"${data['BillingAddress']['phone']}", email: "${data['BillingAddress']['email']}"}, shippingAddress: {address: "${data['shippingAddress']['address']}", city: "${data['shippingAddress']['city']}", country: ${data['shippingAddress']['country']}, state: ${data['shippingAddress']['state']}, pinCode: "${data['shippingAddress']['pinCode']}", name: "${data['shippingAddress']['name']}", phone:"${data['shippingAddress']['phone']}", email:"${data['shippingAddress']['email']}"}}){
+  createOrder(input: {storeId: "$storeID",paymentType: ${data['paymentType']}, status: ${data['status']}, currency: ${data['currency']}, sla:"${data['sla']}" userId: "${data['userId']}", totalStoreCredit: ${data['totalStoreCredit']}, totalShippingCharges: ${data['totalShippingCharges']}, totalAmount: ${data['totalAmount']}, totalDiscount:  ${data['totalDiscount']}, totalCashOnDeliveryCharges: ${data['totalCashOnDeliveryCharges']}, orderDate: "${data['orderDate']}", couponCodeId: "${data['CouponCodeId']}", billingAddress: {address: "${data['BillingAddress']['address']}", city: "${data['BillingAddress']['city']}", country: ${data['BillingAddress']['country']}, state: ${data['BillingAddress']['state']}, pinCode: "${data['BillingAddress']['pinCode']}", name: "${data['BillingAddress']['name']}", phone:"${data['BillingAddress']['phone']}", email: "${data['BillingAddress']['email']}"}, shippingAddress: {address: "${data['shippingAddress']['address']}", city: "${data['shippingAddress']['city']}", country: ${data['shippingAddress']['country']}, state: ${data['shippingAddress']['state']}, pinCode: "${data['shippingAddress']['pinCode']}", name: "${data['shippingAddress']['name']}", phone:"${data['shippingAddress']['phone']}", email:"${data['shippingAddress']['email']}"}}){
   id
   totalAmount
   totalCashOnDeliveryCharges
@@ -112,7 +114,7 @@ class GraphMutationSchema {
       required String orderId,
       required String userId}) {
     return '''mutation MyMutation {
-  createPayment(input: {method: $method, amount: $amount, createdAt: "${TemporalDateTime.now()}", orderId: "$orderId", userId: "$userId"}) {
+  createPayment(input: {storeId: "$storeID",method: $method, amount: $amount, createdAt: "${TemporalDateTime.now()}", orderId: "$orderId", userId: "$userId"}) {
     id
     orderId
     userId
@@ -153,4 +155,30 @@ class GraphMutationSchema {
   }
 }''';
   }
+
+  static String createTransaction({required String orderId}) {
+    return '''mutation MyMutation {
+  createTransaction(orderId: "$orderId") {
+    orderId
+  }
+}''';
+  }
+
+  static String validTransaction({required String rzrOrderId,required rzrPaymentId}) {
+    return '''mutation MyMutation {
+  validateTransaction(orderId: "0cefe0de-4b3b-46bd-ba7e-b9d4d36f9f7b", razorpayPaymentId: "pay_LPHwZ9PoqIyhCn") {
+    success
+  }
+}''';
+  }
+
+  static updateOrderMutation({required String? orderId, required String status}) {
+    return '''mutation MyMutation {updateOrder(input: {id: "$orderId", status: $status}) {
+    id
+    }
+  }''';
+  }
 }
+
+
+

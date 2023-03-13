@@ -49,7 +49,7 @@ class GlobalSnackBar {
           SizedBox(
             width: 10.0,
           ),
-          Text(message),
+          Text(message,maxLines: 2,overflow: TextOverflow.ellipsis,),
         ],
       ),
     );

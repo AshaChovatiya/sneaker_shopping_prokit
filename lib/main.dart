@@ -5,6 +5,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:sneaker_shopping_prokit/providers/connectivity_provider.dart';
 import 'package:sneaker_shopping_prokit/providers/initial_provider.dart';
+import 'package:sneaker_shopping_prokit/providers/order_confirmation_provider.dart';
 import 'package:sneaker_shopping_prokit/screen/SSDashBoardScreen.dart';
 import 'package:sneaker_shopping_prokit/screen/SSSplashScreen.dart';
 import 'package:sneaker_shopping_prokit/store/AppStore.dart';
@@ -44,6 +45,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(
+          create: (_) => OrderConfirmationProvider(),
+        ),
         ChangeNotifierProvider(
           create: (_) => InitialProvider()..checkSignInStatus(),
         ),
@@ -128,3 +132,4 @@ class _MyAppState extends State<MyApp> {
 /// User ID:- 2e90184d-5691-4f3d-9719-e87c059b7bb4
 /// Product ID:- 7511949181186
 /// Order Id:-39eadde8-e89e-4cd5-9b59-72ade469022c
+/// storeID:-781eb409-d01a-4ae4-a275-576af6953162

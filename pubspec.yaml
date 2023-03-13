@@ -26,6 +26,7 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   image_picker: ^0.8.6+3
   amplify_storage_s3: ^0.6.12
+  http: ^0.13.5
 
 
   # Sneaker Shopping App

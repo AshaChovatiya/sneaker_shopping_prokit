@@ -692,6 +692,8 @@ class SSDetailScreenState extends State<SSDetailScreen> {
                                             ShoppingCartProvider>.value(
                                       value: shoppingCartProvider,
                                       child: SSBillingAddressScreen(
+                                        sku: shoppingCartProvider.shoppingCartProductItems?.product?.sku,
+                                        title: shoppingCartProvider.shoppingCartProductItems?.product?.title,
                                         productId: productId,
                                         price: shoppingCartProvider.totalPrice,
                                         qty: shoppingCartProvider.buyNowQty,

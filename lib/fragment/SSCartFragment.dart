@@ -477,6 +477,10 @@ class SSCartFragmentState extends State<SSCartFragment> {
                                                       ShoppingCartProvider>.value(
                                                 value: shoppingCartProvider,
                                                 child: SSBillingAddressScreen(
+                                                  sku: shoppingCartProvider
+                                                      .shoppingCartProductItems?.product?.sku,
+                                                  title: shoppingCartProvider
+                                                      .shoppingCartProductItems?.product?.title,
                                                   shoppingCartId:
                                                       shoppingCartProvider
                                                           .shoppingCartId,

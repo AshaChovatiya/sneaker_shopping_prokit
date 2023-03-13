@@ -6,8 +6,6 @@ import 'package:sneaker_shopping_prokit/main.dart';
 import 'package:sneaker_shopping_prokit/model/SneakerShoppingModel.dart';
 import 'package:sneaker_shopping_prokit/providers/checkout_provider.dart';
 import 'package:sneaker_shopping_prokit/providers/payment_provider.dart';
-import 'package:sneaker_shopping_prokit/providers/product_provider.dart';
-import 'package:sneaker_shopping_prokit/screen/SSOrderScreen.dart';
 import 'package:sneaker_shopping_prokit/utils/SSDataGenerator.dart';
 import 'package:sneaker_shopping_prokit/utils/SSWidgets.dart';
 import 'package:sneaker_shopping_prokit/utils/common_snack_bar.dart';
@@ -44,6 +42,7 @@ class SSPaymentScreen extends StatefulWidget {
 class _SSPaymentScreenState extends State<SSPaymentScreen> {
   List<SneakerShoppingModel> payment = paymentList();
   int mCount = 0;
+
   @override
   Widget build(BuildContext context) {
     final checkOutProvider = context.watch<CheckOutProvider>();
@@ -213,7 +212,7 @@ class _SSPaymentScreenState extends State<SSPaymentScreen> {
                       highlightColor: Colors.transparent,
                       splashColor: Colors.transparent,
                       onTap: () {
-                        if (index == 2) {
+                        if (index == 1) {
                           paymentProvider.paymentMethod = PaymentMethods.COD;
                         } else {
                           paymentProvider.paymentMethod =
@@ -346,7 +345,10 @@ class _SSPaymentScreenState extends State<SSPaymentScreen> {
                                 .then((value) => value.userId);
                             var createOrderData = {
                               'paymentType': paymentProvider.paymentMethod.name,
-                              'status': OrderStatus.CONFIRMED.name,
+                              'status': paymentProvider.paymentMethod ==
+                                      PaymentMethods.PREPAID
+                                  ? OrderStatus.PENDING.name
+                                  : OrderStatus.CONFIRMED.name,
                               'currency': 'INR',
                               'sku': '${widget.sku}',
                               'title': '${widget.title}',
@@ -371,9 +373,8 @@ class _SSPaymentScreenState extends State<SSPaymentScreen> {
                                     .billingPostCodeController.text,
                                 'state': checkOutProvider
                                     .billingStateController.text,
-                                'phone': '+91' +
-                                    checkOutProvider
-                                        .billingPhoneController.text,
+                                'phone': checkOutProvider
+                                    .billingPhoneController.text,
                                 'email': checkOutProvider
                                     .billingEmailController.text,
                               },
@@ -416,12 +417,10 @@ class _SSPaymentScreenState extends State<SSPaymentScreen> {
                                             .shippingStateController.text,
                                 'phone':
                                     checkOutProvider.setAsDefaultBillingAddress
-                                        ? '+91' +
-                                            checkOutProvider
-                                                .billingPhoneController.text
-                                        : '+91' +
-                                            checkOutProvider
-                                                .shippingPhoneController.text,
+                                        ? checkOutProvider
+                                            .billingPhoneController.text
+                                        : checkOutProvider
+                                            .shippingPhoneController.text,
                                 'email':
                                     checkOutProvider.setAsDefaultBillingAddress
                                         ? checkOutProvider
@@ -431,25 +430,43 @@ class _SSPaymentScreenState extends State<SSPaymentScreen> {
                               },
                               'totalShippingCharges': 0.0
                             };
-                            await checkOutProvider.createOrderCart(
-                                data: createOrderData,
-                                productId: widget.productId!,
-                                productPrice: widget.price!,
-                                quantity: widget.qty!);
 
-                            paymentProvider.orderResponseData =
-                                checkOutProvider.orderResponseData;
+                            await paymentProvider.validateZipCode(
+                                zipCode: checkOutProvider
+                                    .billingPostCodeController.text);
 
-                            if (paymentProvider.orderResponseData == null) {
+                            if (paymentProvider.isPrepaidCode != true ||
+                                paymentProvider.isCodZipCode != true) {
                               GlobalSnackBar.show(
                                   context: context,
                                   message:
-                                      'Something went wrong with your order');
-                              return;
+                                      'Your postCode not valid for shipping');
+                            } else {
+                              await checkOutProvider.createOrderCart(
+                                  data: createOrderData,
+                                  productId: widget.productId!,
+                                  productPrice: widget.price!,
+                                  quantity: widget.qty!);
+
+                              paymentProvider.orderResponseData =
+                                  checkOutProvider.orderResponseData;
+
+                              if (paymentProvider.orderResponseData == null) {
+                                GlobalSnackBar.show(
+                                    context: context,
+                                    message:
+                                        'Something went wrong with your order');
+                                return;
+                              }
+
+                              await paymentProvider.pay(
+                                  price: widget.price!,
+                                  productId: widget.productId!,
+                                  quantity: widget.qty!,
+                                  title: widget.title!,
+                                  sku: widget.sku!,
+                                  totalPrice: widget.totalAmount!);
                             }
-
-                            await paymentProvider.pay();
-
                             //SSOrderScreen().launch(context);
                           },
                         );

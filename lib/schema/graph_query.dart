@@ -678,4 +678,15 @@ class GraphQuerySchema {
   }
 }''';
   }
+
+  static String getZipCode({required String zipCode}) {
+    return '''query MyQuery {
+  getZipCode(id: "$zipCode") {
+    prepaid
+    codMaxAmount
+    cod
+    id
+  }
+}''';
+  }
 }

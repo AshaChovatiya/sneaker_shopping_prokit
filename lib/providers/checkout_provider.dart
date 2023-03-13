@@ -87,6 +87,7 @@ class CheckOutProvider extends ChangeNotifier {
   late TextEditingController shippingStateController;
   late TextEditingController shippingPhoneController;
   late TextEditingController shippingEmailController;
+
   UserData? get userData => _userData;
 
   set userData(UserData? value) {
@@ -117,6 +118,7 @@ class CheckOutProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+
   void setLocationData() {
     jsonDecode(COUNTRIES).forEach((element) {
       countries.add(LocationData.fromJson(element));
@@ -130,12 +132,12 @@ class CheckOutProvider extends ChangeNotifier {
   Future<void> getUserData() async {
     isLoading = true;
     final userId =
-        await Amplify.Auth.getCurrentUser().then((value) => value.userId);
+    await Amplify.Auth.getCurrentUser().then((value) => value.userId);
 
     var request = Amplify.API.query(
         request: GraphQLRequest<String>(
-      document: GraphQuerySchema.getUserDetails(userId),
-    ));
+          document: GraphQuerySchema.getUserDetails(userId),
+        ));
     var response = await request.response;
 
     if (response.data != null) {
@@ -176,17 +178,16 @@ class CheckOutProvider extends ChangeNotifier {
     isLoading = false;
   }
 
-  Future<void> createOrderCart(
-      {required Map<dynamic, dynamic> data,
-      required double productPrice,
-      required int quantity,
-      required String productId}) async {
+  Future<void> createOrderCart({required Map<dynamic, dynamic> data,
+    required double productPrice,
+    required int quantity,
+    required String productId}) async {
     isError = false;
     isOrdering = true;
     final request = Amplify.API.mutate(
         request: GraphQLRequest<String>(
-      document: GraphMutationSchema.createOrderMutation(data: data),
-    ));
+          document: GraphMutationSchema.createOrderMutation(data: data),
+        ));
 
     final response = await request.response;
 
@@ -218,90 +219,6 @@ class CheckOutProvider extends ChangeNotifier {
     if (createOrderId == null) {
       isOrdering = false;
       return;
-    }
-    await createOrderProduct(
-        orderId: createOrderId,
-        price: productPrice,
-        productId: productId,
-        quantity: quantity,
-        totalPrice: data['totalAmount'],
-        title: data['title'],
-        sku: data['sku']);
-  }
-
-  Future<void> createOrderProduct({
-    required String orderId,
-    required double price,
-    required String productId,
-    required int quantity,
-    required String title,
-    required String sku,
-    required double totalPrice,
-  }) async {
-    final request = Amplify.API.mutate(
-        request: GraphQLRequest<String>(
-      document: GraphMutationSchema.createOrderProductMutation(
-        productId: productId,
-        price: price,
-        orderId: orderId,
-        quantity: quantity,
-        sku: sku,
-        title: title,
-        totalPrice: totalPrice,
-      ),
-    ));
-
-    final response = await request.response;
-
-    if (response.errors.isEmpty && response.data != null) {
-      isError = false;
-      isOrdering = false;
-    } else {
-      isError = true;
-      isOrdering = false;
-      deleteOrder(orderId);
-      if (response.errors.isNotEmpty) {
-        errorMessage = response.errors.first.message;
-        GlobalSnackBar.show(
-            context: navigatorKey.currentContext!,
-            message: errorMessage,
-            type: SnackBarType.ERROR);
-        print(response.errors);
-      }
-      GlobalSnackBar.show(
-          context: navigatorKey.currentContext!,
-          message: 'Something went wrong!',
-          type: SnackBarType.ERROR);
-    }
-  }
-
-  Future<void> deleteOrder(String orderId) async {
-    final request = Amplify.API.mutate(
-        request: GraphQLRequest<String>(
-      document: GraphMutationSchema.deleteOrder(orderId: orderId),
-    ));
-
-    final response = await request.response;
-
-    if (response.errors.isEmpty && response.data != null) {
-      isError = false;
-      isOrdering = false;
-    } else {
-      isError = true;
-      isOrdering = false;
-
-      if (response.errors.isNotEmpty) {
-        errorMessage = response.errors.first.message;
-        GlobalSnackBar.show(
-            context: navigatorKey.currentContext!,
-            message: errorMessage,
-            type: SnackBarType.ERROR);
-        print(response.errors);
-      }
-      GlobalSnackBar.show(
-          context: navigatorKey.currentContext!,
-          message: 'Something went wrong!',
-          type: SnackBarType.ERROR);
     }
   }
 }

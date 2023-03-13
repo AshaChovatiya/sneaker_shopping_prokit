@@ -1,4 +1,3 @@
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 
 import 'package:nb_utils/nb_utils.dart';
@@ -10,16 +9,17 @@ import 'package:sneaker_shopping_prokit/screen/SSPaymentScreen.dart';
 import 'package:sneaker_shopping_prokit/utils/SSWidgets.dart';
 import 'package:sneaker_shopping_prokit/utils/common_snack_bar.dart';
 
-import '../model/shoppingCartList_model.dart';
 
 class SSBillingAddressScreen extends StatelessWidget {
   final String? shoppingCartId;
   final String? productId;
+  final String? sku;
+  final String? title;
   final int? qty;
   final double? price;
 
   SSBillingAddressScreen(
-      {Key? key, this.shoppingCartId, this.price, this.productId, this.qty})
+      {Key? key, this.shoppingCartId, this.price, this.productId, this.qty,this.sku,this.title})
       : super(key: key);
 
   @override
@@ -1013,6 +1013,7 @@ class SSBillingAddressScreen extends StatelessWidget {
                                   builder: (_) => ChangeNotifierProvider.value(
                                     value: checkOutProvider,
                                     child: SSPaymentScreen(
+                                      sku: sku,title: title,
                                       shoppingCartId: shoppingCartId,
                                       price: price,
                                       productId: productId,
@@ -1040,6 +1041,7 @@ class SSBillingAddressScreen extends StatelessWidget {
                                 builder: (_) => ChangeNotifierProvider.value(
                                   value: checkOutProvider,
                                   child: SSPaymentScreen(
+                                    sku: sku,title: title,
                                     shoppingCartId: shoppingCartId,
                                     price: price,
                                     productId: productId,
